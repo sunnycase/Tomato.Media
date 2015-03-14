@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h">
+      <Filter>Headers\MediaSinks</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp">
+      <Filter>Sources\MediaSinks</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{7932428a-114e-4fc8-b36c-4fd83f1454eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\MediaSinks">
+      <UniqueIdentifier>{73c1c0da-637a-433a-a5b6-7aab509d4196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{83d19422-c9c9-4de0-a93b-a7ad6e385da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\MediaSinks">
+      <UniqueIdentifier>{3337825d-6217-4518-a42d-0c66b369172c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utilities">
+      <UniqueIdentifier>{82aff177-3701-4c5b-ad4e-b8deeccd1c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utilities">
+      <UniqueIdentifier>{bb21a23d-f8fa-4580-95c8-a1794044581c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

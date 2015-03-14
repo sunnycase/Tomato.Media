@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{e6a8744c-86f6-4037-b98e-3b0132e57988}</ItemsProjectGuid>
+    <ItemsRootNamespace>Tomato_Media_Core</ItemsRootNamespace>
+    <ItemsProjectName>Tomato.Media.Core.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>
