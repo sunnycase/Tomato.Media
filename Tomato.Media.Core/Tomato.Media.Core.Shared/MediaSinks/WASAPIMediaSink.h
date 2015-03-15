@@ -17,6 +17,7 @@ public:
 	WASAPIMediaSink();
 
 	virtual concurrency::task<void> Initialize();
+	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
 	virtual void StartPlayback();
 private:
 	// 配置设备
@@ -25,6 +26,8 @@ private:
 	UINT32 GetBufferFramesAvailable();
 	// 填充设备剩余缓冲
 	void FillBufferAvailable(bool isSilent);
+	void FillBufferFromMediaSource(UINT32 framesCount);
+	size_t GetBufferFramesPerPeriod();
 
 	// 开始播放命令回调
 	void OnStartPlayback();
@@ -44,6 +47,8 @@ private:
 	REFERENCE_TIME hnsDefaultBufferDuration;
 	UINT32 deviceBufferFrames;
 	std::recursive_mutex sampleRequestMutex;
+	std::shared_ptr<ISourceReader> sourceReaderHolder;
+	ISourceReader* sourceReader = nullptr;
 };
 
 NSED_TOMATO_MEDIA

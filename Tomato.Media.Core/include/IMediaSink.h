@@ -9,6 +9,7 @@
 
 NSDEF_TOMATO_MEDIA
 
+class ISourceReader;
 // Media Sink 状态
 enum class MediaSinkState
 {
@@ -41,6 +42,8 @@ public:
 
 	// 加载
 	virtual concurrency::task<void> Initialize() = 0;
+	// 设置媒体源读取器
+	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader) = 0;
 	// 开始播放
 	virtual void StartPlayback() = 0;
 

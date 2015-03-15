@@ -18,6 +18,11 @@ using namespace concurrency;
 using namespace Platform;
 using namespace Windows::Media::Devices;
 
+inline double hns2s(REFERENCE_TIME time)
+{
+	return time * 1.0e-7;
+}
+
 class ActivateAudioInterfaceCompletionHandler : public RuntimeClass<RuntimeClassFlags<
 	RuntimeClassType::ClassicCom>, FtmBase, IActivateAudioInterfaceCompletionHandler>
 {
@@ -93,6 +98,13 @@ task<void> WASAPIMediaSink::Initialize()
 	}
 }
 
+void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
+{
+	sourceReaderHolder = sourceReader;
+	this->sourceReader = sourceReaderHolder.get();
+	this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
+}
+
 void WASAPIMediaSink::StartPlayback()
 {
 	if (sinkState == MediaSinkState::Ready ||
@@ -119,7 +131,7 @@ void WASAPIMediaSink::ConfigureDevice()
 	// 初始化 AudioClient
 	THROW_IF_FAILED(audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
 		AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-		hnsDefaultBufferDuration, 0, deviceInputFormat.get(), nullptr));
+		0, 0, deviceInputFormat.get(), nullptr));
 	// 获取设备缓冲大小
 	THROW_IF_FAILED(audioClient->GetBufferSize(&deviceBufferFrames));
 	// 获取音频渲染客户端
@@ -146,7 +158,7 @@ void WASAPIMediaSink::FillBufferAvailable(bool isSilent)
 	// 没有可用空间则直接返回
 	if (!framesAvailable) return;
 
-	if (isSilent)
+	if (isSilent || !sourceReader)
 	{
 		// 用空白填充缓冲
 		byte* buffer = nullptr;
@@ -157,14 +169,49 @@ void WASAPIMediaSink::FillBufferAvailable(bool isSilent)
 	// nature of things.  There should be a queued work item already to handle
 	// the process of stopping or stopped
 	else if (sinkState == MediaSinkState::Playing)
+		FillBufferFromMediaSource(framesAvailable);
+}
+
+void WASAPIMediaSink::FillBufferFromMediaSource(UINT32 framesCount)
+{
+	BYTE* data = nullptr;
+	UINT32 actualBytesRead = 0;
+	UINT32 actualBytesToRead = framesCount * deviceInputFormat->nBlockAlign;
+
+	THROW_IF_FAILED(renderClient->GetBuffer(framesCount, &data));
+	if (actualBytesRead = sourceReader->Read(data, actualBytesToRead))
 	{
-		//FillBufferMFSource(framesAvailable);
+		THROW_IF_FAILED(renderClient->ReleaseBuffer((actualBytesRead / deviceInputFormat->nBlockAlign), 0));
 	}
+	// 未读出数据
+	else
+	{
+		THROW_IF_FAILED(renderClient->ReleaseBuffer(framesCount, AUDCLNT_BUFFERFLAGS_SILENT));
+		// 播放结束
+		/*if (currentSource->GetState() == SourceReaderState::End)
+			StopPlayback();*/
+	}
+}
+
+size_t WASAPIMediaSink::GetBufferFramesPerPeriod()
+{
+	REFERENCE_TIME defaultDevicePeriod = 0;
+	REFERENCE_TIME minimumDevicePeriod = 0;
+
+	// Get the audio device period
+	THROW_IF_FAILED(audioClient->GetDevicePeriod(&defaultDevicePeriod, &minimumDevicePeriod));
+
+	// 100 ns = 1e-7 s
+	double devicePeriodInSeconds = hns2s(defaultDevicePeriod);
+
+	return static_cast<UINT32>(std::ceil(deviceInputFormat->nSamplesPerSec * devicePeriodInSeconds));
 }
 
 void WASAPIMediaSink::OnStartPlayback()
 {
 	THROW_IF_FAILED(audioClient->Start());
+	if (sourceReader)
+		sourceReader->Start();
 	sinkState = MediaSinkState::Playing;
 
 	sampleRequestedThread->Execute(sampleRequestEvent);
@@ -174,7 +221,7 @@ void WASAPIMediaSink::OnSampleRequested()
 {
 	// 锁定保证同时只有一个请求被处理
 	std::lock_guard<decltype(sampleRequestMutex)> locker(sampleRequestMutex);
-	FillBufferAvailable(true);
+	FillBufferAvailable(false);
 
 	if (sinkState == MediaSinkState::Playing)
 	{

@@ -15,20 +15,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

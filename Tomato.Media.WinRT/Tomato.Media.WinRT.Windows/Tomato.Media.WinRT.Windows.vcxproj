@@ -31,6 +31,9 @@
       <Project>{d3b5778a-519e-4413-a589-6af1b4acd7ff}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\..\..\Music\TomatoPlayer\TomatoPlayer\TomatoPlayer.Windows\03.ずるいよ….mp3" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9d8e4620-b87f-4521-a87a-bb531ba5e8b9}</ProjectGuid>
     <RootNamespace>Tomato.Media</RootNamespace>

@@ -13,4 +13,7 @@
 #endif
 
 #include <ppltasks.h>
+#include <mmreg.h>
+#include "IMediaSource.h"
+#include "ISourceReader.h"
 #include "IMediaSink.h"

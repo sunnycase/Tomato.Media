@@ -28,6 +28,30 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h">
+      <Filter>Headers\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h">
+      <Filter>Headers\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.h">
+      <Filter>Headers\SourceReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -42,6 +66,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp">
       <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp">
+      <Filter>Sources\MediaSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp">
+      <Filter>Sources\SourceReaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +92,18 @@
     </Filter>
     <Filter Include="Sources\Utilities">
       <UniqueIdentifier>{bb21a23d-f8fa-4580-95c8-a1794044581c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\MediaSources">
+      <UniqueIdentifier>{5feb82dd-e619-4e5a-bbdd-e1371fae885a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\MediaSources">
+      <UniqueIdentifier>{6db08b1b-3c65-4572-9b4e-051d85bb57a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\SourceReaders">
+      <UniqueIdentifier>{d6be8190-909c-4400-910d-50a7343c9880}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\SourceReaders">
+      <UniqueIdentifier>{7f21a5f9-589f-4b75-8c05-c844cf0c5d8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
