@@ -96,6 +96,7 @@ task<void> WASAPIMediaSink::Initialize()
 #error "Not support."
 #endif
 	}
+	return task_from_result();
 }
 
 void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
@@ -207,8 +208,14 @@ size_t WASAPIMediaSink::GetBufferFramesPerPeriod()
 	return static_cast<UINT32>(std::ceil(deviceInputFormat->nSamplesPerSec * devicePeriodInSeconds));
 }
 
+void WASAPIMediaSink::InitializeDeviceBuffer()
+{
+	FillBufferAvailable(true);
+}
+
 void WASAPIMediaSink::OnStartPlayback()
 {
+	InitializeDeviceBuffer();
 	THROW_IF_FAILED(audioClient->Start());
 	if (sourceReader)
 		sourceReader->Start();
@@ -230,7 +237,7 @@ void WASAPIMediaSink::OnSampleRequested()
 	}
 }
 
-std::unique_ptr<IMediaSink> IMediaSink::CreateWASAPIMediaSink()
+MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall NS_TOMATO_MEDIA::CreateWASAPIMediaSink()
 {
 	return std::make_unique<WASAPIMediaSink>();
 }

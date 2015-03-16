@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{e6a8744c-86f6-4037-b98e-3b0132e57988}</ItemsProjectGuid>
+    <ItemsProjectGuid>{7d83d7c0-74c4-4075-8742-e37e8a535b58}</ItemsProjectGuid>
     <ItemsRootNamespace>Tomato_Media_Core</ItemsRootNamespace>
     <ItemsProjectName>Tomato.Media.Core.Shared</ItemsProjectName>
     <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
@@ -27,6 +27,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\MFTransform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp" />
@@ -40,9 +43,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp" />
   </ItemGroup>
   <ItemGroup>

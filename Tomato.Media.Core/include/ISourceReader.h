@@ -42,8 +42,8 @@ public:
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod) = 0;
 	// 读取数据
 	virtual size_t Read(byte* buffer, size_t bufferSize) = 0;
-
-	static std::unique_ptr<ISourceReader> CreateMFSourceReader(IMediaSource* mediaSource);
 };
+
+MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall CreateMFSourceReader(IMediaSource* mediaSource);
 
 NSED_TOMATO_MEDIA

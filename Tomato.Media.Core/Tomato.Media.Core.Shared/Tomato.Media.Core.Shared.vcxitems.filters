@@ -4,22 +4,52 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h">
       <Filter>Headers\MediaSinks</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h">
+      <Filter>Headers\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h">
+      <Filter>Headers\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.h">
+      <Filter>Headers\SourceReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.h">
+      <Filter>Headers\Transforms\MFTransforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.h">
+      <Filter>Headers\Transforms\MFTransforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\MFTransform.h">
+      <Filter>Headers\Transforms\MFTransforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h">
@@ -28,32 +58,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSource.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h">
-      <Filter>Headers\MediaSources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h">
-      <Filter>Headers\MediaSources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.h">
-      <Filter>Headers\SourceReaders</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -61,49 +71,65 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp">
       <Filter>Sources\MediaSinks</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp">
-      <Filter>Sources\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp">
       <Filter>Sources\MediaSources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp">
       <Filter>Sources\SourceReaders</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.cpp">
+      <Filter>Sources\Transforms\MFTransforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp">
+      <Filter>Sources\Transforms\MFTransforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
-      <UniqueIdentifier>{7932428a-114e-4fc8-b36c-4fd83f1454eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\MediaSinks">
-      <UniqueIdentifier>{73c1c0da-637a-433a-a5b6-7aab509d4196}</UniqueIdentifier>
+      <UniqueIdentifier>{28b1aabe-dde5-4f15-9bb1-ed8e9f42642b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources">
-      <UniqueIdentifier>{83d19422-c9c9-4de0-a93b-a7ad6e385da3}</UniqueIdentifier>
+      <UniqueIdentifier>{5e81fa79-4ed4-421d-a115-ae8e9761303d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\MediaSinks">
+      <UniqueIdentifier>{35b350e2-6c67-478e-9989-ed22e8e63be4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\MediaSinks">
-      <UniqueIdentifier>{3337825d-6217-4518-a42d-0c66b369172c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Utilities">
-      <UniqueIdentifier>{82aff177-3701-4c5b-ad4e-b8deeccd1c00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Utilities">
-      <UniqueIdentifier>{bb21a23d-f8fa-4580-95c8-a1794044581c}</UniqueIdentifier>
+      <UniqueIdentifier>{85116cbd-3ad0-4df4-9bc1-579b4e1ab572}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers\MediaSources">
-      <UniqueIdentifier>{5feb82dd-e619-4e5a-bbdd-e1371fae885a}</UniqueIdentifier>
+      <UniqueIdentifier>{625dc9d3-ba07-4b9a-a7f5-1a827338e3e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\MediaSources">
-      <UniqueIdentifier>{6db08b1b-3c65-4572-9b4e-051d85bb57a7}</UniqueIdentifier>
+      <UniqueIdentifier>{9a0a26e8-ab38-417d-9d22-42e321577fb8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers\SourceReaders">
-      <UniqueIdentifier>{d6be8190-909c-4400-910d-50a7343c9880}</UniqueIdentifier>
+      <UniqueIdentifier>{35e44315-2f38-4ce9-9d10-ed870da16985}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\SourceReaders">
-      <UniqueIdentifier>{7f21a5f9-589f-4b75-8c05-c844cf0c5d8e}</UniqueIdentifier>
+      <UniqueIdentifier>{68dd9349-1765-4dc8-9588-2b1f015c962d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Transforms">
+      <UniqueIdentifier>{2e0cf630-2bdf-4e34-9955-eb6793aeeb6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Transforms\MFTransforms">
+      <UniqueIdentifier>{7756859d-c8f9-4cbe-9d05-e50003bf4aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Transforms">
+      <UniqueIdentifier>{00743e19-2180-4b0c-bcaf-425abe2a0fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Transforms\MFTransforms">
+      <UniqueIdentifier>{051c2bb6-b548-4cff-9104-47a3fbd831bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utilities">
+      <UniqueIdentifier>{20d1e909-73fa-4f38-b0b0-11121cab31ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utilities">
+      <UniqueIdentifier>{50a05a28-df37-49cb-87fa-6ca1c4052ddf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tomato.Media.Core\Tomato.Media.Core.WindowsPhone\Tomato.Media.Core.WindowsPhone.vcxproj">
-      <Project>{f1180214-beda-4065-aa48-0cfe0d91502b}</Project>
+      <Project>{5564a3cc-b147-48a5-b081-fd3bcea9655e}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">

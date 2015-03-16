@@ -18,35 +18,38 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="FFmpeg.WP81, Version=2.5.4" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{f1180214-beda-4065-aa48-0cfe0d91502b}</ProjectGuid>
-    <RootNamespace>Tomato_Media_Core</RootNamespace>
+    <ProjectGuid>{5564a3cc-b147-48a5-b081-fd3bcea9655e}</ProjectGuid>
+    <RootNamespace>Tomato.Media.Core</RootNamespace>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Phone</ApplicationType>
     <ApplicationTypeRevision>8.1</ApplicationTypeRevision>
-    <ConvergedProjectType>CodeSharingStaticLibrary</ConvergedProjectType>
+    <ConvergedProjectType>CodeSharingDll</ConvergedProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120_wp81</PlatformToolset>
@@ -55,35 +58,46 @@
   <Import Project="..\Tomato.Media.Core.Shared\Tomato.Media.Core.Shared.vcxitems" Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props" Condition="exists('$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props')" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props" Condition="exists('$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props')" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props" Condition="exists('$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props')" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props" Condition="exists('$(ExtensionSDKDirectoryRoot)\WindowsPhoneApp\v$(TargetPlatformVersion)\ExtensionSDKs\FFmpeg.WP81\2.5.4\DesignTime\CommonConfiguration\Neutral\FFmpeg.WP81.props')" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <TargetName>Tomato.Media.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <TargetName>Tomato.Media.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <TargetName>Tomato.Media.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <TargetName>Tomato.Media.Core</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>MEDIA_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,8 +109,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>MEDIA_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,8 +121,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>MEDIA_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,8 +133,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>MEDIA_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -28,11 +28,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tomato.Media.Core\Tomato.Media.Core.Windows\Tomato.Media.Core.Windows.vcxproj">
-      <Project>{d3b5778a-519e-4413-a589-6af1b4acd7ff}</Project>
+      <Project>{3b785b9d-9104-4bf8-a3df-dcb580cfa835}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="..\..\..\..\Music\TomatoPlayer\TomatoPlayer\TomatoPlayer.Windows\03.ずるいよ….mp3" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9d8e4620-b87f-4521-a87a-bb531ba5e8b9}</ProjectGuid>

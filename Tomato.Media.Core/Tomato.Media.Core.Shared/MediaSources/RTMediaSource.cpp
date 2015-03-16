@@ -26,7 +26,8 @@ ComPtr<IMFByteStream> RTMediaSource::CreateMFByteStream()
 	return std::move(byteStream);
 }
 
-std::unique_ptr<IMediaSource> IMediaSource::CreateRTMediaSource(Windows::Storage::Streams::IRandomAccessStream^ stream)
+MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall NS_TOMATO_MEDIA::CreateRTMediaSource(
+	Windows::Storage::Streams::IRandomAccessStream^ stream)
 {
 	return std::make_unique<RTMediaSource>(stream);
 }

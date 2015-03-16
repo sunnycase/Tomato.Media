@@ -16,7 +16,8 @@ public:
 	IMediaSource(){}
 	virtual ~IMediaSource(){}
 
-	static std::unique_ptr<IMediaSource> CreateRTMediaSource(Windows::Storage::Streams::IRandomAccessStream^ stream);
 };
+
+MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall CreateRTMediaSource(Windows::Storage::Streams::IRandomAccessStream^ stream);
 
 NSED_TOMATO_MEDIA

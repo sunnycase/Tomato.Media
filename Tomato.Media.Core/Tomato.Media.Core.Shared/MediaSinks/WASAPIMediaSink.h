@@ -28,6 +28,7 @@ private:
 	void FillBufferAvailable(bool isSilent);
 	void FillBufferFromMediaSource(UINT32 framesCount);
 	size_t GetBufferFramesPerPeriod();
+	void InitializeDeviceBuffer();
 
 	// 开始播放命令回调
 	void OnStartPlayback();

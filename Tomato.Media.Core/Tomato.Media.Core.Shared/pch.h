@@ -28,4 +28,15 @@
 #include <mfreadwrite.h>
 #include <mferror.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+// FFmpeg
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#ifdef __cplusplus
+}
+#endif
+
 namespace wrl = Microsoft::WRL;

@@ -37,8 +37,8 @@ enum class MediaSinkState
 class IMediaSink
 {
 public:
-	IMediaSink(){}
-	virtual ~IMediaSink(){}
+	IMediaSink() {}
+	virtual ~IMediaSink() {}
 
 	// 加载
 	virtual concurrency::task<void> Initialize() = 0;
@@ -46,9 +46,8 @@ public:
 	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader) = 0;
 	// 开始播放
 	virtual void StartPlayback() = 0;
-
-	static std::unique_ptr<IMediaSink> CreateWASAPIMediaSink();
 };
 
+MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall CreateWASAPIMediaSink();
 
 NSED_TOMATO_MEDIA

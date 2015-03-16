@@ -10,7 +10,7 @@ std::unique_ptr<IMediaSink> sink;
 
 Class1::Class1()
 {
-	sink = IMediaSink::CreateWASAPIMediaSink();
+	sink = CreateWASAPIMediaSink();
 	sink->Initialize().then([&]
 	{
 		create_task(Windows::ApplicationModel::Package::Current->InstalledLocation->
@@ -20,8 +20,8 @@ Class1::Class1()
 			return file->OpenAsync(FileAccessMode::Read);
 		}).then([&](Streams::IRandomAccessStream^ stream)
 		{
-			auto source = IMediaSource::CreateRTMediaSource(stream);
-			auto reader = ISourceReader::CreateMFSourceReader(source.get());
+			auto source = CreateRTMediaSource(stream);
+			auto reader = CreateMFSourceReader(source.get());
 			sink->SetMediaSourceReader(std::move(reader));
 		}).then([&]
 		{

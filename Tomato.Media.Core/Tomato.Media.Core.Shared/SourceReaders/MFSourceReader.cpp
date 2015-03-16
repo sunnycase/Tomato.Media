@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "MFSourceReader.h"
 #include "Utilities/mfhelpers.hpp"
+#include "Transforms/MFTransforms/LibAVMFTransform.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -14,6 +15,24 @@ using namespace wrl;
 using namespace concurrency;
 
 #pragma comment(lib, "Mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
+struct MFTRegistry
+{
+	MFTRegistry()
+	{
+		RegisterMFTs();
+	}
+
+	void RegisterMFTs()
+	{
+		auto extensionManager = ref new Windows::Media::MediaExtensionManager();
+
+		extensionManager->RegisterAudioDecoder(ref new Platform::String(
+			LibAVMFTransform::InternalGetRuntimeClassName()),
+			MFAudioFormat_MP3, MFAudioFormat_PCM);
+	}
+};
 
 MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
 	:sourceReaderCallback(Make<MFSourceReaderCallback>())
@@ -211,7 +230,10 @@ void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 		0, nullptr, nullptr, nullptr, nullptr));
 }
 
-std::unique_ptr<ISourceReader> ISourceReader::CreateMFSourceReader(IMediaSource* mediaSource)
+MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall NS_TOMATO_MEDIA::CreateMFSourceReader(
+	IMediaSource* mediaSource)
 {
+	static MFTRegistry mftReg;
+
 	return std::make_unique<MFSourceReader>(reinterpret_cast<IMediaSourceIntern*>(mediaSource));
 }
