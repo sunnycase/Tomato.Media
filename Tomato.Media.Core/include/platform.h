@@ -27,8 +27,6 @@ typedef unsigned char byte;
 #define noexcept throw()
 #endif
 
-#define THROW_IF_NOT(expr, message) if(!(expr)){throw std::exception(message);}
-
 #ifdef _WIN32
 
 void DeleteCoTaskMem(void* handle) noexcept;

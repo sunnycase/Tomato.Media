@@ -1,8 +1,10 @@
 ﻿#pragma once
+#define INITGUID
 #define NOMINMAX
 #include <functional>
 #include <cassert>
 #include <mutex>
+#include <queue>
 
 #include <ppltasks.h>
 
@@ -35,6 +37,7 @@ extern "C" {
 // FFmpeg
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+#include <libswresample/swresample.h>
 #ifdef __cplusplus
 }
 #endif

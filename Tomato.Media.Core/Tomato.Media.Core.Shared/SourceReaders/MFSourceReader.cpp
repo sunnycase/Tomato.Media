@@ -8,6 +8,7 @@
 #include "MFSourceReader.h"
 #include "Utilities/mfhelpers.hpp"
 #include "Transforms/MFTransforms/LibAVMFTransform.h"
+#include "Utilities/MFByteStreamHandlers/LibAVByteStreamHandler.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -21,16 +22,29 @@ struct MFTRegistry
 {
 	MFTRegistry()
 	{
+		av_log_set_callback(AVLogCallback);
+		av_register_all();
+		avcodec_register_all();
 		RegisterMFTs();
 	}
 
 	void RegisterMFTs()
 	{
-		auto extensionManager = ref new Windows::Media::MediaExtensionManager();
+		static auto extensionManager = ref new Windows::Media::MediaExtensionManager();
+
+		extensionManager->RegisterByteStreamHandler(ref new Platform::String(
+			LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".ape", "audio/x-ape");
 
 		extensionManager->RegisterAudioDecoder(ref new Platform::String(
 			LibAVMFTransform::InternalGetRuntimeClassName()),
-			MFAudioFormat_MP3, MFAudioFormat_PCM);
+			KSDATAFORMAT_SUBTYPE_LIBAV, MFAudioFormat_PCM);
+	}
+
+	static void AVLogCallback(void* avcl, int level, const char* fmt, va_list vargs)
+	{
+		char buffer[INT16_MAX];
+		vsprintf_s(buffer, fmt, vargs);
+		OutputDebugStringA(buffer);
 	}
 };
 

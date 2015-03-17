@@ -34,6 +34,11 @@ public:
 		return (parent->*callback)(pAsyncResult);
 	}
 
+	DWORD GetQueueId() const noexcept
+	{
+		return queueId;
+	}
+
 	void SetQueueId(DWORD queueId)
 	{
 		this->queueId = queueId;

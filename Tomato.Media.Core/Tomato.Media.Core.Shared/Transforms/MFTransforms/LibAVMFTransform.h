@@ -6,6 +6,7 @@
 // 创建日期 2015-03-15
 #pragma once
 #include "AudioFrameDecoderBase.h"
+#include "Utilities/libavhelpers.h"
 
 NSDEF_TOMATO_MEDIA
 
@@ -15,6 +16,11 @@ class LibAVMFTransform : public AudioFrameDecoderBase
 public:
 	LibAVMFTransform();
 private:
+	STDMETHODIMP GetOutputStreamInfo(
+		DWORD                     dwOutputStreamID,
+		MFT_OUTPUT_STREAM_INFO *  pStreamInfo
+		);
+
 	virtual void OnValidateInputType(IMFMediaType* type);
 	virtual void OnValidateOutputType(IMFMediaType* type);
 	// 获取输出帧大小
@@ -27,6 +33,14 @@ private:
 	virtual void OnReceiveInput(IMFSample* sample);
 	virtual void OnProduceOutput(IMFSample* input, MFT_OUTPUT_DATA_BUFFER& output);
 	virtual wrl::ComPtr<IMFMediaType> OnGetOutputAvailableType(DWORD index) noexcept;
+private:
+	void InitializeLibAVFormat(IMFMediaType* type);
+	void InitializeAvailableOutputTypes();
+	uint32_t DecodeFrame(AVPacket& packet, wrl::ComPtr<IMFMediaBuffer>& buffer);
+private:
+	WAVEFORMATLIBAV waveFormat;
+	WAVEFORMATEX outputFormat;
+	std::vector<wrl::ComPtr<IMFMediaType>> availableOutputTypes;
 };
 
 NSED_TOMATO_MEDIA

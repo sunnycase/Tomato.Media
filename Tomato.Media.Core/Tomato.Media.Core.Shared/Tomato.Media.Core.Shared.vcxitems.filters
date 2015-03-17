@@ -61,6 +61,36 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.h">
+      <Filter>Headers\Utilities\MFByteStreamHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.h">
+      <Filter>Headers\Utilities\MFByteStreamHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\AudioSourceBase.h">
+      <Filter>Headers\Utilities\MFSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFOperationQueue.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\MediaSourceOperation.h">
+      <Filter>Headers\Utilities\MFSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\LibAVAudioSource.h">
+      <Filter>Headers\Utilities\MFSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\SingleStreamAudioSourceBase.h">
+      <Filter>Headers\Utilities\MFSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMediaStreamState.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
@@ -87,6 +117,30 @@
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.cpp">
+      <Filter>Sources\Utilities\MFByteStreamHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.cpp">
+      <Filter>Sources\Utilities\MFByteStreamHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\AudioSourceBase.cpp">
+      <Filter>Sources\Utilities\MFSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\MediaSourceOperation.cpp">
+      <Filter>Sources\Utilities\MFSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\SingleStreamAudioSourceBase.cpp">
+      <Filter>Sources\Utilities\MFSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\LibAVAudioSource.cpp">
+      <Filter>Sources\Utilities\MFSources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -130,6 +184,18 @@
     </Filter>
     <Filter Include="Sources\Utilities">
       <UniqueIdentifier>{50a05a28-df37-49cb-87fa-6ca1c4052ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utilities\MFSources">
+      <UniqueIdentifier>{5012294c-2fad-403d-b73a-13e6061ba4b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utilities\MFByteStreamHandlers">
+      <UniqueIdentifier>{5a03522f-61b1-4424-9e7e-d21b448819b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utilities\MFByteStreamHandlers">
+      <UniqueIdentifier>{d168ff06-bb6e-48d5-a448-75a5ea5743a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utilities\MFSources">
+      <UniqueIdentifier>{83bfc796-fb5b-41f4-bd40-c9a8549dd056}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

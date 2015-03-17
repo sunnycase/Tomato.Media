@@ -562,6 +562,8 @@ HRESULT AudioFrameDecoderBase::ProcessInput(
 
 	try
 	{
+		std::lock_guard<decltype(stateMutex)> locker(stateMutex);
+
 		OnReceiveInput(pSample);
 		inputSample = pSample;
 		state = TransformState::PendingOutput;
@@ -604,6 +606,8 @@ HRESULT AudioFrameDecoderBase::ProcessOutput(
 		return MF_E_TRANSFORM_NEED_MORE_INPUT;
 	try
 	{
+		std::lock_guard<decltype(stateMutex)> locker(stateMutex);
+
 		OnProduceOutput(inputSample.Get(), pOutputSamples[0]);
 
 		// 如果已输出完毕则更改状态

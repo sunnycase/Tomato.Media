@@ -174,6 +174,8 @@ private:
 	wrl::ComPtr<IMFSample> inputSample;			// 输入采样
 	wrl::ComPtr<IMFMediaType> inputMediaType;	// 输入媒体类型
 	wrl::ComPtr<IMFMediaType> outputMediaType;	// 输出媒体类型
+
+	std::recursive_mutex stateMutex;
 };
 
 NSED_TOMATO_MEDIA
