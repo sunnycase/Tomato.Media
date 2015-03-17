@@ -36,7 +36,7 @@ private:
 private:
 	void InitializeLibAVFormat(IMFMediaType* type);
 	void InitializeAvailableOutputTypes();
-	uint32_t DecodeFrame(AVPacket& packet, wrl::ComPtr<IMFMediaBuffer>& buffer);
+	std::pair<uint32_t, bool> DecodeFrame(AVPacket& packet, wrl::ComPtr<IMFMediaBuffer>& buffer);
 private:
 	WAVEFORMATLIBAV waveFormat;
 	WAVEFORMATEX outputFormat;

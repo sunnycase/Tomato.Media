@@ -119,7 +119,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="02. 涙色の翼.flac" />
+    <Content Include="04. 全天候型いらっしゃいませ.flac" />
     <Content Include="04.花篝り.APE" />
+    <Content Include="09.つないだ手.APE" />
     <None Include="Tomato.Media.Test.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

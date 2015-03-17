@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,9 +24,35 @@ namespace Tomato.Media.Test
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        AudioPlayer player;
+        string[] files =
+        {
+            "04.花篝り.APE",
+            "03.ずるいよ….mp3",
+            "04. 全天候型いらっしゃいませ.flac",
+            "02. 涙色の翼.flac",
+            "09.つないだ手.APE"
+        };
+
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        async void Play()
+        {
+            await player.Initialize();
+            player.IsSystemMediaControlEnabled = true;
+            await player.SetMediaSource(await Package.Current.InstalledLocation.GetFileAsync(files[4]));
+            player.StartPlayback();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            player = new Tomato.Media.AudioPlayer();
+
+            Play();
         }
     }
 }

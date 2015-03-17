@@ -34,6 +34,7 @@ public:
 	void BeginReadSample(IMFSourceReaderEx* sourceReader);
 private:
 	std::function<void(ReadSampleResult)> readSampleCallback;
+	std::recursive_mutex readMutex;
 };
 
 // Media Foundation 媒体源读取器
@@ -65,6 +66,7 @@ private:
 	block_buffer<byte> decodedBuffer;
 	unique_cotaskmem<WAVEFORMATEX> outputFormat;
 	size_t bytesPerPeriodLength;
+	std::recursive_mutex stateMutex;
 };
 
 NSED_TOMATO_MEDIA

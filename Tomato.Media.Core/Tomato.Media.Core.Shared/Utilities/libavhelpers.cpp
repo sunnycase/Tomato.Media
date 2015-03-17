@@ -38,8 +38,13 @@ int MFAVIOContext::ReadPacket(void * opaque, uint8_t * buf, int buf_size) noexce
 
 	try
 	{
+		QWORD len = 0, pos = 0;
+		THROW_IF_FAILED(ctx->stream->GetLength(&len));
+		THROW_IF_FAILED(ctx->stream->GetCurrentPosition(&pos));
+		auto toRead = std::min(len - pos, (QWORD)buf_size);
+
 		ULONG read = 0;
-		THROW_IF_FAILED(ctx->stream->Read((BYTE*)buf, buf_size, &read));
+		THROW_IF_FAILED(ctx->stream->Read((BYTE*)buf, toRead, &read));
 		return read;
 	}
 	catch (...)
@@ -71,11 +76,13 @@ int64_t MFAVIOContext::Seek(void * opaque, int64_t offset, int whence) noexcept
 		// 从头部开始
 		else if (whence == SEEK_SET)
 		{
-			THROW_IF_FAILED(stream->Seek(msoBegin, static_cast<LONGLONG>(offset), 0, &currentPos));
+			THROW_IF_FAILED(stream->Seek(msoBegin, static_cast<LONGLONG>(offset),
+				MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &currentPos));
 		}
 		else if (whence == SEEK_CUR)
 		{
-			THROW_IF_FAILED(stream->Seek(msoCurrent, static_cast<LONGLONG>(offset), 0, &currentPos));
+			THROW_IF_FAILED(stream->Seek(msoCurrent, static_cast<LONGLONG>(offset),
+				MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &currentPos));
 		}
 		else if (whence == SEEK_END)
 		{

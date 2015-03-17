@@ -320,6 +320,7 @@ HRESULT AudioFrameDecoderBase::SetInputType(
 	if (!IsValidInputStream(dwInputStreamID))
 		return MF_E_INVALIDSTREAMNUMBER;
 
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// 如果有输出则不能更改类型
 	if (state == TransformState::PendingOutput)
 		return MF_E_TRANSFORM_CANNOT_CHANGE_MEDIATYPE_WHILE_PROCESSING;
@@ -349,6 +350,7 @@ HRESULT AudioFrameDecoderBase::SetOutputType(
 	if (!IsValidOutputStream(dwOutputStreamID))
 		return MF_E_INVALIDSTREAMNUMBER;
 
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// 如果有输出则不能更改类型
 	if (state == TransformState::PendingOutput)
 		return MF_E_TRANSFORM_CANNOT_CHANGE_MEDIATYPE_WHILE_PROCESSING;
@@ -455,6 +457,7 @@ HRESULT AudioFrameDecoderBase::GetInputStatus(
 	if (!IsValidInputStream(dwInputStreamID))
 		return MF_E_INVALIDSTREAMNUMBER;
 
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// If we already have an input sample, we don't accept
 	// another one until the client calls ProcessOutput or Flush.
 	if (state == TransformState::WaitingInput)
@@ -475,6 +478,8 @@ HRESULT AudioFrameDecoderBase::GetOutputStatus(DWORD *pdwFlags)
 
 	// We can produce an output sample if (and only if)
 	// we have an input sample.
+
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	if (state == TransformState::PendingOutput)
 		*pdwFlags = MFT_OUTPUT_STATUS_SAMPLE_READY;
 	else
@@ -554,6 +559,7 @@ HRESULT AudioFrameDecoderBase::ProcessInput(
 	if (dwFlags != 0)
 		return E_INVALIDARG;
 
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// Client must set input and output types.
 	if (inputMediaType == nullptr || outputMediaType == nullptr)
 		return MF_E_TRANSFORM_TYPE_NOT_SET;
@@ -562,8 +568,6 @@ HRESULT AudioFrameDecoderBase::ProcessInput(
 
 	try
 	{
-		std::lock_guard<decltype(stateMutex)> locker(stateMutex);
-
 		OnReceiveInput(pSample);
 		inputSample = pSample;
 		state = TransformState::PendingOutput;
@@ -584,6 +588,7 @@ HRESULT AudioFrameDecoderBase::ProcessOutput(
 	DWORD                   *pdwStatus
 	)
 {
+	ComPtr<AudioFrameDecoderBase> protect(this);
 	// Check input parameters...
 
 	// There are no flags that we accept in this MFT.
@@ -600,14 +605,13 @@ HRESULT AudioFrameDecoderBase::ProcessOutput(
 	if (cOutputBufferCount != 1)
 		return E_INVALIDARG;
 
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// If we don't have an input sample, we need some input before
 	// we can generate any output.
 	if (state != TransformState::PendingOutput)
 		return MF_E_TRANSFORM_NEED_MORE_INPUT;
 	try
 	{
-		std::lock_guard<decltype(stateMutex)> locker(stateMutex);
-
 		OnProduceOutput(inputSample.Get(), pOutputSamples[0]);
 
 		// 如果已输出完毕则更改状态

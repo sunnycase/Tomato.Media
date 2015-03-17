@@ -25,6 +25,7 @@ namespace Tomato.Media.Test
     /// </summary>
     public sealed partial class App : Application
     {
+
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
 #endif
@@ -37,8 +38,6 @@ namespace Tomato.Media.Test
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
-
-            var c = new Tomato.Media.Class1();
         }
 
         /// <summary>

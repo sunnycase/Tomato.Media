@@ -34,6 +34,8 @@ struct MFTRegistry
 
 		extensionManager->RegisterByteStreamHandler(ref new Platform::String(
 			LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".ape", "audio/x-ape");
+		extensionManager->RegisterByteStreamHandler(ref new Platform::String(
+			LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".flac", "audio/flac");
 
 		extensionManager->RegisterAudioDecoder(ref new Platform::String(
 			LibAVMFTransform::InternalGetRuntimeClassName()),
@@ -68,6 +70,8 @@ void MFSourceReader::Start()
 
 size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
 {
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
+
 	// 缓冲时不返回数据
 	if (readerState == SourceReaderState::PreRoll)
 		return 0;
@@ -175,9 +179,15 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 			readerState = SourceReaderState::Playing;
 		}
 	}
+test1:
 	// 暂停状态下不再继续读取
 	if (readerState != SourceReaderState::Paused)
 	{
+		if (IsPreRollFilled())
+		{
+			Sleep(100);
+			goto test1;
+		}
 		// Call ReadSample for next asynchronous sample event
 		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
@@ -185,6 +195,8 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 
 void MFSourceReader::EnqueueSample(ComPtr<IMFSample>& sample)
 {
+	std::lock_guard<decltype(stateMutex)> locker2(stateMutex);
+
 	ComPtr<IMFMediaBuffer> mediaBuffer;
 	BYTE* audioData = nullptr;
 	DWORD audioDataLength = 0;
@@ -215,6 +227,7 @@ STDMETHODIMP MFSourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStre
 {
 	try
 	{
+		std::lock_guard<decltype(readMutex)> locker(readMutex);
 		THROW_IF_FAILED(hrStatus);
 		if (readSampleCallback)
 			readSampleCallback({ pSample, dwStreamFlags });
@@ -240,6 +253,8 @@ void MFSourceReaderCallback::SetReadSampleCallback(std::function<void(ReadSample
 
 void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 {
+	std::lock_guard<decltype(readMutex)> locker(readMutex);
+
 	THROW_IF_FAILED(sourceReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM,
 		0, nullptr, nullptr, nullptr, nullptr));
 }
