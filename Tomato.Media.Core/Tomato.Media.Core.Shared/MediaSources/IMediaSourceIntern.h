@@ -15,6 +15,9 @@ class IMediaSourceIntern : public IMediaSource
 public:
 	// 创建 Media Foundation 字节流
 	virtual wrl::ComPtr<IMFByteStream> CreateMFByteStream() = 0;
+
+	virtual concurrency::task<void> Initialize() = 0;
+	virtual const MediaMetadataContainer& GetMetadatas() const = 0;
 };
 
 NSED_TOMATO_MEDIA

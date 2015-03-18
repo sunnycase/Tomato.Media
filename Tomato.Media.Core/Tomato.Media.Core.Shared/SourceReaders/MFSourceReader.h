@@ -45,9 +45,12 @@ public:
 
 	MFSourceReader(IMediaSourceIntern* mediaSource);
 
-	virtual void Start();
+	virtual void Start(int64_t hns);
+	virtual void Stop();
 	virtual size_t Read(byte* buffer, size_t bufferSize);
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod);
+	virtual SourceReaderState GetState() const { return readerState; }
+	virtual void SetCurrentPosition(int64_t hns);
 private:
 	void InitializeOutputMediaType(const WAVEFORMATEX* outputFormat);
 	void Initialize(wrl::ComPtr<IMFByteStream>&& byteStream);

@@ -15,6 +15,7 @@ class LibAVMFTransform : public AudioFrameDecoderBase
 	InspectableClass(L"Tomato.Media.LibAVMFTransform", BaseTrust)
 public:
 	LibAVMFTransform();
+	virtual ~LibAVMFTransform();
 private:
 	STDMETHODIMP GetOutputStreamInfo(
 		DWORD                     dwOutputStreamID,

@@ -43,16 +43,34 @@ namespace Tomato.Media.Test
         {
             await player.Initialize();
             player.IsSystemMediaControlEnabled = true;
-            await player.SetMediaSource(await Package.Current.InstalledLocation.GetFileAsync(files[4]));
+            await player.SetMediaSource(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
             player.StartPlayback();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            player = new Tomato.Media.AudioPlayer();
+            player = new AudioPlayer();
+            player.OnPauseButtonPressed += Player_OnPauseButtonPressed;
+            player.OnPlayButtonPressed += Player_OnPlayButtonPressed;
+            player.OnStopButtonPressed += Player_OnStopButtonPressed;
 
             Play();
+        }
+
+        private void Player_OnStopButtonPressed(object sender, object e)
+        {
+            player.StopPlayback();
+        }
+
+        private void Player_OnPlayButtonPressed(object sender, object e)
+        {
+            player.StartPlayback();
+        }
+
+        private void Player_OnPauseButtonPressed(object sender, object e)
+        {
+            player.PausePlayback();
         }
     }
 }

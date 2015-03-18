@@ -20,6 +20,13 @@ inline REFERENCE_TIME dt2hns(int dt, AVStream* stream)
 	return static_cast<REFERENCE_TIME>(hns);
 }
 
+inline int hns2dt(REFERENCE_TIME hns, AVStream* stream)
+{
+	auto sec_base = (float)stream->time_base.num / stream->time_base.den;
+	auto dt = hns / sec_base / 1e7;
+	return static_cast<int>(dt);
+}
+
 LibAVAudioSource::LibAVAudioSource()
 {
 
@@ -32,16 +39,11 @@ LibAVAudioSource::~LibAVAudioSource()
 
 DWORD LibAVAudioSource::OnGetCharacteristics()
 {
-	return MFMEDIASOURCE_CAN_PAUSE;
+	return MFMEDIASOURCE_CAN_PAUSE | MFMEDIASOURCE_CAN_SEEK;
 }
 
 task<std::vector<ComPtr<IMFMediaType>>> LibAVAudioSource::OnCreateMediaTypes(ComPtr<IMFByteStream> stream)
 {
-	QWORD position, len;
-	THROW_IF_FAILED(stream->GetCurrentPosition(&position));
-	THROW_IF_FAILED(stream->GetLength(&len));
-	apeStartPosition = (uint32_t)position;
-
 	CreateAVFormatContext(stream);
 	std::vector<ComPtr<IMFMediaType>> mediaTypes = { CreateMediaType() };
 	return task_from_result(mediaTypes);
@@ -62,17 +64,17 @@ ComPtr<IMFMediaType> LibAVAudioSource::CreateMediaType()
 
 void LibAVAudioSource::OnStartAudioStream(REFERENCE_TIME position)
 {
-	SeekToFrame(0);
+	THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index, 
+		hns2dt(position, audioStream), AVSEEK_FLAG_ANY) >= 0, "Seek failed");
 }
 
 void LibAVAudioSource::SeekToFrame(uint32_t frameId)
 {
-	current_frame_id = frameId;
 	THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index, frameId, AVSEEK_FLAG_FRAME) >= 0,
 		"Seek failed.");
 }
 
-task<void> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
+task<bool> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 {
 	auto fmtctx = avfmtctx.get();
 
@@ -90,7 +92,7 @@ task<void> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 			{
 				EndOfDeliver();
 			}
-			return task_from_result();
+			return task_from_result(false);
 		}
 		else if (packet.buf)
 		{
@@ -116,7 +118,7 @@ task<void> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 		}
 		av_free_packet(&packet);
 	}
-	return task_from_result();
+	return task_from_result(true);
 }
 
 void LibAVAudioSource::OnConfigurePresentationDescriptor(IMFPresentationDescriptor *pPD)

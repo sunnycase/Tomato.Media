@@ -5,7 +5,7 @@
 // (c) SunnyCase 
 // 创建日期 2015-03-15
 #pragma once
-#include "tomato.media.core.h"
+#include "platform.h"
 
 NSDEF_TOMATO_MEDIA
 
@@ -23,8 +23,6 @@ enum class SourceReaderState
 	PreRoll,
 	// 正在播放
 	Playing,
-	// 已暂停
-	Paused,
 	// 已停止
 	Stopped
 };
@@ -37,11 +35,17 @@ public:
 	virtual ~ISourceReader() {}
 
 	// 开始读取
-	virtual void Start() = 0;
+	virtual void Start(int64_t hns = 0) = 0;
+	// 停止
+	virtual void Stop() = 0;
 	// 设置音频格式
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod) = 0;
 	// 读取数据
 	virtual size_t Read(byte* buffer, size_t bufferSize) = 0;
+	// 获取状态
+	virtual SourceReaderState GetState() const = 0;
+	// 设置当前时间
+	virtual void SetCurrentPosition(int64_t hns) = 0;
 };
 
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall CreateMFSourceReader(IMediaSource* mediaSource);

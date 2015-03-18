@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <memory>
 #include <string>
+#include <ppltasks.h>
 
 typedef unsigned char byte;
 
@@ -43,4 +44,10 @@ struct cotaskmem_deleter
 template<class T>
 using unique_cotaskmem = std::unique_ptr<T, cotaskmem_deleter<T>>;
 
+#endif
+
+#ifdef MEDIA_CORE_DLL
+#define MEDIA_CORE_API __declspec(dllexport)
+#else
+#define MEDIA_CORE_API __declspec(dllimport)
 #endif

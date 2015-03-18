@@ -414,23 +414,28 @@ void AudioSourceBase::DoStart(MediaSourceStartOperation* operation)
 	StartStreams(pd, position);
 
 	{
-		LOCK_STATE();
-		state = MFMediaSourceState::Started;
-	}
+		PROPVARIANT positionVar;
+		PropVariantInit(&positionVar);
+		positionVar.vt = VT_I8;
+		positionVar.hVal.QuadPart = position;
 
-	PROPVARIANT positionVar;
-	PropVariantInit(&positionVar);
-	positionVar.vt = VT_I8;
-	positionVar.hVal.QuadPart = position;
-	// Queue the "started" event. The event data is the start position.
-	THROW_IF_FAILED(QueueEvent(MESourceStarted, GUID_NULL, S_OK, &positionVar));
+		LOCK_STATE();
+		if (state != MFMediaSourceState::Started)
+		{
+			state = MFMediaSourceState::Started;
+			// Queue the "started" event. The event data is the start position.
+			THROW_IF_FAILED(QueueEvent(MESourceStarted, GUID_NULL, S_OK, &positionVar));
+		}
+		else
+			THROW_IF_FAILED(QueueEvent(MESourceSeeked, GUID_NULL, S_OK, &positionVar));
+	}
 }
 
 HRESULT AudioSourceBase::QueueEventUnk(MediaEventType met, REFGUID guidExtendedType,
 	HRESULT hrStatus, IUnknown *unk)
 {
 	LOCK_STATE();
-	if(!HasShutdown())
+	if (!HasShutdown())
 		return eventQueue->QueueEventParamUnk(met, guidExtendedType, hrStatus, unk);
 	return MF_E_SHUTDOWN;
 }

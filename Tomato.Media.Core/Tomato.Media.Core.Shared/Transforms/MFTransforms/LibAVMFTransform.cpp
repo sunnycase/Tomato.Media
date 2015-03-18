@@ -19,6 +19,11 @@ LibAVMFTransform::LibAVMFTransform()
 {
 }
 
+LibAVMFTransform::~LibAVMFTransform()
+{
+
+}
+
 void LibAVMFTransform::OnValidateInputType(IMFMediaType * type)
 {
 	static auto allowSubtypes = {
@@ -102,8 +107,6 @@ void LibAVMFTransform::OnProduceOutput(IMFSample * input, MFT_OUTPUT_DATA_BUFFER
 	ComPtr<IMFSample> outputSample;
 	THROW_IF_FAILED(MFCreateSample(&outputSample));
 	LONGLONG sampleTime = 0;
-	/*if (SUCCEEDED(input->GetSampleTime(&sampleTime)))
-		THROW_IF_FAILED(outputSample->SetSampleTime(sampleTime));*/
 
 	ComPtr<IMFMediaBuffer> buffer;
 	THROW_IF_FAILED(input->GetBufferByIndex(0, &buffer));

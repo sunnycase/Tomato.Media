@@ -91,6 +91,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMediaStreamState.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\MediaMetadata.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\any.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\encoding.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
@@ -140,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\LibAVAudioSource.cpp">
       <Filter>Sources\Utilities\MFSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

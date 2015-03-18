@@ -6,6 +6,7 @@
 // 创建日期 2015-03-14
 #include "pch.h"
 #include "WASAPIMediaSink.h"
+#include "..\MediaSources\RTMediaSource.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -73,6 +74,10 @@ WASAPIMediaSink::WASAPIMediaSink()
 {
 	startPlaybackThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnStartPlayback, this));
+	pauseThread = mcssProvider.CreateMMCSSThread(
+		std::bind(&WASAPIMediaSink::OnPausePlayback, this));
+	stopThread = mcssProvider.CreateMMCSSThread(
+		std::bind(&WASAPIMediaSink::OnStopPlayback, this));
 	sampleRequestedThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnSampleRequested, this));
 }
@@ -81,7 +86,7 @@ task<void> WASAPIMediaSink::Initialize()
 {
 	if (sinkState == MediaSinkState::NotInitialized)
 	{
-		sinkState = MediaSinkState::Initializing;
+		SetState(MediaSinkState::Initializing);
 #if WINAPI_PARTITION_APP
 		auto activateHandler = Make<ActivateAudioInterfaceCompletionHandler>();
 		return activateHandler->Activate()
@@ -90,7 +95,7 @@ task<void> WASAPIMediaSink::Initialize()
 			this->audioClient = audioClient;
 			ConfigureDevice();
 
-			sinkState = MediaSinkState::Ready;
+			SetState(MediaSinkState::Ready);
 		}, task_continuation_context::use_arbitrary());
 #else
 #error "Not support."
@@ -99,18 +104,50 @@ task<void> WASAPIMediaSink::Initialize()
 	return task_from_result();
 }
 
-void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
+void WASAPIMediaSink::SetStateChangedCallback(std::function<void(MediaSinkState)> callback)
 {
-	sourceReaderHolder = sourceReader;
-	this->sourceReader = sourceReaderHolder.get();
-	this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
+	stateChangedCallback = std::move(callback);
 }
 
-void WASAPIMediaSink::StartPlayback()
+void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
+{
+	std::lock_guard<decltype(sampleRequestMutex)> locker(sampleRequestMutex);
+
+	sourceReaderHolder = sourceReader;
+	this->sourceReader = sourceReaderHolder.get();
+	if (this->sourceReader)
+		this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
+}
+
+void WASAPIMediaSink::StartPlayback(int64_t hns)
 {
 	if (sinkState == MediaSinkState::Ready ||
+		sinkState == MediaSinkState::Paused ||
 		sinkState == MediaSinkState::Stopped)
+	{
+		SetState(MediaSinkState::StartPlaying);
+		starthns = hns;
 		startPlaybackThread->Execute();
+	}
+}
+
+void WASAPIMediaSink::PausePlayback()
+{
+	if (sinkState == MediaSinkState::Playing)
+	{
+		SetState(MediaSinkState::Pausing);
+		pauseThread->Execute();
+	}
+}
+
+void WASAPIMediaSink::StopPlayback()
+{
+	if (sinkState == MediaSinkState::Playing ||
+		sinkState == MediaSinkState::Paused)
+	{
+		SetState(MediaSinkState::Stopping);
+		stopThread->Execute();
+	}
 }
 
 void WASAPIMediaSink::ConfigureDevice()
@@ -189,8 +226,8 @@ void WASAPIMediaSink::FillBufferFromMediaSource(UINT32 framesCount)
 	{
 		THROW_IF_FAILED(renderClient->ReleaseBuffer(framesCount, AUDCLNT_BUFFERFLAGS_SILENT));
 		// 播放结束
-		/*if (currentSource->GetState() == SourceReaderState::End)
-			StopPlayback();*/
+		if (sourceReader->GetState() == SourceReaderState::Stopped)
+			StopPlayback();
 	}
 }
 
@@ -218,10 +255,28 @@ void WASAPIMediaSink::OnStartPlayback()
 	InitializeDeviceBuffer();
 	THROW_IF_FAILED(audioClient->Start());
 	if (sourceReader)
-		sourceReader->Start();
-	sinkState = MediaSinkState::Playing;
+		sourceReader->Start(starthns);
+	SetState(MediaSinkState::Playing);
 
 	sampleRequestedThread->Execute(sampleRequestEvent);
+}
+
+void WASAPIMediaSink::OnPausePlayback()
+{
+	sampleRequestedThread->Cancel();
+	FillBufferAvailable(true);
+	THROW_IF_FAILED(audioClient->Stop());
+	SetState(MediaSinkState::Paused);
+}
+
+void WASAPIMediaSink::OnStopPlayback()
+{
+	sampleRequestedThread->Cancel();
+	FillBufferAvailable(true);
+	THROW_IF_FAILED(audioClient->Stop());
+	if (sourceReader)
+		sourceReader->Stop();
+	SetState(MediaSinkState::Stopped);
 }
 
 void WASAPIMediaSink::OnSampleRequested()
@@ -234,6 +289,16 @@ void WASAPIMediaSink::OnSampleRequested()
 	{
 		// 安排下一次采样工作
 		sampleRequestedThread->Execute(sampleRequestEvent);
+	}
+}
+
+void WASAPIMediaSink::SetState(MediaSinkState state, bool fireEvent)
+{
+	if (sinkState != state)
+	{
+		sinkState = state;
+		if (fireEvent && stateChangedCallback)
+			stateChangedCallback(state);
 	}
 }
 

@@ -99,9 +99,11 @@ HRESULT MFAudioStream::RequestSample(IUnknown *pToken)
 	{
 		std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
 		if (state == MFMediaStreamState::Stopped)
+		{
 			THROW_IF_FAILED(MF_E_INVALIDREQUEST)
+		}
 		else if (state == MFMediaStreamState::EndOfStream && samplesCache.empty())
-		THROW_IF_FAILED(MF_E_END_OF_STREAM);
+			return MF_E_END_OF_STREAM;
 
 		sampleRequests.emplace(pToken);
 		DispatchSampleRequests();
@@ -172,9 +174,8 @@ bool MFAudioStream::DoesNeedMoreData()
 void MFAudioStream::DeliverPayload(IMFSample* sample)
 {
 	std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
-	if (!sample) THROW_IF_FAILED(E_INVALIDARG);
-
-	samplesCache.emplace(sample);
+	if (sample)
+		samplesCache.emplace(sample);
 	DispatchSampleRequests();
 }
 

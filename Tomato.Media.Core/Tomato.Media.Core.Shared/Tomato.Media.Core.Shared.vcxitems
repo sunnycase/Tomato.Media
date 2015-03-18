@@ -14,9 +14,11 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\any.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\IMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\MediaMetadata.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h" />
@@ -31,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\MFTransform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\encoding.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.h" />
@@ -48,6 +51,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />

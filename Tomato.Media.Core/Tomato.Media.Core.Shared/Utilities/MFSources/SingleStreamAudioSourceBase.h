@@ -22,7 +22,7 @@ protected:
 	virtual concurrency::task<std::vector<wrl::ComPtr<IMFMediaType>>>
 		OnCreateMediaTypes(wrl::ComPtr<IMFByteStream> stream) = 0;
 	virtual void OnStartAudioStream(REFERENCE_TIME position) = 0;
-	virtual concurrency::task<void> OnReadSample(wrl::ComPtr<IMFSample> sample) = 0;
+	virtual concurrency::task<bool> OnReadSample(wrl::ComPtr<IMFSample> sample) = 0;
 	virtual void OnConfigurePresentationDescriptor(IMFPresentationDescriptor *pPD);
 	void EndOfDeliver();
 private:

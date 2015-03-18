@@ -36,6 +36,15 @@ public:
 	{
 		THROW_IF_FAILED(MFPutWaitingWorkItem(event.Get(), 0, invokerResult.Get(), &itemKey));
 	}
+
+	virtual void Cancel()
+	{
+		if (itemKey)
+		{
+			MFCancelWorkItem(itemKey);
+			itemKey = 0;
+		}
+	}
 private:
 	HRESULT Invoke(IMFAsyncResult *pAsyncResult) noexcept
 	{
@@ -52,7 +61,7 @@ private:
 	ComPtr<IMFAsyncResult> invokerResult;
 	DWORD queueId;
 	std::function<void()> callback;
-	MFWORKITEM_KEY itemKey;
+	MFWORKITEM_KEY itemKey = 0;
 };
 
 MFMMCSSProvider::MFMMCSSProvider()

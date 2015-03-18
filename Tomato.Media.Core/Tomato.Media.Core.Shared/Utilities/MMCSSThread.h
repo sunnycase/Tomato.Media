@@ -20,6 +20,8 @@ public:
 	virtual void Execute() = 0;
 	// 等待事件后执行一次
 	virtual void Execute(const wrl::Wrappers::Event& event) = 0;
+	// 取消
+	virtual void Cancel() = 0;
 };
 
 NSED_TOMATO_MEDIA

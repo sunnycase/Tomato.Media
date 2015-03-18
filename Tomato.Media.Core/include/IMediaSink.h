@@ -5,7 +5,7 @@
 // (c) SunnyCase 
 // 创建日期 2015-03-14
 #pragma once
-#include "tomato.media.core.h"
+#include "platform.h"
 
 NSDEF_TOMATO_MEDIA
 
@@ -42,10 +42,17 @@ public:
 
 	// 加载
 	virtual concurrency::task<void> Initialize() = 0;
+	// 设置状态改变回调
+	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback) = 0;
 	// 设置媒体源读取器
 	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader) = 0;
 	// 开始播放
-	virtual void StartPlayback() = 0;
+	// hns == -1 时继续播放
+	virtual void StartPlayback(int64_t hns = -1) = 0;
+	// 暂停
+	virtual void PausePlayback() = 0;
+	// 停止
+	virtual void StopPlayback() = 0;
 };
 
 MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall CreateWASAPIMediaSink();

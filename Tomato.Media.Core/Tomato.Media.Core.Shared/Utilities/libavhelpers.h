@@ -25,7 +25,10 @@ struct avformatctx_deleter
 		if (ctx)
 		{
 			if (close)
-				avformat_close_input(&ctx);
+			{
+				auto old = ctx;
+				avformat_close_input(&old);
+			}
 			else
 				avformat_free_context(ctx);
 		}
@@ -40,15 +43,16 @@ class MFAVIOContext
 public:
 	MFAVIOContext(wrl::ComPtr<IMFByteStream> stream, size_t bufferSize, bool canWrite);
 
-	AVIOContext* Get() const noexcept { return ioctx.get(); }
+	AVIOContext* Get() const noexcept { return ioctx; }
+	void Release();
 private:
 	static int ReadPacket(void *opaque, uint8_t *buf, int buf_size) noexcept;
 	static int WritePacket(void *opaque, uint8_t *buf, int buf_size) noexcept;
 	static int64_t Seek(void *opaque, int64_t offset, int whence) noexcept;
 private:
-	unique_av<byte[]> iobuffer;
-	unique_av<AVIOContext> ioctx;
 	wrl::ComPtr<IMFByteStream> stream;
+	byte* iobuffer;
+	AVIOContext* ioctx;
 	bool canWrite;
 };
 
@@ -70,6 +74,12 @@ struct WAVEFORMATLIBAV : public WAVEFORMATEXTENSIBLE
 	static WAVEFORMATLIBAV CreateFromFormatContext(std::shared_ptr<AVFormatContext> ctx, int streamId);
 private:
 	std::shared_ptr<AVFormatContext> FormatContext;
+};
+
+class MediaMetadataHelper
+{
+public:
+	static void FillMediaMetadatas(AVIOContext* ioctx, MediaMetadataContainer& container);
 };
 
 NSED_TOMATO_MEDIA

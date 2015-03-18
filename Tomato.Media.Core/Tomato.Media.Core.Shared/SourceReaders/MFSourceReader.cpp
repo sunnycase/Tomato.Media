@@ -48,7 +48,7 @@ struct MFTRegistry
 		vsprintf_s(buffer, fmt, vargs);
 		OutputDebugStringA(buffer);
 	}
-};
+} reg;
 
 MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
 	:sourceReaderCallback(Make<MFSourceReaderCallback>())
@@ -58,14 +58,24 @@ MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
 	Initialize(mediaSource->CreateMFByteStream());
 }
 
-void MFSourceReader::Start()
+void MFSourceReader::Start(int64_t hns)
 {
 	if (readerState == SourceReaderState::Ready ||
 		readerState == SourceReaderState::Stopped)
 	{
+		decodedBuffer.clear();
+		if (hns != -1)
+			SetCurrentPosition(hns);
 		readerState = SourceReaderState::PreRoll;
 		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
+}
+
+void MFSourceReader::Stop()
+{
+	if (readerState != SourceReaderState::Playing)
+		readerState = SourceReaderState::Stopped;
+	decodedBuffer.clear();
 }
 
 size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
@@ -106,6 +116,15 @@ void MFSourceReader::SetAudioFormat(const WAVEFORMATEX * format, uint32_t frames
 	decodedBuffer.init(bytesPerPeriodLength);
 
 	readerState = SourceReaderState::Ready;
+}
+
+void MFSourceReader::SetCurrentPosition(int64_t hns)
+{
+	PROPVARIANT positionVar;
+	PropVariantInit(&positionVar);
+	positionVar.vt = VT_I8;
+	positionVar.hVal.QuadPart = hns;
+	THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
 }
 
 void MFSourceReader::InitializeOutputMediaType(const WAVEFORMATEX * outputFormat)
@@ -157,8 +176,7 @@ void MFSourceReader::ConfigureSourceReader()
 void MFSourceReader::OnSampleRead(ReadSampleResult result)
 {
 	if ((readerState != SourceReaderState::Playing) &&
-		(readerState != SourceReaderState::PreRoll) &&
-		(readerState != SourceReaderState::Paused))
+		(readerState != SourceReaderState::PreRoll))
 		return;
 
 	if ((result.streamFlags & MF_SOURCE_READERF_ENDOFSTREAM) ||
@@ -180,8 +198,8 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 		}
 	}
 test1:
-	// 暂停状态下不再继续读取
-	if (readerState != SourceReaderState::Paused)
+	// 停止状态下不再继续读取
+	if (readerState != SourceReaderState::Stopped)
 	{
 		if (IsPreRollFilled())
 		{
@@ -262,7 +280,5 @@ void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall NS_TOMATO_MEDIA::CreateMFSourceReader(
 	IMediaSource* mediaSource)
 {
-	static MFTRegistry mftReg;
-
 	return std::make_unique<MFSourceReader>(reinterpret_cast<IMediaSourceIntern*>(mediaSource));
 }

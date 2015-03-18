@@ -96,9 +96,12 @@ task<void> SingleStreamAudioSourceBase::OnStreamsRequestData(TOperation& op)
 	ComPtr<IMFSample> sample;
 	THROW_IF_FAILED(MFCreateSample(&sample));
 
-	return OnReadSample(sample).then([this, sample]
+	return OnReadSample(sample).then([this, sample](bool read)
 	{
-		audioStream->DeliverPayload(sample.Get());
+		if (read)
+			audioStream->DeliverPayload(sample.Get());
+		else
+			audioStream->DeliverPayload(nullptr);
 	});
 }
 

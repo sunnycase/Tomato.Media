@@ -48,7 +48,10 @@ namespace Tomato {
 
 		void init(size_t block_size)
 		{
+			blocks.clear();
 			this->block_size = block_size;
+			total_size = 0;
+			read_pos = read_offset = write_pos = 0;
 			make_last_block_not_full();
 			read_it = blocks.begin();
 		}
@@ -104,6 +107,11 @@ namespace Tomato {
 				validate_read_offset();
 			}
 			return has_read;
+		}
+
+		void clear()
+		{
+			init(block_size);
 		}
 	private:
 		tagBlock& acquire_block()

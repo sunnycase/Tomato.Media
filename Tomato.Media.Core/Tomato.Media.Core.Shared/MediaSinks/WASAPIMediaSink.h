@@ -17,8 +17,11 @@ public:
 	WASAPIMediaSink();
 
 	virtual concurrency::task<void> Initialize();
+	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback);
 	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
-	virtual void StartPlayback();
+	virtual void StartPlayback(int64_t hns);
+	virtual void PausePlayback();
+	virtual void StopPlayback();
 private:
 	// 配置设备
 	void ConfigureDevice();
@@ -32,8 +35,11 @@ private:
 
 	// 开始播放命令回调
 	void OnStartPlayback();
+	void OnPausePlayback();
+	void OnStopPlayback();
 	// 提供采样请求回调
 	void OnSampleRequested();
+	void SetState(MediaSinkState state, bool fireEvent = true);
 private:
 	wrl::ComPtr<IAudioClient2> audioClient;
 	wrl::ComPtr<IAudioRenderClient> renderClient;
@@ -41,6 +47,8 @@ private:
 	MediaSinkState sinkState = MediaSinkState::NotInitialized;
 
 	std::unique_ptr<MMCSSThread> startPlaybackThread;
+	std::unique_ptr<MMCSSThread> pauseThread;
+	std::unique_ptr<MMCSSThread> stopThread;
 	std::unique_ptr<MMCSSThread> sampleRequestedThread;
 
 	wrl::Wrappers::Event sampleRequestEvent;			// 请求样本事件
@@ -50,6 +58,8 @@ private:
 	std::recursive_mutex sampleRequestMutex;
 	std::shared_ptr<ISourceReader> sourceReaderHolder;
 	ISourceReader* sourceReader = nullptr;
+	std::function<void(MediaSinkState)> stateChangedCallback;
+	int64_t starthns = -1;
 };
 
 NSED_TOMATO_MEDIA

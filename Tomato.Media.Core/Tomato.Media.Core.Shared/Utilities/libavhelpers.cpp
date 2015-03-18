@@ -6,6 +6,7 @@
 // 创建日期 2015-03-16
 #include "pch.h"
 #include "libavhelpers.h"
+#include "encoding.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -23,12 +24,17 @@ void av_deleter::operator()(void* handle) const noexcept
 }
 
 MFAVIOContext::MFAVIOContext(wrl::ComPtr<IMFByteStream> stream, size_t bufferSize, bool canWrite)
-	:stream(std::move(stream)), iobuffer((byte*)av_malloc(bufferSize)), canWrite(canWrite)
+	:stream(std::move(stream)), iobuffer((byte*)av_malloc(bufferSize)), canWrite(canWrite), ioctx(nullptr)
 {
-	auto ctx = avio_alloc_context(iobuffer.get(), (int)bufferSize, canWrite ? 1 : 0,
+	ioctx = avio_alloc_context(iobuffer, (int)bufferSize, canWrite ? 1 : 0,
 		this, ReadPacket, canWrite ? WritePacket : nullptr, Seek);
-	THROW_IF_NOT(ctx, "Create MF AVIOContext Failed.");
-	ioctx.reset(ctx);
+	THROW_IF_NOT(ioctx, "Create MF AVIOContext Failed.");
+	//ioctx.reset(ctx);
+}
+
+void MFAVIOContext::Release()
+{
+	av_freep(&ioctx);
 }
 
 int MFAVIOContext::ReadPacket(void * opaque, uint8_t * buf, int buf_size) noexcept
@@ -144,4 +150,30 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromFormatContext(std::shared_ptr<AVForma
 	format.CodecContext = codecContext;
 
 	return format;
+}
+
+void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataContainer & container)
+{
+	auto fmtctx = avformat_alloc_context();
+	auto avfmtctx = unique_avformat<true>(fmtctx);
+
+	fmtctx->pb = ioctx;
+
+	THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
+#if _DEBUG
+	av_dump_format(fmtctx, 0, nullptr, 0);
+#endif
+	// Title
+	AVDictionaryEntry* entry = nullptr;
+	if (entry = av_dict_get(fmtctx->metadata, "title", nullptr, 0))
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value, CP_UTF8)));
+	// Album
+	if (entry = av_dict_get(fmtctx->metadata, "album", nullptr, 0))
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Album, s2ws(entry->value, CP_UTF8)));
+	// AlbumArtist
+	if (entry = av_dict_get(fmtctx->metadata, "album_artist", nullptr, 0))
+			container.Add(MediaMetadata(DefaultMediaMetadatas::AlbumArtist, s2ws(entry->value, CP_UTF8)));
+	// Artist
+	if (entry = av_dict_get(fmtctx->metadata, "artist", nullptr, 0))
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Artist, s2ws(entry->value, CP_UTF8)));
 }
