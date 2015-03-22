@@ -19,6 +19,7 @@ public:
 	virtual concurrency::task<void> Initialize();
 	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback);
 	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
+	virtual void SetTimeChangedCallback(std::function<void(int64_t)> callback);
 	virtual void StartPlayback(int64_t hns);
 	virtual void PausePlayback();
 	virtual void StopPlayback();
@@ -40,6 +41,7 @@ private:
 	// 提供采样请求回调
 	void OnSampleRequested();
 	void SetState(MediaSinkState state, bool fireEvent = true);
+	int64_t GetPlayingSampleTime(int64_t sampleTime);
 private:
 	wrl::ComPtr<IAudioClient2> audioClient;
 	wrl::ComPtr<IAudioRenderClient> renderClient;
@@ -59,6 +61,7 @@ private:
 	std::shared_ptr<ISourceReader> sourceReaderHolder;
 	ISourceReader* sourceReader = nullptr;
 	std::function<void(MediaSinkState)> stateChangedCallback;
+	std::function<void(int64_t)> timeChangedCallback;
 	int64_t starthns = -1;
 };
 

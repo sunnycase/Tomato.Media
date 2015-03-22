@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "MediaSource.h"
 
 namespace Tomato
 {
@@ -11,7 +12,7 @@ namespace Tomato
 			AudioPlayer();
 
 			Windows::Foundation::IAsyncAction^ Initialize();
-			Windows::Foundation::IAsyncAction^ SetMediaSource(Windows::Storage::StorageFile^ file);
+			void SetMediaSource(MediaSource^ source);
 			void StartPlayback();
 			void PausePlayback();
 			void StopPlayback();
@@ -45,7 +46,7 @@ namespace Tomato
 			void UpdateMediaControls(std::function<void()>&& handler);
 			void OnMediaSinkStateChanged(MediaSinkState state);
 
-			void OnSetMediaSource();
+			void OnSetMediaSource(MediaSource^ source);
 			void OnMediaSinkStateChanging();
 			void OnMediaSinkPlaying();
 			void OnMediaSinkPaused();
@@ -53,7 +54,6 @@ namespace Tomato
 		private:
 			std::unique_ptr<IMediaSink> sink;
 			Windows::Media::SystemMediaTransportControls^ mediaControls;
-			MediaMetadataContainer metadatas;
 			Windows::UI::Core::CoreDispatcher^ uiDispatcher;
 		};
 	}

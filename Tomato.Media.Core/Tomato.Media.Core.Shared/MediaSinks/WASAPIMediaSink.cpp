@@ -119,6 +119,11 @@ void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> source
 		this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
 }
 
+void WASAPIMediaSink::SetTimeChangedCallback(std::function<void(int64_t)> callback)
+{
+	this->timeChangedCallback = std::move(callback);
+}
+
 void WASAPIMediaSink::StartPlayback(int64_t hns)
 {
 	if (sinkState == MediaSinkState::Ready ||
@@ -300,6 +305,14 @@ void WASAPIMediaSink::SetState(MediaSinkState state, bool fireEvent)
 		if (fireEvent && stateChangedCallback)
 			stateChangedCallback(state);
 	}
+}
+
+int64_t WASAPIMediaSink::GetPlayingSampleTime(int64_t sampleTime)
+{
+	THROW_IF_FAILED(E_NOTIMPL);
+	REFERENCE_TIME latency = 0;
+	audioClient->GetStreamLatency(&latency);
+	return std::max(sampleTime - latency, 0i64);
 }
 
 MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall NS_TOMATO_MEDIA::CreateWASAPIMediaSink()

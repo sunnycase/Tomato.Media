@@ -9,11 +9,6 @@ using namespace Windows::Media;
 using namespace Windows::UI::Core;
 using namespace concurrency;
 
-inline String^ ws2RTString(const std::wstring& str)
-{
-	return ref new String(str.c_str());
-}
-
 AudioPlayer::AudioPlayer()
 	:uiDispatcher(Windows::UI::Xaml::Window::Current->Dispatcher),
 	mediaControls(SystemMediaTransportControls::GetForCurrentView())
@@ -36,29 +31,16 @@ IAsyncAction ^ AudioPlayer::Initialize()
 	});
 }
 
-IAsyncAction ^ AudioPlayer::SetMediaSource(StorageFile ^ file)
+void AudioPlayer::SetMediaSource(MediaSource^ source)
 {
-	return create_async([=]
-	{
-		return create_task(file->OpenAsync(FileAccessMode::Read))
-			.then([=](Streams::IRandomAccessStream^ stream)
-		{
-			std::shared_ptr<IMediaSource> source = CreateRTMediaSource(stream);
-			return source->Initialize().then([=]
-			{
-				metadatas = source->GetMetadatas();
-				OnSetMediaSource();
-
-				auto reader = CreateMFSourceReader(source.get());
-				sink->SetMediaSourceReader(std::move(reader));
-			});
-		});
-	});
+	OnSetMediaSource(source);
+	auto reader = CreateMFSourceReader(source->Get());
+	sink->SetMediaSourceReader(std::move(reader));
 }
 
 void AudioPlayer::StartPlayback()
 {
-	sink->StartPlayback(260 * 1e7);
+	sink->StartPlayback();
 }
 
 void AudioPlayer::PausePlayback()
@@ -119,17 +101,14 @@ void AudioPlayer::UpdateMediaControls(std::function<void()>&& handler)
 	uiDispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler(std::move(handler)));
 }
 
-void AudioPlayer::OnSetMediaSource()
+void AudioPlayer::OnSetMediaSource(MediaSource^ source)
 {
 	UpdateMediaControls([=]
 	{
 		auto updater = mediaControls->DisplayUpdater;
-		updater->MusicProperties->Title = ws2RTString(
-			metadatas.GetOrDefault(DefaultMediaMetadatas::Title, std::wstring()));
-		updater->MusicProperties->AlbumArtist = ws2RTString(
-			metadatas.GetOrDefault(DefaultMediaMetadatas::AlbumArtist, std::wstring()));
-		updater->MusicProperties->Artist = ws2RTString(
-			metadatas.GetOrDefault(DefaultMediaMetadatas::Artist, std::wstring()));
+		updater->MusicProperties->Title = source->Title;
+		updater->MusicProperties->AlbumArtist = source->AlbumArtist;
+		updater->MusicProperties->Artist = source->Artist;
 
 		mediaControls->PlaybackStatus = MediaPlaybackStatus::Closed;
 		updater->Update();

@@ -44,6 +44,8 @@ public:
 	virtual concurrency::task<void> Initialize() = 0;
 	// 设置状态改变回调
 	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback) = 0;
+	// 设置时间改变回调
+	virtual void SetTimeChangedCallback(std::function<void(int64_t)> callback) = 0;
 	// 设置媒体源读取器
 	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader) = 0;
 	// 开始播放

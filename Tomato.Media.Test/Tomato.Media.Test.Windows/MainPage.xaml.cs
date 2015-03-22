@@ -43,7 +43,8 @@ namespace Tomato.Media.Test
         {
             await player.Initialize();
             player.IsSystemMediaControlEnabled = true;
-            await player.SetMediaSource(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
+            var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
+            player.SetMediaSource(mediaSource);
             player.StartPlayback();
         }
 
