@@ -57,12 +57,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.cpp" />

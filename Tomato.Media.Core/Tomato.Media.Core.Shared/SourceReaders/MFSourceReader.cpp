@@ -22,10 +22,13 @@ struct MFTRegistry
 {
 	MFTRegistry()
 	{
-		av_log_set_callback(AVLogCallback);
-		av_register_all();
-		avcodec_register_all();
+		THROW_IF_FAILED(MFStartup(MF_SDK_VERSION, MFSTARTUP_LITE));
 		RegisterMFTs();
+	}
+
+	~MFTRegistry()
+	{
+		MFShutdown();
 	}
 
 	void RegisterMFTs()
@@ -41,18 +44,18 @@ struct MFTRegistry
 			LibAVMFTransform::InternalGetRuntimeClassName()),
 			KSDATAFORMAT_SUBTYPE_LIBAV, MFAudioFormat_PCM);
 	}
+};
 
-	static void AVLogCallback(void* avcl, int level, const char* fmt, va_list vargs)
-	{
-		char buffer[INT16_MAX];
-		vsprintf_s(buffer, fmt, vargs);
-		OutputDebugStringA(buffer);
-	}
-} reg;
+void RegisterMFTs()
+{
+	static MFTRegistry reg;
+}
 
 MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
 	:sourceReaderCallback(Make<MFSourceReaderCallback>())
 {
+	RegisterMFTs();
+
 	sourceReaderCallback->SetReadSampleCallback(std::bind(
 		&MFSourceReader::OnSampleRead, this, std::placeholders::_1));
 	Initialize(mediaSource->CreateMFByteStream());

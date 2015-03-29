@@ -17,6 +17,27 @@ using namespace concurrency;
 DEFINE_GUID(NS_TOMATO_MEDIA::KSDATAFORMAT_SUBTYPE_LIBAV,
 	0xe49a298, 0xbd9d, 0x47e8, 0xac, 0x23, 0x17, 0xaa, 0x1d, 0xd9, 0x2c, 0x27);
 
+struct LibAVRegistry
+{
+	LibAVRegistry()
+	{
+		av_log_set_callback(AVLogCallback);
+		av_register_all();
+		avcodec_register_all();
+	}
+
+	static void AVLogCallback(void* avcl, int level, const char* fmt, va_list vargs)
+	{
+		char buffer[INT16_MAX];
+		vsprintf_s(buffer, fmt, vargs);
+		OutputDebugStringA(buffer);
+	}
+};
+
+void NS_TOMATO_MEDIA::RegisterLibAV()
+{
+	static LibAVRegistry reg;
+}
 
 void av_deleter::operator()(void* handle) const noexcept
 {
@@ -154,26 +175,29 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromFormatContext(std::shared_ptr<AVForma
 
 void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataContainer & container)
 {
-	auto fmtctx = avformat_alloc_context();
-	auto avfmtctx = unique_avformat<true>(fmtctx);
+	RegisterLibAV();
 
+	auto fmtctx = avformat_alloc_context();
 	fmtctx->pb = ioctx;
 
 	THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
+	auto avfmtctx = unique_avformat<true>(fmtctx);
 #if _DEBUG
 	av_dump_format(fmtctx, 0, nullptr, 0);
 #endif
 	// Title
 	AVDictionaryEntry* entry = nullptr;
 	if (entry = av_dict_get(fmtctx->metadata, "title", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value, CP_UTF8)));
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value)));
+	if (entry = av_dict_get(fmtctx->metadata, "title", entry, 0))
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value)));
 	// Album
 	if (entry = av_dict_get(fmtctx->metadata, "album", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Album, s2ws(entry->value, CP_UTF8)));
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Album, s2ws(entry->value)));
 	// AlbumArtist
 	if (entry = av_dict_get(fmtctx->metadata, "album_artist", nullptr, 0))
-			container.Add(MediaMetadata(DefaultMediaMetadatas::AlbumArtist, s2ws(entry->value, CP_UTF8)));
+		container.Add(MediaMetadata(DefaultMediaMetadatas::AlbumArtist, s2ws(entry->value)));
 	// Artist
 	if (entry = av_dict_get(fmtctx->metadata, "artist", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Artist, s2ws(entry->value, CP_UTF8)));
+		container.Add(MediaMetadata(DefaultMediaMetadatas::Artist, s2ws(entry->value)));
 }

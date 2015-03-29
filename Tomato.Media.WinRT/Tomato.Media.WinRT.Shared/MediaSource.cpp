@@ -63,3 +63,9 @@ String^ MediaSource::Artist::get()
 	return ws2RTString(nativeSource->GetMetadatas()
 		.GetOrDefault(DefaultMediaMetadatas::Artist, std::wstring()));
 }
+
+String^ MediaSource::Album::get()
+{
+	return ws2RTString(nativeSource->GetMetadatas()
+		.GetOrDefault(DefaultMediaMetadatas::Album, std::wstring()));
+}

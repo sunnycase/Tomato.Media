@@ -31,7 +31,7 @@
     <Capability Name="internetClient" />
     <Capability Name="musicLibrary" />
   </Capabilities>
-  <Extensions>
+  <!--<Extensions>
     <Extension Category="windows.activatableClass.inProcessServer">
       <InProcessServer>
         <Path>Tomato.Media.Core.dll</Path>
@@ -44,5 +44,5 @@
         <ActivatableClass ActivatableClassId="Tomato.Media.LibAVMFTransform" ThreadingModel="both" />
       </InProcessServer>
     </Extension>
-  </Extensions>
+  </Extensions>-->
 </Package>

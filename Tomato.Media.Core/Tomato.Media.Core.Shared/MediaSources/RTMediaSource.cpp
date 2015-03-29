@@ -14,9 +14,23 @@ using namespace Windows::Storage::Streams;
 using namespace wrl;
 using namespace concurrency;
 
+struct MFTRegistry
+{
+	MFTRegistry()
+	{
+		THROW_IF_FAILED(MFStartup(MF_SDK_VERSION, MFSTARTUP_LITE));
+	}
+
+	~MFTRegistry()
+	{
+		MFShutdown();
+	}
+};
+
 RTMediaSource::RTMediaSource(IRandomAccessStream ^ stream)
 	:stream(stream)
 {
+	static MFTRegistry reg;
 }
 
 ComPtr<IMFByteStream> RTMediaSource::CreateMFByteStream()
@@ -31,7 +45,7 @@ task<void> RTMediaSource::Initialize()
 {
 	if (!initialized)
 	{
-		MFAVIOContext ioctx(CreateMFByteStream(), 40960, false);
+		MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
 		MediaMetadataHelper::FillMediaMetadatas(ioctx.Get(), metadatas);
 
 		initialized = true;

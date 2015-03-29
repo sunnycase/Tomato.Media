@@ -31,7 +31,8 @@ namespace Tomato.Media.Test
             "03.ずるいよ….mp3",
             "04. 全天候型いらっしゃいませ.flac",
             "02. 涙色の翼.flac",
-            "09.つないだ手.APE"
+            "09.つないだ手.APE",
+            "- 雨降花 .mp3"
         };
 
         public MainPage()
@@ -43,7 +44,9 @@ namespace Tomato.Media.Test
         {
             await player.Initialize();
             player.IsSystemMediaControlEnabled = true;
-            var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
+            var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[5]));
+            //var mediaSource = await MediaSource.CreateFromFile(await
+            //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
             player.SetMediaSource(mediaSource);
             player.StartPlayback();
         }

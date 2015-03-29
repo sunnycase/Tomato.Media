@@ -112,6 +112,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="- 雨降花 .mp3" />
     <Content Include="02. 涙色の翼.flac" />
     <Content Include="04. 全天候型いらっしゃいませ.flac" />
     <Content Include="04.花篝り.APE" />

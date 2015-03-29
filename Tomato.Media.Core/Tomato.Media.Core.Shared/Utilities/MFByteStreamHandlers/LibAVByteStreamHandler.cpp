@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "LibAVByteStreamHandler.h"
 #include "../MFSources/LibAVAudioSource.h"
+#include "Utilities/libavhelpers.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -17,7 +18,7 @@ ActivatableClass(LibAVByteStreamHandler);
 
 LibAVByteStreamHandler::LibAVByteStreamHandler()
 {
-
+	RegisterLibAV();
 }
 
 LibAVByteStreamHandler::~LibAVByteStreamHandler()

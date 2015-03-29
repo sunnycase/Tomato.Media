@@ -11,14 +11,7 @@
 
 namespace Tomato
 {
-	static std::wstring s2ws(const std::string& str)
-	{
-		auto ws = std::make_unique<wchar_t[]>(str.size() + 1);
-		size_t size = 0;
-
-		mbstowcs_s(&size, ws.get(), str.size() + 1, str.data(), str.size());
-		return ws.get();
-	}
+	std::wstring s2ws(const std::string& str);
 #ifdef _WIN32
 	static std::wstring s2ws(const std::string& str, UINT codePage)
 	{

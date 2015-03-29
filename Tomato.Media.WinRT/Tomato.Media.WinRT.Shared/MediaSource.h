@@ -12,6 +12,8 @@ namespace Tomato
 
 			///<summary>标题</summary>
 			property Platform::String^ Title {Platform::String^ get(); }
+			///<summary>专辑</summary>
+			property Platform::String^ Album {Platform::String^ get(); }
 			///<summary>专辑艺术家</summary>
 			property Platform::String^ AlbumArtist {Platform::String^ get(); }
 			///<summary>艺术家</summary>

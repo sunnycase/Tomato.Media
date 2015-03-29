@@ -98,6 +98,7 @@ private:
 protected:
 	MFMediaSourceState state = MFMediaSourceState::NotInitialized;	// 状态
 private:
+	MFMMCSSProvider mmcssProvider;
 	wrl::ComPtr<IMFMediaEventQueue> eventQueue;					// 事件队列
 	std::recursive_mutex stateMutex;
 	wrl::ComPtr<IMFPresentationDescriptor> presentDescriptor;	// PresentationDescriptor

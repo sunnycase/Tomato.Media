@@ -82,4 +82,6 @@ public:
 	static void FillMediaMetadatas(AVIOContext* ioctx, MediaMetadataContainer& container);
 };
 
+void RegisterLibAV();
+
 NSED_TOMATO_MEDIA

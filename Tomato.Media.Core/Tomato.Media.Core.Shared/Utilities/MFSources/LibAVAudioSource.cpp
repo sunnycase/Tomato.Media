@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "LibAVAudioSource.h"
 #include "Utilities/mfhelpers.hpp"
+#include "Utilities/libavhelpers.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -29,7 +30,7 @@ inline int hns2dt(REFERENCE_TIME hns, AVStream* stream)
 
 LibAVAudioSource::LibAVAudioSource()
 {
-
+	RegisterLibAV();
 }
 
 LibAVAudioSource::~LibAVAudioSource()
@@ -64,7 +65,7 @@ ComPtr<IMFMediaType> LibAVAudioSource::CreateMediaType()
 
 void LibAVAudioSource::OnStartAudioStream(REFERENCE_TIME position)
 {
-	THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index, 
+	THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index,
 		hns2dt(position, audioStream), AVSEEK_FLAG_ANY) >= 0, "Seek failed");
 }
 
@@ -112,7 +113,7 @@ task<bool> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 				}
 				THROW_IF_FAILED(mediaBuffer->SetCurrentLength(packet.size));
 				THROW_IF_FAILED(sample->AddBuffer(mediaBuffer.Get()));
-				THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream)/ 10));				
+				THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream) / 10));
 				got = true;
 			}
 		}
@@ -131,11 +132,10 @@ void LibAVAudioSource::CreateAVFormatContext(wrl::ComPtr<IMFByteStream> stream)
 	avioctx = std::make_unique<MFAVIOContext>(stream, 4096 * 10, false);
 
 	auto fmtctx = avformat_alloc_context();
-	avfmtctx = unique_avformat<true>(fmtctx);
-
 	fmtctx->pb = avioctx->Get();
 
 	THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
+	avfmtctx = unique_avformat<true>(fmtctx);
 	THROW_IF_NOT(avformat_find_stream_info(fmtctx, nullptr) >= 0, L"Read stream info error.");
 #if _DEBUG
 	av_dump_format(fmtctx, 0, nullptr, 0);

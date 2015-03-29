@@ -102,7 +102,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -152,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\encoding.cpp">
+      <Filter>Sources\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

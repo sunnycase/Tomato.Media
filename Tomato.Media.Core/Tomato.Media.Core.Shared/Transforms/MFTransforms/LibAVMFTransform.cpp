@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "LibAVMFTransform.h"
 #include "Utilities/mfhelpers.hpp"
+#include "Utilities/libavhelpers.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -17,6 +18,7 @@ ActivatableClass(LibAVMFTransform);
 
 LibAVMFTransform::LibAVMFTransform()
 {
+	RegisterLibAV();
 }
 
 LibAVMFTransform::~LibAVMFTransform()

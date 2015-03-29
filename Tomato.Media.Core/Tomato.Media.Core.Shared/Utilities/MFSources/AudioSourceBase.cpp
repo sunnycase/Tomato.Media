@@ -12,8 +12,6 @@ using namespace NS_TOMATO_MEDIA;
 using namespace wrl;
 using namespace concurrency;
 
-static MFMMCSSProvider mmcssProvider;
-
 #define LOCK_STATE() std::lock_guard<decltype(stateMutex)> locker(stateMutex)
 
 AudioSourceBase::AudioSourceBase()
