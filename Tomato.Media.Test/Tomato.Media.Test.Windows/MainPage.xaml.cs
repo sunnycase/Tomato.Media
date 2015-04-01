@@ -42,8 +42,16 @@ namespace Tomato.Media.Test
 
         async void Play()
         {
-            await player.Initialize();
-            player.IsSystemMediaControlEnabled = true;
+            if (player == null)
+            {
+                player = new AudioPlayer();
+                await player.Initialize();
+                player.PauseButtonPressed += Player_OnPauseButtonPressed;
+                player.PlayButtonPressed += Player_OnPlayButtonPressed;
+                player.StopButtonPressed += Player_OnStopButtonPressed;
+                player.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
+                player.IsSystemMediaControlEnabled = true;
+            }
             var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[5]));
             //var mediaSource = await MediaSource.CreateFromFile(await
             //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
@@ -54,12 +62,13 @@ namespace Tomato.Media.Test
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            player = new AudioPlayer();
-            player.OnPauseButtonPressed += Player_OnPauseButtonPressed;
-            player.OnPlayButtonPressed += Player_OnPlayButtonPressed;
-            player.OnStopButtonPressed += Player_OnStopButtonPressed;
-
             Play();
+        }
+
+        private void Player_MediaPlaybackStatusChanged(object sender, MediaPlaybackStatus e)
+        {
+            if (e == MediaPlaybackStatus.Stopped)
+                player.StartPlayback(TimeSpan.FromTicks(0));
         }
 
         private void Player_OnStopButtonPressed(object sender, object e)

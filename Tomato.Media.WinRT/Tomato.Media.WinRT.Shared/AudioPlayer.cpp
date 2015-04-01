@@ -43,6 +43,11 @@ void AudioPlayer::StartPlayback()
 	sink->StartPlayback();
 }
 
+void AudioPlayer::StartPlayback(TimeSpan time)
+{
+	sink->StartPlayback(time.Duration);
+}
+
 void AudioPlayer::PausePlayback()
 {
 	sink->PausePlayback();
@@ -83,13 +88,13 @@ void AudioPlayer::OnButtonPressed(SystemMediaTransportControls ^sender,
 	switch (args->Button)
 	{
 	case SystemMediaTransportControlsButton::Play:
-		OnPlayButtonPressed(this, nullptr);
+		PlayButtonPressed(this, nullptr);
 		break;
 	case SystemMediaTransportControlsButton::Pause:
-		OnPauseButtonPressed(this, nullptr);
+		PauseButtonPressed(this, nullptr);
 		break;
 	case SystemMediaTransportControlsButton::Stop:
-		OnStopButtonPressed(this, nullptr);
+		StopButtonPressed(this, nullptr);
 		break;
 	default:
 		break;
@@ -152,21 +157,27 @@ void AudioPlayer::OnMediaSinkStateChanged(MediaSinkState state)
 	switch (state)
 	{
 	case MediaSinkState::StartPlaying:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Changing);
 		OnMediaSinkStateChanging();
 		break;
 	case MediaSinkState::Playing:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Playing);
 		OnMediaSinkPlaying();
 		break;
 	case MediaSinkState::Pausing:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Changing);
 		OnMediaSinkStateChanging();
 		break;
 	case MediaSinkState::Paused:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Paused);
 		OnMediaSinkPaused();
 		break;
 	case MediaSinkState::Stopping:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Changing);
 		OnMediaSinkStateChanging();
 		break;
 	case MediaSinkState::Stopped:
+		MediaPlaybackStatusChanged(this, MediaPlaybackStatus::Stopped);
 		OnMediaSinkStopped();
 		break;
 	default:

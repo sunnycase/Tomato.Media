@@ -14,6 +14,7 @@ namespace Tomato
 			Windows::Foundation::IAsyncAction^ Initialize();
 			void SetMediaSource(MediaSource^ source);
 			void StartPlayback();
+			void StartPlayback(Windows::Foundation::TimeSpan time);
 			void PausePlayback();
 			void StopPlayback();
 
@@ -36,9 +37,10 @@ namespace Tomato
 				void set(bool value);
 			}
 
-			event Windows::Foundation::EventHandler<Platform::Object^>^ OnPlayButtonPressed;
-			event Windows::Foundation::EventHandler<Platform::Object^>^ OnPauseButtonPressed;
-			event Windows::Foundation::EventHandler<Platform::Object^>^ OnStopButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ PlayButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ PauseButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ StopButtonPressed;
+			event Windows::Foundation::EventHandler<Windows::Media::MediaPlaybackStatus>^ MediaPlaybackStatusChanged;
 		private:
 			void InitializeMediaTransportControls();
 
