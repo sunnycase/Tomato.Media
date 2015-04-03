@@ -49,23 +49,28 @@ task<void> MediaSource::Initialize()
 String^ MediaSource::Title::get()
 {
 	return ws2RTString(nativeSource->GetMetadatas()
-		.GetOrDefault(DefaultMediaMetadatas::Title, std::wstring()));
+		.GetOrDefault<DefaultMediaMetadatas::Title>());
 }
 
 String^ MediaSource::AlbumArtist::get()
 {
 	return ws2RTString(nativeSource->GetMetadatas()
-		.GetOrDefault(DefaultMediaMetadatas::AlbumArtist, std::wstring()));
+		.GetOrDefault<DefaultMediaMetadatas::AlbumArtist>());
 }
 
 String^ MediaSource::Artist::get()
 {
 	return ws2RTString(nativeSource->GetMetadatas()
-		.GetOrDefault(DefaultMediaMetadatas::Artist, std::wstring()));
+		.GetOrDefault<DefaultMediaMetadatas::Artist>());
 }
 
 String^ MediaSource::Album::get()
 {
 	return ws2RTString(nativeSource->GetMetadatas()
-		.GetOrDefault(DefaultMediaMetadatas::Album, std::wstring()));
+		.GetOrDefault<DefaultMediaMetadatas::Album>());
+}
+
+TimeSpan MediaSource::Duration::get()
+{
+	return TimeSpan{ nativeSource->GetDuration() };
 }

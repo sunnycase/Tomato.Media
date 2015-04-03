@@ -32,6 +32,7 @@ public:
 	void SetReadSampleCallback(std::function<void(ReadSampleResult)>&& readSampleCallback);
 	// 读取一个采样
 	void BeginReadSample(IMFSourceReaderEx* sourceReader);
+	void Stop();
 private:
 	std::function<void(ReadSampleResult)> readSampleCallback;
 	std::recursive_mutex readMutex;
@@ -59,17 +60,19 @@ private:
 	void OnSampleRead(ReadSampleResult result);
 	void EnqueueSample(wrl::ComPtr<IMFSample>& sample);
 	bool IsPreRollFilled();
+	void NotifyReadSample();
 private:
 	wrl::ComPtr<MFSourceReaderCallback> sourceReaderCallback;
 	wrl::ComPtr<IMFSourceReaderEx> sourceReader;
 	wrl::ComPtr<IMFMediaType> outputMT;
 
-	SourceReaderState readerState = SourceReaderState::NotInitialized;
+	volatile SourceReaderState readerState = SourceReaderState::NotInitialized;
 	MFMMCSSProvider mmcssProvider;
 	block_buffer<byte> decodedBuffer;
 	unique_cotaskmem<WAVEFORMATEX> outputFormat;
 	size_t bytesPerPeriodLength;
 	std::recursive_mutex stateMutex;
+	concurrency::event requestEvent;
 };
 
 NSED_TOMATO_MEDIA

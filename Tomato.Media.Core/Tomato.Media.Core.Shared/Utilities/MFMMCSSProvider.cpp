@@ -80,3 +80,9 @@ std::unique_ptr<MMCSSThread> MFMMCSSProvider::CreateMMCSSThread(std::function<vo
 {
 	return std::make_unique<MFMMCSSThread>(std::move(callback), queueId);
 }
+
+MFMMCSSProvider& MFMMCSSProvider::GetDefault()
+{
+	static MFMMCSSProvider defaultProvider;
+	return defaultProvider;
+}

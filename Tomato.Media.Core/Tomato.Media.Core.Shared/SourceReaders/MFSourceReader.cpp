@@ -18,7 +18,7 @@ using namespace concurrency;
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 
-struct MFTRegistry
+static struct MFTRegistry
 {
 	MFTRegistry()
 	{
@@ -78,11 +78,15 @@ void MFSourceReader::Stop()
 {
 	if (readerState != SourceReaderState::Playing)
 		readerState = SourceReaderState::Stopped;
+	sourceReaderCallback->Stop();
 	decodedBuffer.clear();
 }
 
 size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
 {
+	if (!IsPreRollFilled())
+		requestEvent.set();
+
 	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 
 	// 缓冲时不返回数据
@@ -200,17 +204,15 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 			readerState = SourceReaderState::Playing;
 		}
 	}
-test1:
 	// 停止状态下不再继续读取
 	if (readerState != SourceReaderState::Stopped)
 	{
-		if (IsPreRollFilled())
+		if (!IsPreRollFilled() || requestEvent.wait() == 0)
 		{
-			Sleep(100);
-			goto test1;
+			requestEvent.reset();
+			// Call ReadSample for next asynchronous sample event
+			sourceReaderCallback->BeginReadSample(sourceReader.Get());
 		}
-		// Call ReadSample for next asynchronous sample event
-		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
 }
 
@@ -238,6 +240,10 @@ bool MFSourceReader::IsPreRollFilled()
 	auto desired = outputFormat->nAvgBytesPerSec * PREROLL_DURATION_SEC;
 
 	return decodedBuffer.tell_not_get() >= desired;
+}
+
+void MFSourceReader::NotifyReadSample()
+{
 }
 
 MFSourceReaderCallback::MFSourceReaderCallback()
@@ -278,6 +284,11 @@ void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 
 	THROW_IF_FAILED(sourceReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM,
 		0, nullptr, nullptr, nullptr, nullptr));
+}
+
+void MFSourceReaderCallback::Stop()
+{
+	readSampleCallback = nullptr;
 }
 
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall NS_TOMATO_MEDIA::CreateMFSourceReader(

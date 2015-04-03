@@ -18,6 +18,8 @@ namespace Tomato
 			property Platform::String^ AlbumArtist {Platform::String^ get(); }
 			///<summary>艺术家</summary>
 			property Platform::String^ Artist {Platform::String^ get(); }
+			///<summary>长度</summary>
+			property Windows::Foundation::TimeSpan Duration {Windows::Foundation::TimeSpan get(); }
 		internal:
 			IMediaSource* Get();
 		private:

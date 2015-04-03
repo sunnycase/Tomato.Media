@@ -25,6 +25,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
@@ -35,6 +37,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\encoding.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\libguess.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.h" />
@@ -54,6 +58,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SourceReaders\MFSourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tomato.Media.Core.cpp" />
@@ -64,6 +70,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_impl.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_tab.h">
+      <FileType>CppHeader</FileType>
+    </ClInclude>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.cpp" />

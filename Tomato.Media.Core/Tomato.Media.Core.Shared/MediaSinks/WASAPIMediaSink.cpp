@@ -113,10 +113,13 @@ void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> source
 {
 	std::lock_guard<decltype(sampleRequestMutex)> locker(sampleRequestMutex);
 
+	if (this->sourceReader)
+		this->sourceReader->Stop();
 	sourceReaderHolder = sourceReader;
 	this->sourceReader = sourceReaderHolder.get();
 	if (this->sourceReader)
 		this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
+	currentFrames = 0;
 }
 
 void WASAPIMediaSink::SetTimeChangedCallback(std::function<void(int64_t)> callback)
@@ -152,6 +155,7 @@ void WASAPIMediaSink::StopPlayback()
 	{
 		SetState(MediaSinkState::Stopping);
 		stopThread->Execute();
+		currentFrames = 0;
 	}
 }
 
@@ -169,8 +173,6 @@ void WASAPIMediaSink::ConfigureDevice()
 	THROW_IF_FAILED(audioClient->GetMixFormat(&waveFormat));
 	deviceInputFormat.reset(waveFormat);
 
-	// 获取设备周期
-	THROW_IF_FAILED(audioClient->GetDevicePeriod(&hnsDefaultBufferDuration, nullptr));
 	// 初始化 AudioClient
 	THROW_IF_FAILED(audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
 		AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
@@ -224,7 +226,9 @@ void WASAPIMediaSink::FillBufferFromMediaSource(UINT32 framesCount)
 	THROW_IF_FAILED(renderClient->GetBuffer(framesCount, &data));
 	if (actualBytesRead = sourceReader->Read(data, actualBytesToRead))
 	{
-		THROW_IF_FAILED(renderClient->ReleaseBuffer((actualBytesRead / deviceInputFormat->nBlockAlign), 0));
+		auto framesRead = actualBytesRead / deviceInputFormat->nBlockAlign;
+		currentFrames += framesRead;
+		THROW_IF_FAILED(renderClient->ReleaseBuffer(framesRead, 0));
 	}
 	// 未读出数据
 	else
@@ -247,7 +251,7 @@ size_t WASAPIMediaSink::GetBufferFramesPerPeriod()
 	// 100 ns = 1e-7 s
 	double devicePeriodInSeconds = hns2s(defaultDevicePeriod);
 
-	return static_cast<UINT32>(std::ceil(deviceInputFormat->nSamplesPerSec * devicePeriodInSeconds));
+	return static_cast<UINT32>(deviceInputFormat->nSamplesPerSec * devicePeriodInSeconds + 0.5);
 }
 
 void WASAPIMediaSink::InitializeDeviceBuffer()
@@ -279,6 +283,8 @@ void WASAPIMediaSink::OnStopPlayback()
 	sampleRequestedThread->Cancel();
 	FillBufferAvailable(true);
 	THROW_IF_FAILED(audioClient->Stop());
+
+	auto sourceReader = this->sourceReaderHolder;
 	if (sourceReader)
 		sourceReader->Stop();
 	SetState(MediaSinkState::Stopped);
@@ -313,6 +319,12 @@ int64_t WASAPIMediaSink::GetPlayingSampleTime(int64_t sampleTime)
 	REFERENCE_TIME latency = 0;
 	audioClient->GetStreamLatency(&latency);
 	return std::max(sampleTime - latency, 0i64);
+}
+
+int64_t WASAPIMediaSink::GetCurrentTime()
+{
+	auto dt = (double)currentFrames / deviceInputFormat->nSamplesPerSec;
+	return std::max(0ll, static_cast<int64_t>(dt * 1e7 + (starthns == -1 ? 0 : starthns)));
 }
 
 MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall NS_TOMATO_MEDIA::CreateWASAPIMediaSink()

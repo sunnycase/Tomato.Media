@@ -34,7 +34,7 @@ public:
 	const any& GetValue() const noexcept { return value; }
 	template<typename T>
 	// 获取值
-	T& GetValue() const { return value.get<T>() }
+	T& GetValue() const { return value.get<T>(); }
 
 	// 设置值
 	void SetValue(const any& value) { this->value = value; }
@@ -45,17 +45,27 @@ private:
 	any value;
 };
 
+#define DECLARE_MEDIAMETA_TYPE(name, valuetype) struct name { \
+MEDIA_CORE_API static const std::wstring Name; \
+using value_type = valuetype;};
+
 class DefaultMediaMetadatas
 {
 public:
 	// 标题
-	MEDIA_CORE_API static const std::wstring Title;
+	DECLARE_MEDIAMETA_TYPE(Title, std::wstring);
 	// 专辑
-	MEDIA_CORE_API static const std::wstring Album;
+	DECLARE_MEDIAMETA_TYPE(Album, std::wstring);
 	// 专辑艺术家
-	MEDIA_CORE_API static const std::wstring AlbumArtist;
+	DECLARE_MEDIAMETA_TYPE(AlbumArtist, std::wstring);
 	// 艺术家
-	MEDIA_CORE_API static const std::wstring Artist;
+	DECLARE_MEDIAMETA_TYPE(Artist, std::wstring);
+	// 年代
+	DECLARE_MEDIAMETA_TYPE(Year, uint32_t);
+	// 音轨编号
+	DECLARE_MEDIAMETA_TYPE(TrackNumber, uint32_t);
+	// 流派
+	DECLARE_MEDIAMETA_TYPE(Genre, std::wstring);
 };
 
 // 媒体元数据容器
@@ -80,6 +90,13 @@ public:
 		metadatas.emplace(std::move(name), std::move(metadata));
 	}
 
+	// 添加元数据
+	template<typename TMeta>
+	void Add(typename TMeta::value_type value)
+	{
+		metadatas.emplace(TMeta::Name, MediaMetadata{ TMeta::Name, value });
+	}
+
 	// 获取元数据
 	const any& Get(const std::wstring& name) const
 	{
@@ -91,6 +108,13 @@ public:
 	T& Get(const std::wstring& name) const
 	{
 		return metadatas.find(name)->second.GetValue<T>();
+	}
+
+	template<typename TMeta>
+	// 获取元数据
+	typename TMeta::value_type& Get() const
+	{
+		return metadatas.find(TMeta::Name)->second.GetValue<typename TMeta::value_type>();
 	}
 
 	// 元数据是否存在
@@ -113,6 +137,15 @@ public:
 	{
 		if (Exists(name))
 			return Get<T>(name);
+		return defaultValue;
+	}
+
+	template<typename TMeta>
+	// 获取元数据
+	typename TMeta::value_type& GetOrDefault(typename TMeta::value_type& defaultValue = typename TMeta::value_type()) const
+	{
+		if (Exists(TMeta::Name))
+			return Get<typename TMeta::value_type>(TMeta::Name);
 		return defaultValue;
 	}
 private:

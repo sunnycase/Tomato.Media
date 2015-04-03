@@ -23,6 +23,7 @@ public:
 	virtual void StartPlayback(int64_t hns);
 	virtual void PausePlayback();
 	virtual void StopPlayback();
+	virtual int64_t GetCurrentTime();
 private:
 	// 配置设备
 	void ConfigureDevice();
@@ -63,6 +64,7 @@ private:
 	std::function<void(MediaSinkState)> stateChangedCallback;
 	std::function<void(int64_t)> timeChangedCallback;
 	int64_t starthns = -1;
+	uint32_t currentFrames = 0;
 };
 
 NSED_TOMATO_MEDIA

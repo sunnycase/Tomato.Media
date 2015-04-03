@@ -173,6 +173,13 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromFormatContext(std::shared_ptr<AVForma
 	return format;
 }
 
+inline int64_t dt2hns(int64_t dt, AVStream* stream)
+{
+	auto sec_base = (float)stream->time_base.num / stream->time_base.den;
+	auto hns = dt * sec_base * 1e7;
+	return static_cast<int64_t>(hns);
+}
+
 void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataContainer & container)
 {
 	RegisterLibAV();
@@ -188,16 +195,43 @@ void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataC
 	// Title
 	AVDictionaryEntry* entry = nullptr;
 	if (entry = av_dict_get(fmtctx->metadata, "title", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value)));
+		container.Add<DefaultMediaMetadatas::Title>(s2ws(entry->value));
 	if (entry = av_dict_get(fmtctx->metadata, "title", entry, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Title, s2ws(entry->value)));
+		container.Add<DefaultMediaMetadatas::Title>(s2ws(entry->value));
 	// Album
 	if (entry = av_dict_get(fmtctx->metadata, "album", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Album, s2ws(entry->value)));
+		container.Add<DefaultMediaMetadatas::Album>(s2ws(entry->value));
 	// AlbumArtist
 	if (entry = av_dict_get(fmtctx->metadata, "album_artist", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::AlbumArtist, s2ws(entry->value)));
+		container.Add<DefaultMediaMetadatas::AlbumArtist>(s2ws(entry->value));
 	// Artist
 	if (entry = av_dict_get(fmtctx->metadata, "artist", nullptr, 0))
-		container.Add(MediaMetadata(DefaultMediaMetadatas::Artist, s2ws(entry->value)));
+		container.Add<DefaultMediaMetadatas::Artist>(s2ws(entry->value));
+}
+
+int64_t MediaMetadataHelper::GetDuration(AVIOContext* ioctx) noexcept
+{
+	try
+	{
+		auto fmtctx = avformat_alloc_context();
+		fmtctx->pb = ioctx;
+
+		THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
+		auto avfmtctx = unique_avformat<true>(fmtctx);
+		THROW_IF_NOT(avformat_find_stream_info(fmtctx, nullptr) >= 0, L"Read stream info error.");
+#if _DEBUG
+		av_dump_format(fmtctx, 0, nullptr, 0);
+#endif
+		auto lastStreamIt = fmtctx->streams + fmtctx->nb_streams;
+		// 找到第一个音频流
+		auto audioStreamIt = std::find_if(fmtctx->streams, lastStreamIt,
+			[](AVStream* stream) {return stream->codec->codec_type == AVMEDIA_TYPE_AUDIO; });
+		THROW_IF_NOT(audioStreamIt != lastStreamIt, "Cannot find a audio stream.");
+
+		return dt2hns((*audioStreamIt)->duration, *audioStreamIt);
+	}
+	catch (...)
+	{
+		return 0;
+	}
 }

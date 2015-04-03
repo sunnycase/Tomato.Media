@@ -6,6 +6,7 @@
 #include <mutex>
 #include <queue>
 #include <unordered_map>
+#include <array>
 
 #include <ppltasks.h>
 

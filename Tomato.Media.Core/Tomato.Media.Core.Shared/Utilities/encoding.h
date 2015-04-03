@@ -21,5 +21,14 @@ namespace Tomato
 
 		return ws;
 	}
+
+	static std::string ws2s(const std::wstring& str, UINT codePage)
+	{
+		auto len = WideCharToMultiByte(codePage, 0, str.data(), str.size(), nullptr, 0, nullptr, nullptr);
+		std::string s(len, 0);
+		WideCharToMultiByte(codePage, 0, str.data(), str.size(), &s[0], len, nullptr, nullptr);
+
+		return s;
+	}
 #endif
 }

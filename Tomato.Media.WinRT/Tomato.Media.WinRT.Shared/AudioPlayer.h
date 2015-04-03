@@ -10,6 +10,9 @@ namespace Tomato
 		{
 		public:
 			AudioPlayer();
+			AudioPlayer(Windows::UI::Core::CoreDispatcher^ uiDispatcher, 
+				Windows::Media::SystemMediaTransportControls^ mediaControls);
+			virtual ~AudioPlayer();
 
 			Windows::Foundation::IAsyncAction^ Initialize();
 			void SetMediaSource(MediaSource^ source);
@@ -31,21 +34,40 @@ namespace Tomato
 				void set(bool value);
 			}
 
+			property bool IsPauseEnabled
+			{
+				bool get();
+				void set(bool value);
+			}
+
+			property bool IsPreviousEnabled
+			{
+				bool get();
+				void set(bool value);
+			}
+
 			property bool IsNextEnabled
 			{
 				bool get();
 				void set(bool value);
 			}
 
+			property Windows::Foundation::TimeSpan CurrentTime
+			{
+				Windows::Foundation::TimeSpan get();
+			}
+
 			event Windows::Foundation::EventHandler<Platform::Object^>^ PlayButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ PauseButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ StopButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ PreviousButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ NextButtonPressed;
 			event Windows::Foundation::EventHandler<Windows::Media::MediaPlaybackStatus>^ MediaPlaybackStatusChanged;
 		private:
 			void InitializeMediaTransportControls();
 
 			void OnButtonPressed(Windows::Media::SystemMediaTransportControls ^sender, Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs ^args);
-			void UpdateMediaControls(std::function<void()>&& handler);
+			void RunOnUIDispatcher(std::function<void()>&& handler);
 			void OnMediaSinkStateChanged(MediaSinkState state);
 
 			void OnSetMediaSource(MediaSource^ source);
@@ -53,6 +75,7 @@ namespace Tomato
 			void OnMediaSinkPlaying();
 			void OnMediaSinkPaused();
 			void OnMediaSinkStopped();
+			void OnMediaPlaybackStatusChanged(Windows::Media::MediaPlaybackStatus status);
 		private:
 			std::unique_ptr<IMediaSink> sink;
 			Windows::Media::SystemMediaTransportControls^ mediaControls;

@@ -32,12 +32,21 @@ namespace Tomato.Media.Test
             "04. 全天候型いらっしゃいませ.flac",
             "02. 涙色の翼.flac",
             "09.つないだ手.APE",
-            "- 雨降花 .mp3"
+            "- 雨降花 .mp3",
+            "【這いよれ!ニャル子さんW】 Sister, Friend, Lover (FulI ver).flac"
         };
+
+        DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(1) };
 
         public MainPage()
         {
             this.InitializeComponent();
+            timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object sender, object e)
+        {
+            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", player.CurrentTime));
         }
 
         async void Play()
@@ -53,10 +62,12 @@ namespace Tomato.Media.Test
                 player.IsSystemMediaControlEnabled = true;
             }
             var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[5]));
+            System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
             //var mediaSource = await MediaSource.CreateFromFile(await
             //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
             player.SetMediaSource(mediaSource);
             player.StartPlayback();
+            timer.Start();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

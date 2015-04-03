@@ -80,6 +80,7 @@ class MediaMetadataHelper
 {
 public:
 	static void FillMediaMetadatas(AVIOContext* ioctx, MediaMetadataContainer& container);
+	static int64_t GetDuration(AVIOContext* ioctx) noexcept;
 };
 
 void RegisterLibAV();

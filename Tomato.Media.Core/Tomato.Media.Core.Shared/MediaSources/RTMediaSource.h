@@ -17,11 +17,17 @@ public:
 	RTMediaSource(Windows::Storage::Streams::IRandomAccessStream^ stream);
 
 	virtual wrl::ComPtr<IMFByteStream> CreateMFByteStream();
+#ifdef __cplusplus_winrt
+	virtual Windows::Storage::Streams::IRandomAccessStream^ CreateRTRandomAccessStream();
+#endif
+
 	virtual concurrency::task<void> Initialize();
 	virtual const MediaMetadataContainer& GetMetadatas() const;
+	virtual int64_t GetDuration();
 private:
 	Windows::Storage::Streams::IRandomAccessStream^ stream;
 	bool initialized = false;
+	int64_t duration = -1;
 	MediaMetadataContainer metadatas;
 };
 

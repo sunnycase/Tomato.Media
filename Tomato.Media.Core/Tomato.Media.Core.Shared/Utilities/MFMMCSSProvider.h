@@ -17,6 +17,8 @@ public:
 	~MFMMCSSProvider() noexcept;
 
 	std::unique_ptr<MMCSSThread> CreateMMCSSThread(std::function<void()>&& callback);
+
+	static MFMMCSSProvider& GetDefault();
 private:
 	DWORD taskId, queueId;
 };

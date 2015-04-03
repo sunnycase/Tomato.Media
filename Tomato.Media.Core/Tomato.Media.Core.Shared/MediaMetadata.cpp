@@ -11,7 +11,12 @@ using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
 using namespace concurrency;
 
-const std::wstring DefaultMediaMetadatas::Title = L"Title";
-const std::wstring DefaultMediaMetadatas::Album = L"Album";
-const std::wstring DefaultMediaMetadatas::AlbumArtist = L"AlbumArtist";
-const std::wstring DefaultMediaMetadatas::Artist = L"Artist";
+#define DEFINE_MEDIAMETA(name) const std::wstring DefaultMediaMetadatas:: ## name ## ::Name = L#name
+
+DEFINE_MEDIAMETA(Title);
+DEFINE_MEDIAMETA(Album);
+DEFINE_MEDIAMETA(Artist);
+DEFINE_MEDIAMETA(AlbumArtist);
+DEFINE_MEDIAMETA(Year);
+DEFINE_MEDIAMETA(TrackNumber);
+DEFINE_MEDIAMETA(Genre);

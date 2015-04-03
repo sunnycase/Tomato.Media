@@ -55,6 +55,8 @@ public:
 	virtual void PausePlayback() = 0;
 	// 停止
 	virtual void StopPlayback() = 0;
+	// 获取当前时间
+	virtual int64_t GetCurrentTime() = 0;
 };
 
 MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall CreateWASAPIMediaSink();

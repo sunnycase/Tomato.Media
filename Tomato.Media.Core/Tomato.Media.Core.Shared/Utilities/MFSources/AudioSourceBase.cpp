@@ -15,7 +15,7 @@ using namespace concurrency;
 #define LOCK_STATE() std::lock_guard<decltype(stateMutex)> locker(stateMutex)
 
 AudioSourceBase::AudioSourceBase()
-	:MFOperationQueue(mmcssProvider)
+	:MFOperationQueue(MFMMCSSProvider::GetDefault())
 {
 
 }

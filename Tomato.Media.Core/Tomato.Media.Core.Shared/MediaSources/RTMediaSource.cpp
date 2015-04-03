@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "RTMediaSource.h"
 #include "Utilities/libavhelpers.h"
+#include "Metadata/id3v1.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -14,14 +15,14 @@ using namespace Windows::Storage::Streams;
 using namespace wrl;
 using namespace concurrency;
 
-struct MFTRegistry
+struct MFRegistry
 {
-	MFTRegistry()
+	MFRegistry()
 	{
 		THROW_IF_FAILED(MFStartup(MF_SDK_VERSION, MFSTARTUP_LITE));
 	}
 
-	~MFTRegistry()
+	~MFRegistry()
 	{
 		MFShutdown();
 	}
@@ -30,7 +31,7 @@ struct MFTRegistry
 RTMediaSource::RTMediaSource(IRandomAccessStream ^ stream)
 	:stream(stream)
 {
-	static MFTRegistry reg;
+	static MFRegistry reg;
 }
 
 ComPtr<IMFByteStream> RTMediaSource::CreateMFByteStream()
@@ -39,6 +40,11 @@ ComPtr<IMFByteStream> RTMediaSource::CreateMFByteStream()
 	THROW_IF_FAILED(MFCreateMFByteStreamOnStreamEx(reinterpret_cast<IUnknown*>(stream), &byteStream));
 
 	return std::move(byteStream);
+}
+
+IRandomAccessStream ^ RTMediaSource::CreateRTRandomAccessStream()
+{
+	return stream;
 }
 
 task<void> RTMediaSource::Initialize()
@@ -50,12 +56,27 @@ task<void> RTMediaSource::Initialize()
 
 		initialized = true;
 	}
-	return task_from_result();
+	auto meta = std::make_shared<ID3V1Meta>();
+	return create_task(meta->Read(this))
+		.then([=](bool good)
+	{
+
+	});
 }
 
 const MediaMetadataContainer & RTMediaSource::GetMetadatas() const
 {
 	return metadatas;
+}
+
+int64_t RTMediaSource::GetDuration()
+{
+	if (duration == -1)
+	{
+		MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
+		duration = MediaMetadataHelper::GetDuration(ioctx.Get());
+	}
+	return duration;
 }
 
 MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall NS_TOMATO_MEDIA::CreateRTMediaSource(
