@@ -74,7 +74,7 @@ bool ID3V1Meta::IsGood() const noexcept
 	return valid;
 }
 
-task<void> ID3V1Meta::ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container)
+task<bool> ID3V1Meta::ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container)
 {
 	auto meta = std::make_shared<ID3V1Meta>();
 
@@ -91,6 +91,7 @@ task<void> ID3V1Meta::ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<M
 			cntner->Add<DefaultMediaMetadatas::TrackNumber>(pmeta->track);
 			cntner->Add<DefaultMediaMetadatas::Genre>(pmeta->genre.ToString()->Data());
 		}
+		return good;
 	});
 }
 
@@ -126,7 +127,8 @@ task<bool> ID3V1Meta::Read(IMediaSourceIntern* source)
 			this->comment = s2ws(tag.LessComment, CP_ACP);
 			this->track = tag.TrackNumber;
 		}
-		this->genre = static_cast<ID3v1Genre>(tag.Genre);
+		this->genre = static_cast<ID3v1Genre>(
+			tag.Genre < (byte)ID3v1Genre::COUNT ? tag.Genre : (byte)ID3v1Genre::Unknown);
 
 		this->valid = true;
 		return true;

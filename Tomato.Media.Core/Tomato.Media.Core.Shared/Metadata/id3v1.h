@@ -18,6 +18,7 @@ public enum class ID3v1Genre
 	Dance,
 	Disco,
 	Funk,
+	COUNT,
 	Unknown = 255
 };
 
@@ -32,8 +33,8 @@ public:
 	///<summary>读取附加信息</summary>
 	///<return>是否读取成功</return>
 	concurrency::task<bool> Read(IMediaSourceIntern* source);
-	///<summary>读取简明附加信息</summary>
-	static concurrency::task<void> ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container);
+	///<summary>读取附加信息</summary>
+	static concurrency::task<bool> ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container);
 private:
 	bool valid;						// 读取成功
 	std::wstring title;				// 标题

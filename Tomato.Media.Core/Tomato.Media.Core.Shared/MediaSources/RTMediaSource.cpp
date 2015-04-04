@@ -8,6 +8,7 @@
 #include "RTMediaSource.h"
 #include "Utilities/libavhelpers.h"
 #include "Metadata/id3v1.h"
+#include "Metadata/id3v2.h"
 
 using namespace NS_TOMATO;
 using namespace NS_TOMATO_MEDIA;
@@ -44,24 +45,17 @@ ComPtr<IMFByteStream> RTMediaSource::CreateMFByteStream()
 
 IRandomAccessStream ^ RTMediaSource::CreateRTRandomAccessStream()
 {
-	return stream;
+	return stream->CloneStream();
 }
 
 task<void> RTMediaSource::Initialize()
 {
 	if (!initialized)
 	{
-		MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
-		MediaMetadataHelper::FillMediaMetadatas(ioctx.Get(), metadatas);
-
 		initialized = true;
+		return FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer>(&metadatas, [](MediaMetadataContainer*) {}));
 	}
-	auto meta = std::make_shared<ID3V1Meta>();
-	return create_task(meta->Read(this))
-		.then([=](bool good)
-	{
-
-	});
+	return task_from_result();
 }
 
 const MediaMetadataContainer & RTMediaSource::GetMetadatas() const
@@ -83,4 +77,27 @@ MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall NS_TOMATO_MEDIA::CreateRT
 	Windows::Storage::Streams::IRandomAccessStream^ stream)
 {
 	return std::make_unique<RTMediaSource>(stream);
+}
+
+task<void> IMediaSourceIntern::FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container)
+{
+	// ID3V2
+	return ID3V2Meta::ReadBriefMetadata(this, container)
+		.then([=](bool good)
+	{
+		if (good && container->GetSize() == 7)
+			return task_from_result();
+		// ID3V1
+		return ID3V1Meta::ReadMetadata(this, container)
+			.then([=](bool good)
+		{
+			if (!good)
+			{
+				// FFmpeg
+				MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
+				MediaMetadataHelper::FillMediaMetadatas(ioctx.Get(), *container);
+			}
+			return task_from_result();
+		});
+	});
 }

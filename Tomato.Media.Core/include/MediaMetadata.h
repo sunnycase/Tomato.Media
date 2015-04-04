@@ -12,6 +12,9 @@
 
 NSDEF_TOMATO_MEDIA
 
+#pragma warning(push)
+#pragma warning(disable:4251)
+
 // 媒体元数据
 class MEDIA_CORE_API MediaMetadata
 {
@@ -148,8 +151,15 @@ public:
 			return Get<typename TMeta::value_type>(TMeta::Name);
 		return defaultValue;
 	}
+
+	size_t GetSize() const noexcept
+	{
+		return metadatas.size();
+	}
 private:
-	std::unordered_map<std::wstring, MediaMetadata> metadatas;
+	std::unordered_multimap<std::wstring, MediaMetadata> metadatas;
 };
+
+#pragma warning(pop)
 
 NSED_TOMATO_MEDIA

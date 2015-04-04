@@ -18,6 +18,8 @@ public:
 #ifdef __cplusplus_winrt
 	virtual Windows::Storage::Streams::IRandomAccessStream^ CreateRTRandomAccessStream() = 0;
 #endif
+protected:
+	concurrency::task<void> FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container);
 };
 
 NSED_TOMATO_MEDIA

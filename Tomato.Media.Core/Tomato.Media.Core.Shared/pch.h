@@ -7,6 +7,7 @@
 #include <queue>
 #include <unordered_map>
 #include <array>
+#include <set>
 
 #include <ppltasks.h>
 

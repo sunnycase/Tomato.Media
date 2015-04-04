@@ -113,6 +113,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h">
       <Filter>Headers\Metadata</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\BinaryReader.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
+      <Filter>Headers\Metadata</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -181,6 +187,9 @@
       <Filter>Sources\Metadata</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp">
+      <Filter>Sources\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp">
       <Filter>Sources\Metadata</Filter>
     </ClCompile>
   </ItemGroup>

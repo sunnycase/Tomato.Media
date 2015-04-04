@@ -18,37 +18,40 @@ using namespace concurrency;
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 
-static struct MFTRegistry
+namespace
 {
-	MFTRegistry()
+	struct MFTRegistry
 	{
-		THROW_IF_FAILED(MFStartup(MF_SDK_VERSION, MFSTARTUP_LITE));
-		RegisterMFTs();
-	}
+		MFTRegistry()
+		{
+			THROW_IF_FAILED(MFStartup(MF_SDK_VERSION, MFSTARTUP_LITE));
+			RegisterMFTs();
+		}
 
-	~MFTRegistry()
-	{
-		MFShutdown();
-	}
+		~MFTRegistry()
+		{
+			MFShutdown();
+		}
+
+		void RegisterMFTs()
+		{
+			static auto extensionManager = ref new Windows::Media::MediaExtensionManager();
+
+			extensionManager->RegisterByteStreamHandler(ref new Platform::String(
+				LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".ape", "audio/x-ape");
+			extensionManager->RegisterByteStreamHandler(ref new Platform::String(
+				LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".flac", "audio/flac");
+
+			extensionManager->RegisterAudioDecoder(ref new Platform::String(
+				LibAVMFTransform::InternalGetRuntimeClassName()),
+				KSDATAFORMAT_SUBTYPE_LIBAV, MFAudioFormat_PCM);
+		}
+	};
 
 	void RegisterMFTs()
 	{
-		static auto extensionManager = ref new Windows::Media::MediaExtensionManager();
-
-		extensionManager->RegisterByteStreamHandler(ref new Platform::String(
-			LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".ape", "audio/x-ape");
-		extensionManager->RegisterByteStreamHandler(ref new Platform::String(
-			LibAVByteStreamHandler::InternalGetRuntimeClassName()), ".flac", "audio/flac");
-
-		extensionManager->RegisterAudioDecoder(ref new Platform::String(
-			LibAVMFTransform::InternalGetRuntimeClassName()),
-			KSDATAFORMAT_SUBTYPE_LIBAV, MFAudioFormat_PCM);
+		static MFTRegistry reg;
 	}
-};
-
-void RegisterMFTs()
-{
-	static MFTRegistry reg;
 }
 
 MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
@@ -210,8 +213,13 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 		if (!IsPreRollFilled() || requestEvent.wait() == 0)
 		{
 			requestEvent.reset();
-			// Call ReadSample for next asynchronous sample event
-			sourceReaderCallback->BeginReadSample(sourceReader.Get());
+			auto callback = sourceReaderCallback;
+			auto reader = sourceReader;
+			if (callback && reader)
+			{
+				// Call ReadSample for next asynchronous sample event
+				callback->BeginReadSample(reader.Get());
+			}
 		}
 	}
 }
@@ -254,10 +262,10 @@ STDMETHODIMP MFSourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStre
 {
 	try
 	{
-		std::lock_guard<decltype(readMutex)> locker(readMutex);
 		THROW_IF_FAILED(hrStatus);
-		if (readSampleCallback)
-			readSampleCallback({ pSample, dwStreamFlags });
+		auto callback = readSampleCallback;
+		if (callback)
+			callback({ pSample, dwStreamFlags });
 	}
 	CATCH_ALL();
 	return S_OK;
@@ -280,14 +288,18 @@ void MFSourceReaderCallback::SetReadSampleCallback(std::function<void(ReadSample
 
 void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 {
-	std::lock_guard<decltype(readMutex)> locker(readMutex);
+	if (readSampleCallback)
+	{
+		std::lock_guard<decltype(readMutex)> locker(readMutex);
 
-	THROW_IF_FAILED(sourceReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM,
-		0, nullptr, nullptr, nullptr, nullptr));
+		THROW_IF_FAILED(sourceReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+			0, nullptr, nullptr, nullptr, nullptr));
+	}
 }
 
 void MFSourceReaderCallback::Stop()
 {
+	std::lock_guard<decltype(readMutex)> locker(readMutex);
 	readSampleCallback = nullptr;
 }
 
