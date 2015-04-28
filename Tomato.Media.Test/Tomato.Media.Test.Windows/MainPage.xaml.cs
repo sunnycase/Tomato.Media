@@ -33,8 +33,7 @@ namespace Tomato.Media.Test
             "02. 涙色の翼.flac",
             "09.つないだ手.APE",
             "- 雨降花 .mp3",
-            "【這いよれ!ニャル子さんW】 Sister, Friend, Lover (FulI ver).flac",
-            "凉宫春日 - 可爱清脆响铃.mp3"
+            "【這いよれ!ニャル子さんW】 Sister, Friend, Lover (FulI ver).flac"
         };
 
         DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(1) };
@@ -62,13 +61,15 @@ namespace Tomato.Media.Test
                 player.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
                 player.IsSystemMediaControlEnabled = true;
             }
-            var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[7]));
+            var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[1]));
+            await mediaSource.InitializeFullMetadatas();
+            var lrc = mediaSource.Lyrics;
             System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
             //var mediaSource = await MediaSource.CreateFromFile(await
             //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
             player.SetMediaSource(mediaSource);
             player.StartPlayback();
-            timer.Start();
+            //timer.Start();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

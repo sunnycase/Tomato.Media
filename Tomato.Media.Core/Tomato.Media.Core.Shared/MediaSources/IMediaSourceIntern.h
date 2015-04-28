@@ -19,7 +19,8 @@ public:
 	virtual Windows::Storage::Streams::IRandomAccessStream^ CreateRTRandomAccessStream() = 0;
 #endif
 protected:
-	concurrency::task<void> FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container);
+	concurrency::task<void> FillBriefMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container);
+	concurrency::task<void> FillFullMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container);
 };
 
 NSED_TOMATO_MEDIA

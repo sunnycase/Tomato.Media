@@ -51,6 +51,7 @@ namespace
 		DEFINE_FRAME_ACRIVATOR(TRCK),
 		DEFINE_FRAME_ACRIVATOR(TYER),
 		DEFINE_FRAME_ACRIVATOR(PRIV),
+		DEFINE_FRAME_ACRIVATOR(TXXX),
 	};
 
 	enum
@@ -163,7 +164,7 @@ namespace
 		{
 			std::string tmp_str(data, data + count);
 			text = s2ws(tmp_str, CP_ACP);
-			return count + hasNullTerm ? 1 : 0;
+			return count + (hasNullTerm ? 1 : 0);
 		}
 
 		size_t ReadUCS_2Text(const byte* data, size_t count)
@@ -177,7 +178,7 @@ namespace
 				rest--;
 			}
 			text = std::wstring(ptr, rest);
-			return count + hasNullTerm ? 2 : 0;
+			return count + (hasNullTerm ? 2 : 0);
 		}
 	private:
 		ID3V2TextEncoding encoding;
@@ -238,4 +239,15 @@ void ID3V2FramePRIV::ReadContent(BinaryReader && reader)
 	identifier = textReader.GetText();
 	data.resize(reader.GetAvailable());
 	reader.Read(data.data(), data.size());
+}
+
+void ID3V2FrameTXXX::ReadContent(BinaryReader && reader)
+{
+	encoding = reader.Read<ID3V2TextEncoding>();
+	ID3V2Text textReader(encoding, true);
+	reader.Seek(textReader.Read(reader.GetCurrentPointer()), SeekOrigin::Current);
+	description = textReader.GetText();
+	textReader.SetHasNullTerm(false);
+	textReader.Read(reader.GetCurrentPointer(), reader.GetAvailable());
+	value = textReader.GetText();
 }

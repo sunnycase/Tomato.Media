@@ -19,3 +19,4 @@
 #include "IMediaSource.h"
 #include "ISourceReader.h"
 #include "IMediaSink.h"
+#include "Lyrics.h"

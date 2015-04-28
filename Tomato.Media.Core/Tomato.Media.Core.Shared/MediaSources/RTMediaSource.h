@@ -22,6 +22,7 @@ public:
 #endif
 
 	virtual concurrency::task<void> Initialize();
+	virtual concurrency::task<void> InitializeFullMetadatas();
 	virtual const MediaMetadataContainer& GetMetadatas() const;
 	virtual int64_t GetDuration();
 private:

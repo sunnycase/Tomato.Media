@@ -119,6 +119,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
       <Filter>Headers\Metadata</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\Lyrics.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -191,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp">
       <Filter>Sources\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Lyrics.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

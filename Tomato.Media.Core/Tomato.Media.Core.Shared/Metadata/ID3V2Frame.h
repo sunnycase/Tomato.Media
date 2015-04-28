@@ -189,4 +189,20 @@ private:
 	std::wstring identifier;
 	std::vector<byte> data;
 };
+
+// TXXX User defined text information frame
+class ID3V2FrameTXXX : public ID3V2Frame
+{
+public:
+	ID3V2FrameTXXX() {}
+
+	const std::wstring& GetDescription() const noexcept { return description; }
+	const std::wstring& GetValue() const noexcept { return value; }
+	virtual const ID3V2FrameKind& GetKind() const noexcept { return ID3V2FrameKinds::TXXX; }
+protected:
+	virtual void ReadContent(BinaryReader&& reader);
+private:
+	ID3V2TextEncoding encoding;
+	std::wstring description, value;
+};
 NSED_TOMATO_MEDIA

@@ -53,9 +53,14 @@ task<void> RTMediaSource::Initialize()
 	if (!initialized)
 	{
 		initialized = true;
-		return FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer>(&metadatas, [](MediaMetadataContainer*) {}));
+		return FillBriefMediaMetadatas(std::shared_ptr<MediaMetadataContainer>(&metadatas, [](MediaMetadataContainer*) {}));
 	}
 	return task_from_result();
+}
+
+concurrency::task<void> RTMediaSource::InitializeFullMetadatas()
+{
+	return FillFullMediaMetadatas(std::shared_ptr<MediaMetadataContainer>(&metadatas, [](MediaMetadataContainer*) {}));
 }
 
 const MediaMetadataContainer & RTMediaSource::GetMetadatas() const
@@ -63,11 +68,13 @@ const MediaMetadataContainer & RTMediaSource::GetMetadatas() const
 	return metadatas;
 }
 
+#define BUFFER_SIZE 2 * 1024 * 1024
+
 int64_t RTMediaSource::GetDuration()
 {
 	if (duration == -1)
 	{
-		MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
+		MFAVIOContext ioctx(CreateMFByteStream(), BUFFER_SIZE, false);
 		duration = MediaMetadataHelper::GetDuration(ioctx.Get());
 	}
 	return duration;
@@ -79,7 +86,7 @@ MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall NS_TOMATO_MEDIA::CreateRT
 	return std::make_unique<RTMediaSource>(stream);
 }
 
-task<void> IMediaSourceIntern::FillMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container)
+task<void> IMediaSourceIntern::FillBriefMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container)
 {
 	// ID3V2
 	return ID3V2Meta::ReadBriefMetadata(this, container)
@@ -94,10 +101,18 @@ task<void> IMediaSourceIntern::FillMediaMetadatas(std::shared_ptr<MediaMetadataC
 			if (!good)
 			{
 				// FFmpeg
-				MFAVIOContext ioctx(CreateMFByteStream(), 4096, false);
+				MFAVIOContext ioctx(CreateMFByteStream(), BUFFER_SIZE, false);
 				MediaMetadataHelper::FillMediaMetadatas(ioctx.Get(), *container);
 			}
-			return task_from_result();
 		});
+	});
+}
+
+concurrency::task<void> IMediaSourceIntern::FillFullMediaMetadatas(std::shared_ptr<MediaMetadataContainer> container)
+{
+	// ID3V2
+	return ID3V2Meta::ReadExtraMetadata(this, container)
+		.then([=](bool good)
+	{
 	});
 }

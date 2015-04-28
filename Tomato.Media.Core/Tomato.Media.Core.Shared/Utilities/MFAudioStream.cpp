@@ -168,7 +168,7 @@ bool MFAudioStream::DoesNeedMoreData()
 	ss << L"samples cache: " << samplesCache.size() << std::endl;
 	OutputDebugString(ss.str().c_str());
 
-	return !endOfDeliver && state == MFMediaStreamState::Started && samplesCache.size() < PreRollSample;
+	return !endOfDeliver && state == MFMediaStreamState::Started && samplesCache.size() < BufferedSample;
 }
 
 void MFAudioStream::DeliverPayload(IMFSample* sample)

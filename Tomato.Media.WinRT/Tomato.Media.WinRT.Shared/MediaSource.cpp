@@ -36,6 +36,14 @@ IAsyncOperation<MediaSource^>^ MediaSource::CreateFromFile(StorageFile ^ file)
 	});
 }
 
+IAsyncAction ^ MediaSource::InitializeFullMetadatas()
+{
+	return create_async([=]
+	{
+		return nativeSource->InitializeFullMetadatas();
+	});
+}
+
 IMediaSource* MediaSource::Get()
 {
 	return nativeSource.get();
@@ -73,4 +81,10 @@ String^ MediaSource::Album::get()
 TimeSpan MediaSource::Duration::get()
 {
 	return TimeSpan{ nativeSource->GetDuration() };
+}
+
+String^ MediaSource::Lyrics::get()
+{
+	return ws2RTString(nativeSource->GetMetadatas()
+		.GetOrDefault<DefaultMediaMetadatas::Lyrics>());
 }

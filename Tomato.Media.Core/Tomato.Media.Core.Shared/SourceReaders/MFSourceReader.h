@@ -42,7 +42,7 @@ private:
 class MFSourceReader : public ISourceReader
 {
 public:
-	const size_t PREROLL_DURATION_SEC = 3;
+	const size_t PREROLL_DURATION_SEC = 20;
 
 	MFSourceReader(IMediaSourceIntern* mediaSource);
 

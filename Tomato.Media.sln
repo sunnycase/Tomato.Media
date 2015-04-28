@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+VisualStudioVersion = 14.0.22609.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tomato.Media.WinRT", "Tomato.Media.WinRT", "{27658D89-9681-404E-A6A0-118F1C236C6B}"
 EndProject
@@ -39,6 +39,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tomato.Media.WP81", "Tomato
 	ProjectSection(ProjectDependencies) = postProject
 		{CADB4F8F-7E2D-4870-B0AA-2F5A29C76D34} = {CADB4F8F-7E2D-4870-B0AA-2F5A29C76D34}
 		{5564A3CC-B147-48A5-B081-FD3BCEA9655E} = {5564A3CC-B147-48A5-B081-FD3BCEA9655E}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E37C1FE-5166-4507-8090-12F698BB31E3}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
 Global

@@ -42,8 +42,8 @@ public:
 	concurrency::task<bool> Read(IMediaSourceIntern* source, std::function<bool(const ID3V2FrameKind&)> framePredicate = [](const ID3V2FrameKind&) {return true; });
 	///<summary>读取简明附加信息</summary>
 	static concurrency::task<bool> ReadBriefMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container);
-	///<summary>读取附加信息</summary>
-	static concurrency::task<bool> ReadMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container);
+	///<summary>读取额外附加信息</summary>
+	static concurrency::task<bool> ReadExtraMetadata(IMediaSourceIntern* source, std::shared_ptr<MediaMetadataContainer> container);
 
 	template<class T>
 	const T* GetFrame(const ID3V2FrameKind& kind) const noexcept

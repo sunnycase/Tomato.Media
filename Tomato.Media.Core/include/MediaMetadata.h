@@ -12,11 +12,8 @@
 
 NSDEF_TOMATO_MEDIA
 
-#pragma warning(push)
-#pragma warning(disable:4251)
-
 // 媒体元数据
-class MEDIA_CORE_API MediaMetadata
+class MediaMetadata
 {
 public:
 	MediaMetadata(const std::wstring& name, const any& value)
@@ -69,10 +66,12 @@ public:
 	DECLARE_MEDIAMETA_TYPE(TrackNumber, uint32_t);
 	// 流派
 	DECLARE_MEDIAMETA_TYPE(Genre, std::wstring);
+	// 歌词
+	DECLARE_MEDIAMETA_TYPE(Lyrics, std::wstring);
 };
 
 // 媒体元数据容器
-class MEDIA_CORE_API MediaMetadataContainer
+class MediaMetadataContainer
 {
 public:
 	MediaMetadataContainer()
@@ -159,7 +158,5 @@ public:
 private:
 	std::unordered_multimap<std::wstring, MediaMetadata> metadatas;
 };
-
-#pragma warning(pop)
 
 NSED_TOMATO_MEDIA

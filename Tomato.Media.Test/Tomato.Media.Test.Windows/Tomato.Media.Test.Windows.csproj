@@ -118,7 +118,6 @@
     <Content Include="04.花篝り.APE" />
     <Content Include="09.つないだ手.APE" />
     <Content Include="【這いよれ!ニャル子さんW】 Sister, Friend, Lover %28FulI ver%29.flac" />
-    <Content Include="凉宫春日 - 可爱清脆响铃.mp3" />
     <None Include="Tomato.Media.Test.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

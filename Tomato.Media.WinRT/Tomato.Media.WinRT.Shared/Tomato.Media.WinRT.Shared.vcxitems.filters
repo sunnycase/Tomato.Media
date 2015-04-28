@@ -4,6 +4,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Lyrics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -11,5 +12,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Lyrics.cpp" />
   </ItemGroup>
 </Project>

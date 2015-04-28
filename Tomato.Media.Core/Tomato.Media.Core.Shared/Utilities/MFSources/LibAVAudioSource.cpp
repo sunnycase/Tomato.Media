@@ -129,7 +129,7 @@ void LibAVAudioSource::OnConfigurePresentationDescriptor(IMFPresentationDescript
 
 void LibAVAudioSource::CreateAVFormatContext(wrl::ComPtr<IMFByteStream> stream)
 {
-	avioctx = std::make_unique<MFAVIOContext>(stream, 4096 * 10, false);
+	avioctx = std::make_unique<MFAVIOContext>(stream, 2 * 1024 * 1024, false);
 
 	auto fmtctx = avformat_alloc_context();
 	fmtctx->pb = avioctx->Get();

@@ -20,6 +20,8 @@ public:
 
 	// 加载
 	virtual concurrency::task<void> Initialize() = 0;
+	// 加载完整元数据
+	virtual concurrency::task<void> InitializeFullMetadatas() = 0;
 	// 获取元数据
 	virtual const MediaMetadataContainer& GetMetadatas() const = 0;
 	// 获取长度

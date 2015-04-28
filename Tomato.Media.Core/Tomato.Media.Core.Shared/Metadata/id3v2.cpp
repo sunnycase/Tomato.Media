@@ -177,6 +177,7 @@ task<bool> ID3V2Meta::ReadBriefMetadata(IMediaSourceIntern * source, std::shared
 	static std::set<ID3V2FrameKind> briefKinds =
 	{
 		ID3V2FrameKinds::TCON,
+		ID3V2FrameKinds::TIT2,
 		ID3V2FrameKinds::TPE1,
 		ID3V2FrameKinds::TPE2,
 		ID3V2FrameKinds::TALB,
@@ -216,9 +217,32 @@ task<bool> ID3V2Meta::ReadBriefMetadata(IMediaSourceIntern * source, std::shared
 	});
 }
 
-task<bool> ID3V2Meta::ReadMetadata(IMediaSourceIntern * source, std::shared_ptr<MediaMetadataContainer> container)
+task<bool> ID3V2Meta::ReadExtraMetadata(IMediaSourceIntern * source, std::shared_ptr<MediaMetadataContainer> container)
 {
-	return concurrency::task<bool>();
+	static std::set<ID3V2FrameKind> extraKinds =
+	{
+		ID3V2FrameKinds::TXXX
+	};
+
+	auto meta = std::make_shared<ID3V2Meta>();
+
+	return meta->Read(source, [&](const ID3V2FrameKind& kind)
+	{
+		return extraKinds.find(kind) != extraKinds.end();
+	}).then([=](bool good)
+	{
+		if (good)
+		{
+			auto pmeta = meta.get();
+			auto cntner = container.get();
+			const ID3V2FrameTXXX* txxxFrame = nullptr;
+
+			if ((txxxFrame = pmeta->GetFrame<ID3V2FrameTXXX>(ID3V2FrameKinds::TXXX)) &&
+				txxxFrame->GetDescription() == L"LYRICS")
+				cntner->Add<DefaultMediaMetadatas::Lyrics>(txxxFrame->GetValue());
+		}
+		return good;
+	});
 }
 
 bool ID3V2Meta::ReadFrame(BinaryReader& reader, const std::function<bool(const ID3V2FrameKind&)>& framePredicate)
