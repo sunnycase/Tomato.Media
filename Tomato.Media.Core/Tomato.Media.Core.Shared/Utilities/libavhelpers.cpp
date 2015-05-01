@@ -211,6 +211,8 @@ void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataC
 
 int64_t MediaMetadataHelper::GetDuration(AVIOContext* ioctx) noexcept
 {
+	RegisterLibAV();
+
 	try
 	{
 		auto fmtctx = avformat_alloc_context();

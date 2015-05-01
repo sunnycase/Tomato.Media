@@ -19,7 +19,7 @@
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" StartPage="MainPage.xaml">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Tomato.Media.Test.App">
           <BackgroundTasks>
             <Task Type="audio" />
           </BackgroundTasks>

@@ -23,6 +23,8 @@ enum class SourceReaderState
 	PreRoll,
 	// 正在播放
 	Playing,
+	// 设定读取位置
+	Seeking,
 	// 已停止
 	Stopped
 };

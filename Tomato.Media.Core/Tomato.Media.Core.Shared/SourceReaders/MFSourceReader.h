@@ -8,7 +8,7 @@
 #include "../MediaSources/IMediaSourceIntern.h"
 #include "../include/ISourceReader.h"
 #include "Utilities/MFMMCSSProvider.h"
-#include "Utilities/block_buffer.hpp"
+#include "Utilities/ring_buffer.hpp"
 
 NSDEF_TOMATO_MEDIA
 
@@ -33,16 +33,20 @@ public:
 	// 读取一个采样
 	void BeginReadSample(IMFSourceReaderEx* sourceReader);
 	void Stop();
+	void Start();
+	concurrency::task<void> FlushAsync();
 private:
 	std::function<void(ReadSampleResult)> readSampleCallback;
 	std::recursive_mutex readMutex;
+	concurrency::task_completion_event<void> flushEvent;
+	bool stopped = false;
 };
 
 // Media Foundation 媒体源读取器
 class MFSourceReader : public ISourceReader
 {
 public:
-	const size_t PREROLL_DURATION_SEC = 20;
+	const size_t PREROLL_DURATION_SEC = 3;
 
 	MFSourceReader(IMediaSourceIntern* mediaSource);
 
@@ -68,7 +72,7 @@ private:
 
 	volatile SourceReaderState readerState = SourceReaderState::NotInitialized;
 	MFMMCSSProvider mmcssProvider;
-	block_buffer<byte> decodedBuffer;
+	ring_buffer<byte> decodedBuffer;
 	unique_cotaskmem<WAVEFORMATEX> outputFormat;
 	size_t bytesPerPeriodLength;
 	std::recursive_mutex stateMutex;

@@ -39,9 +39,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\BinaryReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\encoding.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\EncodingDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\libguess.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.h" />
@@ -55,6 +55,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\MediaSourceOperation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\SingleStreamAudioSourceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\ring_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -74,13 +75,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\AudioFrameDecoderBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\encoding.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\EncodingDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_impl.cpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_tab.h">
-      <FileType>CppHeader</FileType>
-    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\memory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.cpp" />

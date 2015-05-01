@@ -73,7 +73,23 @@ void MFSourceReader::Start(int64_t hns)
 		if (hns != -1)
 			SetCurrentPosition(hns);
 		readerState = SourceReaderState::PreRoll;
+		sourceReaderCallback->Start();
 		sourceReaderCallback->BeginReadSample(sourceReader.Get());
+	}
+	else if (readerState == SourceReaderState::Playing)
+	{
+		readerState = SourceReaderState::Seeking;
+		sourceReaderCallback->FlushAsync().then([=]
+		{
+			decodedBuffer.clear();
+
+			SetCurrentPosition(hns);
+			readerState = SourceReaderState::PreRoll;
+			sourceReaderCallback->Start();
+			sourceReaderCallback->BeginReadSample(sourceReader.Get());
+		});
+		sourceReaderCallback->Stop();
+		THROW_IF_FAILED(sourceReader->Flush(MF_SOURCE_READER_ALL_STREAMS));
 	}
 }
 
@@ -90,31 +106,21 @@ size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
 	if (!IsPreRollFilled())
 		requestEvent.set();
 
-	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
-
 	// 缓冲时不返回数据
 	if (readerState == SourceReaderState::PreRoll)
 		return 0;
 	if (decodedBuffer.tell_not_get() == 0)
 	{
 		// 读取结束
-		if (readerState == SourceReaderState::Stopped)
-			return 0;
-		else
+		if (readerState == SourceReaderState::Stopped) return 0;
+		else 
 			return 0;
 	}
 	else
 	{
-		// 数据必须按帧对齐
-		// 最小读取数
-		auto to_read = std::min(bytesPerPeriodLength, decodedBuffer.tell_not_get());
-		// 缓冲区剩余空间不足最小读取数，等待下次调用
-		if (bufferSize < to_read)
-			return 0;
-		else
-		{
-			return decodedBuffer.read(buffer, to_read);
-		}
+		// 最小为一个设备周期
+		if (bufferSize < bytesPerPeriodLength) return 0;
+		return decodedBuffer.read(buffer, bufferSize);
 	}
 }
 
@@ -123,7 +129,7 @@ void MFSourceReader::SetAudioFormat(const WAVEFORMATEX * format, uint32_t frames
 	InitializeOutputMediaType(format);
 	ConfigureSourceReader();
 	bytesPerPeriodLength = framesPerPeriod * outputFormat->nBlockAlign;
-	decodedBuffer.init(bytesPerPeriodLength);
+	decodedBuffer.init(format->nAvgBytesPerSec * 100);
 
 	readerState = SourceReaderState::Ready;
 }
@@ -134,7 +140,8 @@ void MFSourceReader::SetCurrentPosition(int64_t hns)
 	PropVariantInit(&positionVar);
 	positionVar.vt = VT_I8;
 	positionVar.hVal.QuadPart = hns;
-	THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
+	sourceReader->SetCurrentPosition(GUID_NULL, positionVar);
+	//THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
 }
 
 void MFSourceReader::InitializeOutputMediaType(const WAVEFORMATEX * outputFormat)
@@ -196,7 +203,29 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 		return;
 	}
 
-	EnqueueSample(result.sample);
+	{
+		ComPtr<IMFMediaBuffer> mediaBuffer;
+		BYTE* audioData = nullptr;
+		DWORD audioDataLength = 0;
+
+		// Since we are storing the raw byte data, convert this to a single buffer
+		THROW_IF_FAILED(result.sample->ConvertToContiguousBuffer(&mediaBuffer));
+		// Lock the sample
+		mfbuffer_locker locker(mediaBuffer.Get());
+		THROW_IF_FAILED(locker.lock(&audioData, nullptr, &audioDataLength));
+
+		THROW_IF_NOT(audioDataLength != 0, "无法识别的音频数据");
+
+		auto read = decodedBuffer.write(audioData, audioDataLength);
+		// 没有写完，需要等待读取
+		while (read < audioDataLength)
+		{
+			audioData += read;
+			audioDataLength -= read;
+			if (readerState == SourceReaderState::Stopped || requestEvent.wait() != 0)return;
+			read = decodedBuffer.write(audioData, audioDataLength);
+		}
+	}
 	// Pre-roll PREROLL_DURATION seconds worth of data
 	if (readerState == SourceReaderState::PreRoll)
 	{
@@ -210,37 +239,14 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 	// 停止状态下不再继续读取
 	if (readerState != SourceReaderState::Stopped)
 	{
-		if (!IsPreRollFilled() || requestEvent.wait() == 0)
-		{
-			requestEvent.reset();
-			auto callback = sourceReaderCallback;
-			auto reader = sourceReader;
-			if (callback && reader)
-			{
-				// Call ReadSample for next asynchronous sample event
-				callback->BeginReadSample(reader.Get());
-			}
-		}
+		requestEvent.reset();
+		// Call ReadSample for next asynchronous sample event
+		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
 }
 
 void MFSourceReader::EnqueueSample(ComPtr<IMFSample>& sample)
 {
-	std::lock_guard<decltype(stateMutex)> locker2(stateMutex);
-
-	ComPtr<IMFMediaBuffer> mediaBuffer;
-	BYTE* audioData = nullptr;
-	DWORD audioDataLength = 0;
-
-	// Since we are storing the raw byte data, convert this to a single buffer
-	THROW_IF_FAILED(sample->ConvertToContiguousBuffer(&mediaBuffer));
-	// Lock the sample
-	mfbuffer_locker locker(mediaBuffer.Get());
-	THROW_IF_FAILED(locker.lock(&audioData, nullptr, &audioDataLength));
-
-	THROW_IF_NOT(audioDataLength != 0, "无法识别的音频数据");
-
-	decodedBuffer.write(audioData, audioDataLength);
 }
 
 bool MFSourceReader::IsPreRollFilled()
@@ -263,7 +269,7 @@ STDMETHODIMP MFSourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStre
 	try
 	{
 		THROW_IF_FAILED(hrStatus);
-		auto callback = readSampleCallback;
+		auto& callback = readSampleCallback;
 		if (callback)
 			callback({ pSample, dwStreamFlags });
 	}
@@ -273,7 +279,14 @@ STDMETHODIMP MFSourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStre
 
 STDMETHODIMP MFSourceReaderCallback::OnFlush(DWORD dwStreamIndex) noexcept
 {
-	return E_NOTIMPL;
+	flushEvent.set();
+	return S_OK;
+}
+
+task<void> MFSourceReaderCallback::FlushAsync()
+{
+	flushEvent = concurrency::task_completion_event<void>();
+	return create_task(flushEvent);
 }
 
 STDMETHODIMP MFSourceReaderCallback::OnEvent(DWORD dwStreamIndex, IMFMediaEvent * pEvent) noexcept
@@ -288,7 +301,7 @@ void MFSourceReaderCallback::SetReadSampleCallback(std::function<void(ReadSample
 
 void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 {
-	if (readSampleCallback)
+	if (!stopped)
 	{
 		std::lock_guard<decltype(readMutex)> locker(readMutex);
 
@@ -299,8 +312,12 @@ void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 
 void MFSourceReaderCallback::Stop()
 {
-	std::lock_guard<decltype(readMutex)> locker(readMutex);
-	readSampleCallback = nullptr;
+	stopped = true;
+}
+
+void MFSourceReaderCallback::Start()
+{
+	stopped = false;
 }
 
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall NS_TOMATO_MEDIA::CreateMFSourceReader(

@@ -168,7 +168,7 @@ bool MFAudioStream::DoesNeedMoreData()
 	ss << L"samples cache: " << samplesCache.size() << std::endl;
 	OutputDebugString(ss.str().c_str());
 
-	return !endOfDeliver && state == MFMediaStreamState::Started && samplesCache.size() < BufferedSample;
+	return !endOfDeliver && state == MFMediaStreamState::Started && samplesCache.size() < PreRollSample;
 }
 
 void MFAudioStream::DeliverPayload(IMFSample* sample)
@@ -190,14 +190,27 @@ void MFAudioStream::Start(REFERENCE_TIME position)
 
 	if (state != MFMediaStreamState::NotInitialized)
 	{
-		state = MFMediaStreamState::Started;
+		if (state == MFMediaStreamState::Started)
+		{
+			PROPVARIANT varStart;
+			PropVariantInit(&varStart);
+			varStart.vt = VT_I8;
+			varStart.hVal.QuadPart = position;
+			THROW_IF_FAILED(QueueEvent(MEStreamSeeked, GUID_NULL, S_OK, &varStart));
+			samplesCache.swap(decltype(samplesCache)());
+			DispatchSampleRequests();
+		}
+		else
+		{
+			state = MFMediaStreamState::Started;
 
-		PROPVARIANT varStart;
-		PropVariantInit(&varStart);
-		varStart.vt = VT_I8;
-		varStart.hVal.QuadPart = position;
-		THROW_IF_FAILED(QueueEvent(MEStreamStarted, GUID_NULL, S_OK, &varStart));
-		DispatchSampleRequests();
+			PROPVARIANT varStart;
+			PropVariantInit(&varStart);
+			varStart.vt = VT_I8;
+			varStart.hVal.QuadPart = position;
+			THROW_IF_FAILED(QueueEvent(MEStreamStarted, GUID_NULL, S_OK, &varStart));
+			DispatchSampleRequests();
+		}
 	}
 }
 

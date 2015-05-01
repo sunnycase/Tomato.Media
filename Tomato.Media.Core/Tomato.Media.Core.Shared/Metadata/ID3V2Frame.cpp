@@ -163,7 +163,7 @@ namespace
 		size_t ReadISO_8859_1Text(const byte* data, size_t count)
 		{
 			std::string tmp_str(data, data + count);
-			text = s2ws(tmp_str, CP_ACP);
+			text = s2ws(tmp_str);
 			return count + (hasNullTerm ? 1 : 0);
 		}
 

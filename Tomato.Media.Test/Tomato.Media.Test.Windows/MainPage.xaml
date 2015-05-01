@@ -6,7 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <local:ViewModel x:Name="ViewModel"/>
+    </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          DataContext="{StaticResource ViewModel}">
+        <Slider Name="sl_Time" Margin="10" Value="{Binding CurrentTime}" ValueChanged="sl_Time_ValueChanged"/>
     </Grid>
 </Page>

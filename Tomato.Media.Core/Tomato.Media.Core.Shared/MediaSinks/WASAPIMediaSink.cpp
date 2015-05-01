@@ -70,10 +70,13 @@ private:
 #endif
 
 WASAPIMediaSink::WASAPIMediaSink()
-	:sampleRequestEvent(CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS))
+	:sampleRequestEvent(CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS)),
+	mcssProvider(MFMMCSSProvider::GetDefault())
 {
 	startPlaybackThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnStartPlayback, this));
+	seekPlaybackThread = mcssProvider.CreateMMCSSThread(
+		std::bind(&WASAPIMediaSink::OnSeekPlayback, this));
 	pauseThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnPausePlayback, this));
 	stopThread = mcssProvider.CreateMMCSSThread(
@@ -136,6 +139,13 @@ void WASAPIMediaSink::StartPlayback(int64_t hns)
 		SetState(MediaSinkState::StartPlaying);
 		starthns = hns;
 		startPlaybackThread->Execute();
+	}
+	// Seeking
+	else if (sinkState == MediaSinkState::Playing)
+	{
+		SetState(MediaSinkState::StartPlaying);
+		starthns = hns;
+		seekPlaybackThread->Execute();
 	}
 }
 
@@ -265,6 +275,18 @@ void WASAPIMediaSink::OnStartPlayback()
 	THROW_IF_FAILED(audioClient->Start());
 	if (sourceReader)
 		sourceReader->Start(starthns);
+	SetState(MediaSinkState::Playing);
+
+	sampleRequestedThread->Execute(sampleRequestEvent);
+}
+
+void WASAPIMediaSink::OnSeekPlayback()
+{
+	sampleRequestedThread->Cancel();
+	InitializeDeviceBuffer();
+	if (sourceReader)
+		sourceReader->Start(starthns);
+	currentFrames = 0;
 	SetState(MediaSinkState::Playing);
 
 	sampleRequestedThread->Execute(sampleRequestEvent);

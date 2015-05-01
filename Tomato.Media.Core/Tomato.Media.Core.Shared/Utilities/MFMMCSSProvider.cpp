@@ -65,6 +65,7 @@ private:
 };
 
 MFMMCSSProvider::MFMMCSSProvider()
+	:taskId(0)
 {
 	THROW_IF_FAILED(MFStartup(MF_VERSION, MFSTARTUP_LITE));
 	THROW_IF_FAILED(MFLockSharedWorkQueue(L"Pro Audio", 0, &taskId, &queueId));

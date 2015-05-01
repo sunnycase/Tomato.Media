@@ -118,6 +118,7 @@
     <Content Include="04.花篝り.APE" />
     <Content Include="09.つないだ手.APE" />
     <Content Include="【這いよれ!ニャル子さんW】 Sister, Friend, Lover %28FulI ver%29.flac" />
+    <None Include="packages.config" />
     <None Include="Tomato.Media.Test.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +144,12 @@
       <Project>{9d8e4620-b87f-4521-a87a-bb531ba5e8b9}</Project>
       <Name>Tomato.Media.WinRT.Windows</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WinRTXamlToolkit.Windows.1.8.1.0\lib\netcore451\WinRTXamlToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

@@ -43,9 +43,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\MFTransform.h">
       <Filter>Headers\Transforms\MFTransforms</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFAsyncCallback.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
@@ -100,13 +97,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\encoding.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.h">
-      <Filter>Headers\Utilities\libguess</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\libguess.h">
-      <Filter>Headers\Utilities\libguess</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_tab.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h">
       <Filter>Headers\Metadata</Filter>
     </ClInclude>
@@ -121,6 +111,18 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\Lyrics.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\EncodingDetector.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\block_buffer.hpp">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\ring_buffer.hpp">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\memory.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,15 +179,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\encoding.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\dfa.cpp">
-      <Filter>Sources\Utilities\libguess</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess.cpp">
-      <Filter>Sources\Utilities\libguess</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libguess\guess_impl.cpp">
-      <Filter>Sources\Utilities\libguess</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp">
       <Filter>Sources\Metadata</Filter>
     </ClCompile>
@@ -198,6 +191,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Lyrics.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\EncodingDetector.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -253,12 +250,6 @@
     </Filter>
     <Filter Include="Sources\Utilities\MFSources">
       <UniqueIdentifier>{83bfc796-fb5b-41f4-bd40-c9a8549dd056}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Utilities\libguess">
-      <UniqueIdentifier>{760680ea-ceae-4a1f-b835-4518b9d373bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Utilities\libguess">
-      <UniqueIdentifier>{c6e561e7-c3af-4183-9bc2-71c8b74a19f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers\Metadata">
       <UniqueIdentifier>{a77a9119-3b25-42f8-83f2-82270bc6c78d}</UniqueIdentifier>

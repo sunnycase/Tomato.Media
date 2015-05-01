@@ -28,7 +28,7 @@ private:
 	// 配置设备
 	void ConfigureDevice();
 	// 获取设备剩余缓冲帧数
-	UINT32 GetBufferFramesAvailable();
+	inline UINT32 GetBufferFramesAvailable();
 	// 填充设备剩余缓冲
 	void FillBufferAvailable(bool isSilent);
 	void FillBufferFromMediaSource(UINT32 framesCount);
@@ -37,6 +37,7 @@ private:
 
 	// 开始播放命令回调
 	void OnStartPlayback();
+	void OnSeekPlayback();
 	void OnPausePlayback();
 	void OnStopPlayback();
 	// 提供采样请求回调
@@ -46,10 +47,11 @@ private:
 private:
 	wrl::ComPtr<IAudioClient2> audioClient;
 	wrl::ComPtr<IAudioRenderClient> renderClient;
-	MFMMCSSProvider mcssProvider;
+	MFMMCSSProvider& mcssProvider;
 	MediaSinkState sinkState = MediaSinkState::NotInitialized;
 
 	std::unique_ptr<MMCSSThread> startPlaybackThread;
+	std::unique_ptr<MMCSSThread> seekPlaybackThread;
 	std::unique_ptr<MMCSSThread> pauseThread;
 	std::unique_ptr<MMCSSThread> stopThread;
 	std::unique_ptr<MMCSSThread> sampleRequestedThread;
