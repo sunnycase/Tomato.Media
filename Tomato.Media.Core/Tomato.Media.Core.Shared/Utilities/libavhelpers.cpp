@@ -28,9 +28,11 @@ struct LibAVRegistry
 
 	static void AVLogCallback(void* avcl, int level, const char* fmt, va_list vargs)
 	{
+#if _DEBUG
 		char buffer[INT16_MAX];
 		vsprintf_s(buffer, fmt, vargs);
 		OutputDebugStringA(buffer);
+#endif
 	}
 };
 
@@ -44,18 +46,31 @@ void av_deleter::operator()(void* handle) const noexcept
 	av_free(handle);
 }
 
+void avio_deleter::operator()(AVIOContext* handle) const noexcept
+{
+	if (handle)
+	{
+		av_freep(&handle->buffer);
+		av_free(handle);
+	}
+}
+
+void avframe_deleter::operator()(AVFrame* handle) const noexcept
+{
+	if (handle)
+	{
+		auto oldHandle = handle;
+		av_frame_free(&oldHandle);
+	}
+}
+
 MFAVIOContext::MFAVIOContext(wrl::ComPtr<IMFByteStream> stream, size_t bufferSize, bool canWrite)
 	:stream(std::move(stream)), iobuffer((byte*)av_malloc(bufferSize)), canWrite(canWrite), ioctx(nullptr)
 {
-	ioctx = avio_alloc_context(iobuffer, (int)bufferSize, canWrite ? 1 : 0,
-		this, ReadPacket, canWrite ? WritePacket : nullptr, Seek);
+	ioctx.reset(avio_alloc_context(iobuffer.get(), (int)bufferSize, canWrite ? 1 : 0,
+		this, ReadPacket, canWrite ? WritePacket : nullptr, Seek));
 	THROW_IF_NOT(ioctx, "Create MF AVIOContext Failed.");
-	//ioctx.reset(ctx);
-}
-
-void MFAVIOContext::Release()
-{
-	av_freep(&ioctx);
+	iobuffer.release();
 }
 
 int MFAVIOContext::ReadPacket(void * opaque, uint8_t * buf, int buf_size) noexcept
@@ -180,17 +195,27 @@ inline int64_t dt2hns(int64_t dt, AVStream* stream)
 	return static_cast<int64_t>(hns);
 }
 
+unique_avformat<true> NS_TOMATO_MEDIA::OpenAVFormatContext(AVIOContext * ioctx)
+{
+	unique_avformat<true> avfmtctx;
+	{
+		unique_avformat<false> fmtctx(avformat_alloc_context());
+		fmtctx->pb = ioctx;
+
+		auto fmtptr = fmtctx.get();
+		THROW_IF_NOT(avformat_open_input(&fmtptr, nullptr, nullptr, nullptr) == 0, L"Open file error.");
+		avfmtctx.reset(fmtctx.release());
+	}
+	return std::move(avfmtctx);
+}
+
 void MediaMetadataHelper::FillMediaMetadatas(AVIOContext * ioctx, MediaMetadataContainer & container)
 {
 	RegisterLibAV();
 
-	auto fmtctx = avformat_alloc_context();
-	fmtctx->pb = ioctx;
-
-	THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
-	auto avfmtctx = unique_avformat<true>(fmtctx);
+	unique_avformat<true> fmtctx(OpenAVFormatContext(ioctx));
 #if _DEBUG
-	av_dump_format(fmtctx, 0, nullptr, 0);
+	av_dump_format(fmtctx.get(), 0, nullptr, 0);
 #endif
 	// Title
 	AVDictionaryEntry* entry = nullptr;
@@ -215,14 +240,10 @@ int64_t MediaMetadataHelper::GetDuration(AVIOContext* ioctx) noexcept
 
 	try
 	{
-		auto fmtctx = avformat_alloc_context();
-		fmtctx->pb = ioctx;
-
-		THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
-		auto avfmtctx = unique_avformat<true>(fmtctx);
-		THROW_IF_NOT(avformat_find_stream_info(fmtctx, nullptr) >= 0, L"Read stream info error.");
+		unique_avformat<true> fmtctx(OpenAVFormatContext(ioctx));
+		THROW_IF_NOT(avformat_find_stream_info(fmtctx.get(), nullptr) >= 0, L"Read stream info error.");
 #if _DEBUG
-		av_dump_format(fmtctx, 0, nullptr, 0);
+		//av_dump_format(fmtctx.get(), 0, nullptr, 0);
 #endif
 		auto lastStreamIt = fmtctx->streams + fmtctx->nb_streams;
 		// 找到第一个音频流

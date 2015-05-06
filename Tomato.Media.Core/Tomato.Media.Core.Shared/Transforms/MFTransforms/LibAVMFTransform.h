@@ -42,6 +42,7 @@ private:
 	WAVEFORMATLIBAV waveFormat;
 	WAVEFORMATEX outputFormat;
 	std::vector<wrl::ComPtr<IMFMediaType>> availableOutputTypes;
+	bool codecOpened = false;
 };
 
 NSED_TOMATO_MEDIA

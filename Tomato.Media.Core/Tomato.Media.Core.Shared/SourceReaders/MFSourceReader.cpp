@@ -76,9 +76,10 @@ void MFSourceReader::Start(int64_t hns)
 		sourceReaderCallback->Start();
 		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
-	else if (readerState == SourceReaderState::Playing)
+	else if (readerState == SourceReaderState::Playing && hns != -1)
 	{
 		readerState = SourceReaderState::Seeking;
+		requestEvent.set();
 		sourceReaderCallback->FlushAsync().then([=]
 		{
 			decodedBuffer.clear();
@@ -95,9 +96,10 @@ void MFSourceReader::Start(int64_t hns)
 
 void MFSourceReader::Stop()
 {
-	if (readerState != SourceReaderState::Playing)
-		readerState = SourceReaderState::Stopped;
+	requestEvent.reset();
+	readerState = SourceReaderState::Stopped;
 	sourceReaderCallback->Stop();
+	requestEvent.set();
 	decodedBuffer.clear();
 }
 
@@ -107,7 +109,8 @@ size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
 		requestEvent.set();
 
 	// 缓冲时不返回数据
-	if (readerState == SourceReaderState::PreRoll)
+	if (readerState == SourceReaderState::PreRoll ||
+		readerState == SourceReaderState::Seeking)
 		return 0;
 	if (decodedBuffer.tell_not_get() == 0)
 	{
@@ -140,8 +143,8 @@ void MFSourceReader::SetCurrentPosition(int64_t hns)
 	PropVariantInit(&positionVar);
 	positionVar.vt = VT_I8;
 	positionVar.hVal.QuadPart = hns;
-	sourceReader->SetCurrentPosition(GUID_NULL, positionVar);
-	//THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
+	//sourceReader->SetCurrentPosition(GUID_NULL, positionVar);
+	THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
 }
 
 void MFSourceReader::InitializeOutputMediaType(const WAVEFORMATEX * outputFormat)
@@ -218,11 +221,12 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 
 		auto read = decodedBuffer.write(audioData, audioDataLength);
 		// 没有写完，需要等待读取
-		while (read < audioDataLength)
+		while (read < audioDataLength )
 		{
 			audioData += read;
 			audioDataLength -= read;
-			if (readerState == SourceReaderState::Stopped || requestEvent.wait() != 0)return;
+			if (requestEvent.wait() != 0 || readerState == SourceReaderState::Stopped ||
+				readerState == SourceReaderState::Seeking)return;
 			read = decodedBuffer.write(audioData, audioDataLength);
 		}
 	}
@@ -291,7 +295,7 @@ task<void> MFSourceReaderCallback::FlushAsync()
 
 STDMETHODIMP MFSourceReaderCallback::OnEvent(DWORD dwStreamIndex, IMFMediaEvent * pEvent) noexcept
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void MFSourceReaderCallback::SetReadSampleCallback(std::function<void(ReadSampleResult)>&& readSampleCallback)

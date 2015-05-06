@@ -129,21 +129,19 @@ void LibAVAudioSource::OnConfigurePresentationDescriptor(IMFPresentationDescript
 
 void LibAVAudioSource::CreateAVFormatContext(wrl::ComPtr<IMFByteStream> stream)
 {
-	avioctx = std::make_unique<MFAVIOContext>(stream, 2 * 1024 * 1024, false);
+	avioctx = std::make_unique<MFAVIOContext>(stream, 4096 * 10, false);
 
-	auto fmtctx = avformat_alloc_context();
-	fmtctx->pb = avioctx->Get();
-
-	THROW_IF_NOT(avformat_open_input(&fmtctx, nullptr, nullptr, nullptr) == 0, L"Open file error.");
-	avfmtctx = unique_avformat<true>(fmtctx);
-	THROW_IF_NOT(avformat_find_stream_info(fmtctx, nullptr) >= 0, L"Read stream info error.");
+	auto fmtctx = OpenAVFormatContext(avioctx->Get());
+	THROW_IF_NOT(avformat_find_stream_info(fmtctx.get(), nullptr) >= 0, L"Read stream info error.");
 #if _DEBUG
-	av_dump_format(fmtctx, 0, nullptr, 0);
+	av_dump_format(fmtctx.get(), 0, nullptr, 0);
 #endif
 	auto lastStreamIt = fmtctx->streams + fmtctx->nb_streams;
 	// 找到第一个音频流
 	auto audioStreamIt = std::find_if(fmtctx->streams, lastStreamIt,
 		[](AVStream* stream) {return stream->codec->codec_type == AVMEDIA_TYPE_AUDIO; });
 	THROW_IF_NOT(audioStreamIt != lastStreamIt, "Cannot find a audio stream.");
+
+	avfmtctx = std::move(fmtctx);
 	audioStream = *audioStreamIt;
 }

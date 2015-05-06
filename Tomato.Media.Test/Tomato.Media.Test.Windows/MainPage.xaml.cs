@@ -95,13 +95,18 @@ namespace Tomato.Media.Test
                 player.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
                 player.IsSystemMediaControlEnabled = true;
             }
+            for (int i = 0; i < 0; i++)
+            {
+                var s = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
+                await s.InitializeFullMetadatas();
+            }
             var mediaSource = await MediaSource.CreateFromFile(await Package.Current.InstalledLocation.GetFileAsync(files[0]));
-            sl_Time.Maximum = mediaSource.Duration.TotalSeconds;
-            await mediaSource.InitializeFullMetadatas();
+            //sl_Time.Maximum = mediaSource.Duration.TotalSeconds;
+            //await mediaSource.InitializeFullMetadatas();
             //var lrc = mediaSource.Lyrics;
             //var lrcAna = new LyricsAnalyzer(lrc);
             //var rows = lrcAna.Rows.ToArray();
-            System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
+            //System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
             //var mediaSource = await MediaSource.CreateFromFile(await
             //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
             player.SetMediaSource(mediaSource);
@@ -119,7 +124,12 @@ namespace Tomato.Media.Test
         private void Player_MediaPlaybackStatusChanged(object sender, MediaPlaybackStatus e)
         {
             if (e == MediaPlaybackStatus.Stopped)
-                player.StartPlayback(TimeSpan.FromTicks(0));
+            {
+                player.SetMediaSource(null);
+                //player.StartPlayback(TimeSpan.FromTicks(0));
+            }
+            else if (e == MediaPlaybackStatus.Playing && timer.IsEnabled == false)
+                timer.Start();
         }
 
         private void Player_OnStopButtonPressed(object sender, object e)
@@ -146,6 +156,8 @@ namespace Tomato.Media.Test
                 Source = Model,
                 Path = new PropertyPath("CurrentTime")
             });
+            Model.CurrentTime = value;
+            timer.Stop();
             player.StartPlayback(TimeSpan.FromSeconds(value));
         }
 

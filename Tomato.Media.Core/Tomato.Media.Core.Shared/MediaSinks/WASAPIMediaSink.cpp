@@ -73,6 +73,8 @@ WASAPIMediaSink::WASAPIMediaSink()
 	:sampleRequestEvent(CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS)),
 	mcssProvider(MFMMCSSProvider::GetDefault())
 {
+	//auto d = 
+
 	startPlaybackThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnStartPlayback, this));
 	seekPlaybackThread = mcssProvider.CreateMMCSSThread(
@@ -114,7 +116,7 @@ void WASAPIMediaSink::SetStateChangedCallback(std::function<void(MediaSinkState)
 
 void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
 {
-	std::lock_guard<decltype(sampleRequestMutex)> locker(sampleRequestMutex);
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
 
 	if (this->sourceReader)
 		this->sourceReader->Stop();
@@ -271,10 +273,15 @@ void WASAPIMediaSink::InitializeDeviceBuffer()
 
 void WASAPIMediaSink::OnStartPlayback()
 {
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
 	InitializeDeviceBuffer();
 	THROW_IF_FAILED(audioClient->Start());
+
 	if (sourceReader)
 		sourceReader->Start(starthns);
+	if (starthns != -1)
+		currentFrames = 0;
 	SetState(MediaSinkState::Playing);
 
 	sampleRequestedThread->Execute(sampleRequestEvent);
@@ -282,8 +289,11 @@ void WASAPIMediaSink::OnStartPlayback()
 
 void WASAPIMediaSink::OnSeekPlayback()
 {
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
 	sampleRequestedThread->Cancel();
 	InitializeDeviceBuffer();
+
 	if (sourceReader)
 		sourceReader->Start(starthns);
 	currentFrames = 0;
@@ -294,6 +304,8 @@ void WASAPIMediaSink::OnSeekPlayback()
 
 void WASAPIMediaSink::OnPausePlayback()
 {
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
 	sampleRequestedThread->Cancel();
 	FillBufferAvailable(true);
 	THROW_IF_FAILED(audioClient->Stop());
@@ -302,6 +314,8 @@ void WASAPIMediaSink::OnPausePlayback()
 
 void WASAPIMediaSink::OnStopPlayback()
 {
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
 	sampleRequestedThread->Cancel();
 	FillBufferAvailable(true);
 	THROW_IF_FAILED(audioClient->Stop());
@@ -314,8 +328,8 @@ void WASAPIMediaSink::OnStopPlayback()
 
 void WASAPIMediaSink::OnSampleRequested()
 {
-	// 锁定保证同时只有一个请求被处理
-	std::lock_guard<decltype(sampleRequestMutex)> locker(sampleRequestMutex);
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
 	FillBufferAvailable(false);
 
 	if (sinkState == MediaSinkState::Playing)

@@ -44,8 +44,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\ARM\Debug\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
+      <Link>Redist\Debug\ARM\Tomato.Media.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\ARM\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.dll">
       <Link>Redist\Debug\ARM\Tomato.Media.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
+      <Link>Redist\Retail\ARM\Tomato.Media.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.Windows\Tomato.Media.dll">
+      <Link>Redist\Retail\ARM\Tomato.Media.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\Debug\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
@@ -56,9 +68,19 @@
       <Link>Redist\Debug\x86\Tomato.Media.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.pri">
-      <Link>Redist\CommonConfiguration\Neutral\Tomato.Media\Tomato.Media.pri</Link>
+    <Content Include="..\Release\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.Core.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.Core.dll</Link>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.Windows\Tomato.Media.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.Windows\Tomato.Media.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.dll</Link>
     </Content>
     <Content Include="..\x64\Debug\Tomato.Media.Core.Windows\Tomato.Media.Core.dll">
       <Link>Redist\Debug\x64\Tomato.Media.Core.dll</Link>
@@ -68,11 +90,36 @@
       <Link>Redist\Debug\x64\Tomato.Media.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Redist\Debug\ARM\Tomato.Media.Core.dll">
+    <Content Include="..\ARM\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.pri">
+      <Link>References\Debug\ARM\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.winmd">
+      <Link>References\Debug\ARM\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.Windows\Tomato.Media.pri">
+      <Link>References\Retail\ARM\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.Windows\Tomato.Media.winmd">
+      <Link>References\Retail\ARM\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.pri">
+      <Link>References\Debug\x86\Tomato.Media.pri</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\Debug\Tomato.Media.WinRT.Windows\Tomato.Media.winmd">
-      <Link>References\CommonConfiguration\Neutral\Tomato.Media.winmd</Link>
+      <Link>References\Debug\x86\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.Windows\Tomato.Media.pri">
+      <Link>References\Retail\x86\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.Windows\Tomato.Media.winmd">
+      <Link>References\Retail\x86\Tomato.Media.winmd</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
@@ -83,6 +130,7 @@
     <Content Include="SDKManifest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup />

@@ -23,7 +23,11 @@ LibAVMFTransform::LibAVMFTransform()
 
 LibAVMFTransform::~LibAVMFTransform()
 {
-
+	if (codecOpened)
+	{
+		avcodec_close(waveFormat.CodecContext);
+		codecOpened = false;
+	}
 }
 
 void LibAVMFTransform::OnValidateInputType(IMFMediaType * type)
@@ -91,7 +95,8 @@ ComPtr<IMFMediaType> LibAVMFTransform::OnSetOutputType(IMFMediaType * type)
 	THROW_IF_NOT(codec, "Cannot find decoder.");
 	THROW_IF_NOT(avcodec_open2(waveFormat.CodecContext, codec, nullptr) == 0,
 		"Open decoder error.");
-
+	codecOpened = true;
+	
 	WAVEFORMATEX* format;
 	UINT32 size;
 	THROW_IF_FAILED(MFCreateWaveFormatExFromMFMediaType(type, &format, &size));
@@ -112,29 +117,34 @@ void LibAVMFTransform::OnProduceOutput(IMFSample * input, MFT_OUTPUT_DATA_BUFFER
 	if (SUCCEEDED(input->GetSampleTime(&sampleTime)))
 		THROW_IF_FAILED(outputSample->SetSampleTime(sampleTime));
 
+	DWORD bufferCount;
+	THROW_IF_FAILED(input->GetBufferCount(&bufferCount));
+	THROW_IF_NOT(bufferCount == 1, "Buffer count must be 1.");
 	ComPtr<IMFMediaBuffer> buffer;
 	THROW_IF_FAILED(input->GetBufferByIndex(0, &buffer));
 	DWORD bufferLen = 0;
 	THROW_IF_FAILED(buffer->GetCurrentLength(&bufferLen));
 
-	mfbuffer_locker locker(buffer.Get());
-	BYTE* data;
-	THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
-	AVPacket packet;
-	av_init_packet(&packet);
-	packet.data = data;
-	packet.size = bufferLen;
-	packet.dts = packet.pts = AV_NOPTS_VALUE;
-
 	size_t samples = 0;
-	while (true)
 	{
-		ComPtr<IMFMediaBuffer> buffer;
-		auto pair = DecodeFrame(packet, buffer);
-		if (buffer)
-			THROW_IF_FAILED(outputSample->AddBuffer(buffer.Get()));
-		samples += pair.first;
-		if (!pair.second) break;
+		mfbuffer_locker locker(buffer.Get());
+		BYTE* data;
+		THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
+		AVPacket packet;
+		av_init_packet(&packet);
+		packet.data = data;
+		packet.size = bufferLen;
+		packet.dts = packet.pts = AV_NOPTS_VALUE;
+
+		while (true)
+		{
+			ComPtr<IMFMediaBuffer> buffer;
+			auto pair = DecodeFrame(packet, buffer);
+			if (buffer)
+				THROW_IF_FAILED(outputSample->AddBuffer(buffer.Get()));
+			samples += pair.first;
+			if (!pair.second) break;
+		}
 	}
 
 	THROW_IF_FAILED(outputSample->SetSampleDuration(samples * 1.0e7 /
@@ -177,10 +187,11 @@ std::pair<uint32_t, bool> LibAVMFTransform::DecodeFrame(AVPacket& packet, wrl::C
 	if (packet.size == 0)
 		return{ 0, false };
 
-	auto frame = av_frame_alloc();
+	unique_avframe frame(av_frame_alloc());
+	THROW_IF_NOT(frame, "Cannot allocate frame.");
 	int got_frame = 0;
 
-	auto ret = avcodec_decode_audio4(waveFormat.CodecContext, frame, &got_frame, &packet);
+	auto ret = avcodec_decode_audio4(waveFormat.CodecContext, frame.get(), &got_frame, &packet);
 	if (ret < 0)
 		return{ 0, false };
 
@@ -239,8 +250,7 @@ std::pair<uint32_t, bool> LibAVMFTransform::DecodeFrame(AVPacket& packet, wrl::C
 				(const uint8_t**)frame->extended_data, frame->nb_samples);
 			THROW_IF_NOT(converted == frame->nb_samples, "Resample failed.");
 		}
-		av_frame_unref(frame);
-		av_frame_free(&frame);
+		av_frame_unref(frame.get());
 		swr_free(&swrCtx);
 
 		THROW_IF_FAILED(buffer->SetCurrentLength(size));

@@ -60,7 +60,7 @@ private:
 	unique_cotaskmem<WAVEFORMATEX> deviceInputFormat;
 	REFERENCE_TIME hnsDefaultBufferDuration;
 	UINT32 deviceBufferFrames;
-	std::recursive_mutex sampleRequestMutex;
+	std::recursive_mutex sourceReaderMutex;
 	std::shared_ptr<ISourceReader> sourceReaderHolder;
 	ISourceReader* sourceReader = nullptr;
 	std::function<void(MediaSinkState)> stateChangedCallback;

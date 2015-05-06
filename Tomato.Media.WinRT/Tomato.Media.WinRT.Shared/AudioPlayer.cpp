@@ -13,7 +13,6 @@ AudioPlayer::AudioPlayer()
 	:AudioPlayer(Windows::UI::Xaml::Window::Current->Dispatcher,
 	SystemMediaTransportControls::GetForCurrentView())
 {
-
 }
 
 AudioPlayer::AudioPlayer(CoreDispatcher^ uiDispatcher, SystemMediaTransportControls^ mediaControls)
@@ -45,8 +44,13 @@ IAsyncAction ^ AudioPlayer::Initialize()
 void AudioPlayer::SetMediaSource(MediaSource^ source)
 {
 	OnSetMediaSource(source);
-	auto reader = CreateMFSourceReader(source->Get());
-	sink->SetMediaSourceReader(std::move(reader));
+	if (source)
+	{
+		auto reader = CreateMFSourceReader(source->Get());
+		sink->SetMediaSourceReader(std::move(reader));
+	}
+	else
+		sink->SetMediaSourceReader(nullptr);
 }
 
 void AudioPlayer::StartPlayback()
@@ -129,9 +133,18 @@ void AudioPlayer::OnSetMediaSource(MediaSource^ source)
 	RunOnUIDispatcher([=]
 	{
 		auto updater = mediaControls->DisplayUpdater;
-		updater->MusicProperties->Title = source->Title;
-		updater->MusicProperties->AlbumArtist = source->AlbumArtist;
-		updater->MusicProperties->Artist = source->Artist;
+		if (source)
+		{
+			updater->MusicProperties->Title = source->Title;
+			updater->MusicProperties->AlbumArtist = source->AlbumArtist;
+			updater->MusicProperties->Artist = source->Artist;
+		}
+		else
+		{
+			updater->MusicProperties->Title = nullptr;
+			updater->MusicProperties->AlbumArtist = nullptr;
+			updater->MusicProperties->Artist = nullptr;
+		}
 
 		mediaControls->PlaybackStatus = MediaPlaybackStatus::Closed;
 		updater->Update();

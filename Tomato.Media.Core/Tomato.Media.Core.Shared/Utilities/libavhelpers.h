@@ -14,8 +14,20 @@ struct av_deleter
 	void operator()(void* handle) const noexcept;
 };
 
+struct avio_deleter
+{
+	void operator()(AVIOContext* handle) const noexcept;
+};
+
+struct avframe_deleter
+{
+	void operator()(AVFrame* handle) const noexcept;
+};
+
 template<class T>
 using unique_av = std::unique_ptr<T, av_deleter>;
+using unique_avio = std::unique_ptr<AVIOContext, avio_deleter>;
+using unique_avframe = std::unique_ptr<AVFrame, avframe_deleter>;
 
 template<bool close>
 struct avformatctx_deleter
@@ -43,16 +55,15 @@ class MFAVIOContext
 public:
 	MFAVIOContext(wrl::ComPtr<IMFByteStream> stream, size_t bufferSize, bool canWrite);
 
-	AVIOContext* Get() const noexcept { return ioctx; }
-	void Release();
+	AVIOContext* Get() const noexcept { return ioctx.get(); }
 private:
 	static int ReadPacket(void *opaque, uint8_t *buf, int buf_size) noexcept;
 	static int WritePacket(void *opaque, uint8_t *buf, int buf_size) noexcept;
 	static int64_t Seek(void *opaque, int64_t offset, int whence) noexcept;
 private:
 	wrl::ComPtr<IMFByteStream> stream;
-	byte* iobuffer;
-	AVIOContext* ioctx;
+	unique_avio ioctx;
+	unique_av<byte> iobuffer;
 	bool canWrite;
 };
 
@@ -84,5 +95,6 @@ public:
 };
 
 void RegisterLibAV();
+unique_avformat<true> OpenAVFormatContext(AVIOContext * ioctx);
 
 NSED_TOMATO_MEDIA

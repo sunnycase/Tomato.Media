@@ -27,11 +27,9 @@ private:
 	wrl::ComPtr<IMFMediaType> CreateMediaType();
 	void SeekToFrame(uint32_t frameId);
 private:
-	wrl::ComPtr<IMFByteStream> stream;		// 音源流
 	std::unique_ptr<MFAVIOContext> avioctx;
 	std::shared_ptr<AVFormatContext> avfmtctx;
 	AVStream* audioStream = nullptr;
-	uint32_t bit_remainder;
 };
 
 NSED_TOMATO_MEDIA

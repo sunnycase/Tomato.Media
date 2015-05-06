@@ -15,7 +15,10 @@
     <FileAlignment>512</FileAlignment>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Tomato.Media.Test.Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Tomato.Media.Test.Windows_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>B918515BA28186404111CB85383B1D7F3402EDCB</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -112,17 +115,19 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="- 雨降花 .mp3" />
-    <Content Include="02. 涙色の翼.flac" />
-    <Content Include="04. 全天候型いらっしゃいませ.flac" />
+    <None Include="Package.StoreAssociation.xml" />
+    <None Include="- 雨降花 .mp3" />
+    <None Include="02. 涙色の翼.flac" />
+    <None Include="04. 全天候型いらっしゃいませ.flac" />
     <Content Include="04.花篝り.APE" />
-    <Content Include="09.つないだ手.APE" />
-    <Content Include="【這いよれ!ニャル子さんW】 Sister, Friend, Lover %28FulI ver%29.flac" />
+    <None Include="09.つないだ手.APE" />
+    <None Include="Tomato.Media.Test.Windows_StoreKey.pfx" />
+    <None Include="【這いよれ!ニャル子さんW】 Sister, Friend, Lover %28FulI ver%29.flac" />
     <None Include="packages.config" />
     <None Include="Tomato.Media.Test.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="03.ずるいよ….mp3" />
+    <None Include="03.ずるいよ….mp3" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />

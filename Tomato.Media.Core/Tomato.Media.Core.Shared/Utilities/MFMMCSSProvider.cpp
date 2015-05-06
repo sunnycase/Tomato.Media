@@ -27,6 +27,11 @@ public:
 		THROW_IF_FAILED(MFCreateAsyncResult(nullptr, invoker.Get(), nullptr, &invokerResult));
 	}
 
+	~MFMMCSSThread()
+	{
+		Cancel();
+	}
+
 	virtual void Execute()
 	{
 		THROW_IF_FAILED(MFPutWorkItemEx2(queueId, 0, invokerResult.Get()));
@@ -37,7 +42,7 @@ public:
 		THROW_IF_FAILED(MFPutWaitingWorkItem(event.Get(), 0, invokerResult.Get(), &itemKey));
 	}
 
-	virtual void Cancel()
+	virtual void Cancel() noexcept
 	{
 		if (itemKey)
 		{

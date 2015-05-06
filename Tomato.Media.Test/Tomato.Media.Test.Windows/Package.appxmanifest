@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="35e33bd7-4d4b-4ca7-8a67-a2f144f5fed1" Publisher="CN=晖" Version="1.0.0.0" />
+  <Identity Name="10874Tomato.TomatoMusic" Publisher="CN=054DD4F6-0572-4A2D-AF34-B9CF23FCCE83" Version="1.1.0.0" />
   <Properties>
-    <DisplayName>Tomato.Media.Test.Windows</DisplayName>
-    <PublisherDisplayName>晖</PublisherDisplayName>
+    <DisplayName>Tomato Music</DisplayName>
+    <PublisherDisplayName>岁纳Tomato</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Tomato.Media.Test.Windows.App">
-      <m2:VisualElements DisplayName="Tomato.Media.Test.Windows" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Tomato.Media.Test.Windows" ForegroundText="light" BackgroundColor="#464646">
+      <m2:VisualElements DisplayName="Tomato Music" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Tomato.Media.Test.Windows" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
       <Extensions>

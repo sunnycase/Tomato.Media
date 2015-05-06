@@ -110,6 +110,7 @@ namespace Tomato
 		void clear()
 		{
 			readPtr = writePtr = buffer.get();
+			bufferFull = false;
 		}
 	private:
 		size_t bufferSize;

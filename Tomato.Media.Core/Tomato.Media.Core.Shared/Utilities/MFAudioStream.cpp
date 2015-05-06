@@ -164,9 +164,11 @@ void MFAudioStream::EndOfDeliver()
 
 bool MFAudioStream::DoesNeedMoreData()
 {
+#if _DEBUG
 	std::wstringstream ss;
 	ss << L"samples cache: " << samplesCache.size() << std::endl;
 	OutputDebugString(ss.str().c_str());
+#endif
 
 	return !endOfDeliver && state == MFMediaStreamState::Started && samplesCache.size() < PreRollSample;
 }
