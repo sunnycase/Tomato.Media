@@ -125,7 +125,10 @@ void AudioPlayer::OnButtonPressed(SystemMediaTransportControls ^sender,
 
 void AudioPlayer::RunOnUIDispatcher(std::function<void()>&& handler)
 {
-	uiDispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler(std::move(handler)));
+	if (uiDispatcher)
+		uiDispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler(std::move(handler)));
+	else
+		handler();
 }
 
 void AudioPlayer::OnSetMediaSource(MediaSource^ source)
@@ -164,6 +167,7 @@ void AudioPlayer::OnMediaSinkPlaying()
 	RunOnUIDispatcher([=]
 	{
 		mediaControls->PlaybackStatus = MediaPlaybackStatus::Playing;
+		mediaControls->DisplayUpdater->Update();
 	});
 }
 

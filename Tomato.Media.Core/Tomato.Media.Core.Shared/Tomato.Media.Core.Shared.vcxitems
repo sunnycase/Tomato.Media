@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp" />

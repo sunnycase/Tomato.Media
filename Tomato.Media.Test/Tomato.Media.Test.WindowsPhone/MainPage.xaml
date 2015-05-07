@@ -7,8 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
 
-    <Grid>
+        <local:ViewModel x:Name="ViewModel"/>
+    </Page.Resources>
 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          DataContext="{StaticResource ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Slider Name="sl_Time" Margin="10" Value="{Binding CurrentTime}" ValueChanged="sl_Time_ValueChanged"/>
+        <Button Grid.Row="1" Click="Button_Click">Play</Button>
     </Grid>
 </Page>

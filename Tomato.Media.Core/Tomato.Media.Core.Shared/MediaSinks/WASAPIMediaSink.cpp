@@ -60,7 +60,16 @@ public:
 			THROW_IF_FAILED(audioClientUnk.As(&audioClient));
 			completionEvent.set(audioClient);
 		}
-		CATCH_ALL();
+		catch (Exception^ ex)
+		{
+			completionEvent.set_exception(ex);
+			return ex->HResult;
+		}
+		catch (...)
+		{
+			completionEvent.set_exception(ref new COMException(E_FAIL));
+			return E_FAIL;
+		}
 		return S_OK;
 	}
 private:

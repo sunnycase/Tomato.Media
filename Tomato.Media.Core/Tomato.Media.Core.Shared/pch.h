@@ -21,6 +21,7 @@
 
 #include <wrl.h>
 #include <windows.media.h>
+#include <windows.media.core.h>
 
 // WASAPI
 #include <Audioclient.h>

@@ -47,11 +47,12 @@ namespace
 				KSDATAFORMAT_SUBTYPE_LIBAV, MFAudioFormat_PCM);
 		}
 	};
+}
 
-	void RegisterMFTs()
-	{
-		static MFTRegistry reg;
-	}
+
+void NS_TOMATO_MEDIA::RegisterMFTs()
+{
+	static MFTRegistry reg;
 }
 
 MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
@@ -132,7 +133,7 @@ void MFSourceReader::SetAudioFormat(const WAVEFORMATEX * format, uint32_t frames
 	InitializeOutputMediaType(format);
 	ConfigureSourceReader();
 	bytesPerPeriodLength = framesPerPeriod * outputFormat->nBlockAlign;
-	decodedBuffer.init(format->nAvgBytesPerSec * 100);
+	decodedBuffer.init(format->nAvgBytesPerSec * 10);
 
 	readerState = SourceReaderState::Ready;
 }

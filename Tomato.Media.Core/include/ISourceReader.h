@@ -51,5 +51,6 @@ public:
 };
 
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall CreateMFSourceReader(IMediaSource* mediaSource);
+MEDIA_CORE_API void RegisterMFTs();
 
 NSED_TOMATO_MEDIA

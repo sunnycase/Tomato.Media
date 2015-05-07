@@ -191,3 +191,4 @@ ModelManifest.xml
 *.flac
 *.APE
 *.mp3
+/Tomato.Media.Test/Tomato.Media.Test.WindowsPhone/Package.StoreAssociation.xml

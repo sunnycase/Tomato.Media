@@ -124,6 +124,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\memory.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.h">
+      <Filter>Headers\MediaSources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -195,6 +198,9 @@
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\memory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.cpp">
+      <Filter>Sources\MediaSources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

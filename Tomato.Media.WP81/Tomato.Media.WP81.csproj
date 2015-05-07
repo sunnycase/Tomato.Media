@@ -52,6 +52,14 @@
       <Link>Redist\Debug\ARM\Tomato.Media.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.Core.WindowsPhone\Tomato.Media.Core.dll">
+      <Link>Redist\Retail\ARM\Tomato.Media.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.dll">
+      <Link>Redist\Retail\ARM\Tomato.Media.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\Debug\Tomato.Media.Core.WindowsPhone\Tomato.Media.Core.dll">
       <Link>Redist\Debug\x86\Tomato.Media.Core.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -60,12 +68,36 @@
       <Link>Redist\Debug\x86\Tomato.Media.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\ARM\Debug\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.pri">
+      <Link>References\Debug\ARM\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Debug\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.winmd">
+      <Link>References\Debug\ARM\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.pri">
+      <Link>References\Retail\ARM\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ARM\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.winmd">
+      <Link>References\Retail\ARM\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\Debug\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.pri">
-      <Link>Redist\CommonConfiguration\Neutral\Tomato.Media\Tomato.Media.pri</Link>
+      <Link>References\Debug\x86\Tomato.Media.pri</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\Debug\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.winmd">
-      <Link>References\CommonConfiguration\Neutral\Tomato.Media.winmd</Link>
+      <Link>References\Debug\x86\Tomato.Media.winmd</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.pri">
+      <Link>References\Retail\x86\Tomato.Media.pri</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.winmd">
+      <Link>References\Retail\x86\Tomato.Media.winmd</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
@@ -73,6 +105,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Release\Tomato.Media.Core.WindowsPhone\Tomato.Media.Core.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Release\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.dll">
+      <Link>Redist\Retail\x86\Tomato.Media.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="SDKManifest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
