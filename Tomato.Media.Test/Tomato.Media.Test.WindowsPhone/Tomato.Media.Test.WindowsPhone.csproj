@@ -83,10 +83,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="..\..\SampleBackgroundAudioTask\SampleBackgroundAudioTask.csproj">
-      <Project>{83e0b8e7-32ca-465c-9d67-4353f2c21300}</Project>
-      <Name>SampleBackgroundAudioTask</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Tomato.Media.WinRT\Tomato.Media.WinRT.WindowsPhone\Tomato.Media.WinRT.WindowsPhone.vcxproj">
       <Project>{cadb4f8f-7e2d-4870-b0aa-2f5a29c76d34}</Project>
       <Name>Tomato.Media.WinRT.WindowsPhone</Name>
@@ -104,6 +100,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="- 雨降花 .mp3" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />

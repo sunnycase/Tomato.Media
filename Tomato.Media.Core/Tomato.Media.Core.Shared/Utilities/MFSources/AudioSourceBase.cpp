@@ -203,7 +203,7 @@ HRESULT AudioSourceBase::Start(
 	// Check the data type of the start position.
 	if ((pvarStartPos->vt != VT_I8) && (pvarStartPos->vt != VT_EMPTY))
 		return MF_E_UNSUPPORTED_TIME_FORMAT;
-	REFERENCE_TIME position = pvarStartPos->hVal.QuadPart;
+	REFERENCE_TIME position = pvarStartPos->vt == VT_EMPTY ? -1 : pvarStartPos->hVal.QuadPart;
 
 	try
 	{
@@ -216,8 +216,6 @@ HRESULT AudioSourceBase::Start(
 		auto startOperation = std::make_shared<MediaSourceStartOperation>(
 			pPresentationDescriptor, position);
 		QueueAsyncOperation(std::move(startOperation));
-
-		state = MFMediaSourceState::Starting;
 	}
 	CATCH_ALL();
 	return S_OK;
@@ -299,17 +297,13 @@ void AudioSourceBase::DispatchOperation(TOperation& op)
 			DoStart(reinterpret_cast<MediaSourceStartOperation*>(op.get()));
 			break;
 
-			//case SourceOp::OP_STOP:
-			//	DoStop(pOp);
-			//	break;
+		case MediaSourceOperationKind::Pause:
+			DoPause();
+			break;
 
-			//case SourceOp::OP_PAUSE:
-			//	DoPause(pOp);
-			//	break;
-
-			//case SourceOp::OP_SETRATE:
-			//	DoSetRate(pOp);
-			//	break;
+		case MediaSourceOperationKind::Stop:
+			DoStop();
+			break;
 
 			//	// Operations requested by the streams:
 		case MediaSourceOperationKind::RequestData:
@@ -333,7 +327,7 @@ void AudioSourceBase::DispatchOperation(TOperation& op)
 		hr = E_FAIL;
 	}
 	if (FAILED(hr))
-		QueueEvent(MESourceStarted, GUID_NULL, hr, nullptr);
+		QueueEvent(MEError, GUID_NULL, hr, nullptr);
 }
 
 task<void> AudioSourceBase::OpenAsync(IMFByteStream* byteStream)
@@ -384,7 +378,7 @@ task<void> AudioSourceBase::CreatePresentationDescriptor(ComPtr<IMFByteStream> s
 	{
 		LOCK_STATE();
 		this->presentDescriptor = pd;
-		state = MFMediaSourceState::Stopped;
+		state = MFMediaSourceState::Starting;
 	});
 }
 
@@ -414,18 +408,90 @@ void AudioSourceBase::DoStart(MediaSourceStartOperation* operation)
 	{
 		PROPVARIANT positionVar;
 		PropVariantInit(&positionVar);
-		positionVar.vt = VT_I8;
-		positionVar.hVal.QuadPart = position;
+		if (position == -1)
+			positionVar.vt = VT_EMPTY;
+		else
+		{
+			positionVar.vt = VT_I8;
+			positionVar.hVal.QuadPart = position;
+		}
 
 		LOCK_STATE();
-		if (state != MFMediaSourceState::Started)
+		if (state == MFMediaSourceState::Starting)
 		{
 			state = MFMediaSourceState::Started;
 			// Queue the "started" event. The event data is the start position.
 			THROW_IF_FAILED(QueueEvent(MESourceStarted, GUID_NULL, S_OK, &positionVar));
 		}
 		else
+		{
+			state = MFMediaSourceState::Started;
 			THROW_IF_FAILED(QueueEvent(MESourceSeeked, GUID_NULL, S_OK, &positionVar));
+		}
+	}
+}
+
+void AudioSourceBase::DoPause()
+{
+	LOCK_STATE();
+	if (state == MFMediaSourceState::Started)
+	{
+		PauseStreams();
+
+		state = MFMediaSourceState::Paused;
+		THROW_IF_FAILED(QueueEvent(MESourcePaused, GUID_NULL, S_OK, nullptr));
+	}
+}
+
+void AudioSourceBase::PauseStreams()
+{
+	BOOL selected = FALSE;
+	DWORD streamId = 0;
+	DWORD streamsCount = 0;
+
+	// Reset the pending EOS count.
+	pendingEOSCount = 0;
+
+	THROW_IF_FAILED(presentDescriptor->GetStreamDescriptorCount(&streamsCount));
+	for (size_t i = 0; i < streamsCount; i++)
+	{
+		ComPtr<IMFStreamDescriptor> streamDesc;
+
+		THROW_IF_FAILED(presentDescriptor->GetStreamDescriptorByIndex(0, &selected, &streamDesc));
+		if (selected)
+			OnPauseStream(i);
+	}
+}
+
+void AudioSourceBase::DoStop()
+{
+	LOCK_STATE();
+	if (state == MFMediaSourceState::Paused || state == MFMediaSourceState::Started)
+	{
+		StopStreams();
+
+		state = MFMediaSourceState::Stopped;
+		THROW_IF_FAILED(QueueEvent(MESourceStopped, GUID_NULL, S_OK, nullptr));
+	}
+}
+
+void AudioSourceBase::StopStreams()
+{
+	BOOL selected = FALSE;
+	DWORD streamId = 0;
+	DWORD streamsCount = 0;
+
+	// Reset the pending EOS count.
+	pendingEOSCount = 0;
+
+	THROW_IF_FAILED(presentDescriptor->GetStreamDescriptorCount(&streamsCount));
+	for (size_t i = 0; i < streamsCount; i++)
+	{
+		ComPtr<IMFStreamDescriptor> streamDesc;
+
+		THROW_IF_FAILED(presentDescriptor->GetStreamDescriptorByIndex(0, &selected, &streamDesc));
+		if (selected)
+			OnStopStream(i);
 	}
 }
 

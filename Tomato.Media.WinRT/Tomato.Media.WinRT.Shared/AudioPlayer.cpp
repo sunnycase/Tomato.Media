@@ -11,12 +11,12 @@ using namespace concurrency;
 
 AudioPlayer::AudioPlayer()
 	:AudioPlayer(Windows::UI::Xaml::Window::Current->Dispatcher,
-	SystemMediaTransportControls::GetForCurrentView())
+		SystemMediaTransportControls::GetForCurrentView())
 {
 }
 
 AudioPlayer::AudioPlayer(CoreDispatcher^ uiDispatcher, SystemMediaTransportControls^ mediaControls)
-	:uiDispatcher(uiDispatcher), mediaControls(mediaControls)
+	: uiDispatcher(uiDispatcher), mediaControls(mediaControls)
 {
 	sink = CreateWASAPIMediaSink();
 	WeakReference wr(this);
@@ -41,16 +41,20 @@ IAsyncAction ^ AudioPlayer::Initialize()
 	});
 }
 
-void AudioPlayer::SetMediaSource(MediaSource^ source)
+IAsyncAction^ AudioPlayer::SetMediaSource(MediaSource^ source)
 {
 	OnSetMediaSource(source);
 	if (source)
 	{
-		auto reader = CreateMFSourceReader(source->Get());
-		sink->SetMediaSourceReader(std::move(reader));
+		return create_async([=] {
+			auto reader = CreateMFSourceReader(source->Get());
+			return sink->SetMediaSourceReader(std::move(reader));
+		});
 	}
 	else
+		return create_async([=] {
 		sink->SetMediaSourceReader(nullptr);
+	});
 }
 
 void AudioPlayer::StartPlayback()
@@ -187,6 +191,14 @@ void AudioPlayer::OnMediaSinkStopped()
 	});
 }
 
+void AudioPlayer::OnMediaSinkEnded()
+{
+	RunOnUIDispatcher([=]
+	{
+		mediaControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
+	});
+}
+
 void AudioPlayer::OnMediaPlaybackStatusChanged(MediaPlaybackStatus status)
 {
 	RunOnUIDispatcher([=]
@@ -222,6 +234,12 @@ void AudioPlayer::OnMediaSinkStateChanged(MediaSinkState state)
 		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Stopped);
 		OnMediaSinkStopped();
 		break;
+	case MediaSinkState::Ended:
+		RunOnUIDispatcher([=]
+		{
+			MediaEnded(this, nullptr);
+		});
+		OnMediaSinkStopped();
 	default:
 		break;
 	}
@@ -274,4 +292,14 @@ void AudioPlayer::IsPreviousEnabled::set(bool value)
 TimeSpan AudioPlayer::CurrentTime::get()
 {
 	return TimeSpan{ sink->GetCurrentTime() };
+}
+
+double AudioPlayer::Volume::get()
+{
+	return sink->GetVolume();
+}
+
+void AudioPlayer::Volume::set(double value)
+{
+	sink->SetVolume(value);
 }

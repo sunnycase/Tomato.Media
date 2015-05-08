@@ -64,7 +64,7 @@ task<void> SingleStreamAudioSourceBase::InitializeAudioStream(ComPtr<IMFByteStre
 		if (mediaTypes.size() == 0) THROW_IF_FAILED(MF_E_INVALIDMEDIATYPE);
 
 		// 创建 stream descriptor
-		THROW_IF_FAILED(MFCreateStreamDescriptor(0, mediaTypes.size(), 
+		THROW_IF_FAILED(MFCreateStreamDescriptor(0, mediaTypes.size(),
 			mediaTypes[0].GetAddressOf(), &streamDesc));
 		THROW_IF_FAILED(streamDesc->GetMediaTypeHandler(&typeHandler));
 		// 设定当前 Media Type
@@ -80,15 +80,30 @@ void SingleStreamAudioSourceBase::OnStartStream(DWORD streamId, bool selected, R
 
 	OnStartAudioStream(position);
 	// 判断流是不是已经启动了
-	auto started = audioStream->GetState() == MFMediaStreamState::Started;
+	auto wasSelected = audioStream->IsActived();
 	if (selected)
+	{
 		audioStream->Start(position);
-	else if (started)
+		audioStream->Active(true);
+	}
+	else if (wasSelected)
 		audioStream->Pause();
 
-	auto met = started ? MEUpdatedStream : MENewStream;
+	auto met = wasSelected ? MEUpdatedStream : MENewStream;
 
 	THROW_IF_FAILED(QueueEventUnk(met, GUID_NULL, S_OK, reinterpret_cast<IUnknown*>(audioStream.Get())));
+}
+
+void SingleStreamAudioSourceBase::OnPauseStream(DWORD streamId)
+{
+	auto started = audioStream->GetState() == MFMediaStreamState::Started;
+	if (started)
+		audioStream->Pause();
+}
+
+void SingleStreamAudioSourceBase::OnStopStream(DWORD streamId)
+{
+	audioStream->Stop();
 }
 
 task<void> SingleStreamAudioSourceBase::OnStreamsRequestData(TOperation& op)

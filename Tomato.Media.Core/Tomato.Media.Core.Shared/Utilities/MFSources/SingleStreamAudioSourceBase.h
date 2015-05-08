@@ -27,6 +27,8 @@ protected:
 	void EndOfDeliver();
 private:
 	virtual void OnStartStream(DWORD streamId, bool selected, REFERENCE_TIME position);
+	virtual void OnPauseStream(DWORD streamId);
+	virtual void OnStopStream(DWORD streamId);
 	virtual concurrency::task<void> OnStreamsRequestData(TOperation& op);
 private:
 	// 加载音源流

@@ -82,8 +82,6 @@ WASAPIMediaSink::WASAPIMediaSink()
 	:sampleRequestEvent(CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS)),
 	mcssProvider(MFMMCSSProvider::GetDefault())
 {
-	//auto d = 
-
 	startPlaybackThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnStartPlayback, this));
 	seekPlaybackThread = mcssProvider.CreateMMCSSThread(
@@ -92,6 +90,8 @@ WASAPIMediaSink::WASAPIMediaSink()
 		std::bind(&WASAPIMediaSink::OnPausePlayback, this));
 	stopThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnStopPlayback, this));
+	endThread = mcssProvider.CreateMMCSSThread(
+		std::bind(&WASAPIMediaSink::OnEndPlayback, this));
 	sampleRequestedThread = mcssProvider.CreateMMCSSThread(
 		std::bind(&WASAPIMediaSink::OnSampleRequested, this));
 }
@@ -123,17 +123,27 @@ void WASAPIMediaSink::SetStateChangedCallback(std::function<void(MediaSinkState)
 	stateChangedCallback = std::move(callback);
 }
 
-void WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
+task<void> WASAPIMediaSink::SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader)
 {
 	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
 
+	auto continueStep = [=] {
+		std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
+		sourceReaderHolder = sourceReader;
+		this->sourceReader = sourceReaderHolder.get();
+		if (this->sourceReader)
+			this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
+		currentFrames = 0;
+	};
+
 	if (this->sourceReader)
-		this->sourceReader->Stop();
-	sourceReaderHolder = sourceReader;
-	this->sourceReader = sourceReaderHolder.get();
-	if (this->sourceReader)
-		this->sourceReader->SetAudioFormat(deviceInputFormat.get(), GetBufferFramesPerPeriod());
-	currentFrames = 0;
+		return this->sourceReader->StopAsync().then(continueStep);
+	else
+	{
+		continueStep();
+		return task_from_result();
+	}
 }
 
 void WASAPIMediaSink::SetTimeChangedCallback(std::function<void(int64_t)> callback)
@@ -144,15 +154,24 @@ void WASAPIMediaSink::SetTimeChangedCallback(std::function<void(int64_t)> callba
 void WASAPIMediaSink::StartPlayback(int64_t hns)
 {
 	if (sinkState == MediaSinkState::Ready ||
-		sinkState == MediaSinkState::Paused ||
+		sinkState == MediaSinkState::Ended ||
 		sinkState == MediaSinkState::Stopped)
 	{
 		SetState(MediaSinkState::StartPlaying);
 		starthns = hns;
 		startPlaybackThread->Execute();
 	}
+	else if (sinkState == MediaSinkState::Paused)
+	{
+		SetState(MediaSinkState::StartPlaying);
+		starthns = hns;
+		if(hns == -1)
+			startPlaybackThread->Execute();
+		else
+			seekPlaybackThread->Execute();
+	}
 	// Seeking
-	else if (sinkState == MediaSinkState::Playing)
+	else if (sinkState == MediaSinkState::Playing && hns != -1)
 	{
 		SetState(MediaSinkState::StartPlaying);
 		starthns = hns;
@@ -202,6 +221,8 @@ void WASAPIMediaSink::ConfigureDevice()
 	THROW_IF_FAILED(audioClient->GetBufferSize(&deviceBufferFrames));
 	// 获取音频渲染客户端
 	THROW_IF_FAILED(audioClient->GetService(IID_PPV_ARGS(renderClient.ReleaseAndGetAddressOf())));
+	// 获取简单音量控制
+	THROW_IF_FAILED(audioClient->GetService(IID_PPV_ARGS(simpleAudioVolume.ReleaseAndGetAddressOf())));
 	// Sets the event handle that the system signals when an audio buffer is ready to be processed by the client
 	THROW_IF_FAILED(audioClient->SetEventHandle(sampleRequestEvent.Get()));
 }
@@ -258,6 +279,9 @@ void WASAPIMediaSink::FillBufferFromMediaSource(UINT32 framesCount)
 		// 播放结束
 		if (sourceReader->GetState() == SourceReaderState::Stopped)
 			StopPlayback();
+		// 媒体结束
+		else if (sourceReader->GetState() == SourceReaderState::Ended)
+			EndPlayback();
 	}
 }
 
@@ -278,6 +302,16 @@ size_t WASAPIMediaSink::GetBufferFramesPerPeriod()
 void WASAPIMediaSink::InitializeDeviceBuffer()
 {
 	FillBufferAvailable(true);
+}
+
+void WASAPIMediaSink::EndPlayback()
+{
+	if (sinkState == MediaSinkState::Playing)
+	{
+		SetState(MediaSinkState::Stopping);
+		endThread->Execute();
+		currentFrames = 0;
+	}
 }
 
 void WASAPIMediaSink::OnStartPlayback()
@@ -303,12 +337,23 @@ void WASAPIMediaSink::OnSeekPlayback()
 	sampleRequestedThread->Cancel();
 	InitializeDeviceBuffer();
 
-	if (sourceReader)
-		sourceReader->Start(starthns);
-	currentFrames = 0;
-	SetState(MediaSinkState::Playing);
+	auto continueStep = [=] {
+		std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
 
-	sampleRequestedThread->Execute(sampleRequestEvent);
+		sourceReader->Start(starthns);
+		currentFrames = 0;
+
+		audioClient->Start();
+
+		SetState(MediaSinkState::Playing);
+
+		sampleRequestedThread->Execute(sampleRequestEvent);
+	};
+
+	if (sourceReader)
+		sourceReader->StopAsync().then(continueStep);
+	else
+		continueStep();
 }
 
 void WASAPIMediaSink::OnPausePlayback()
@@ -329,10 +374,38 @@ void WASAPIMediaSink::OnStopPlayback()
 	FillBufferAvailable(true);
 	THROW_IF_FAILED(audioClient->Stop());
 
-	auto sourceReader = this->sourceReaderHolder;
+	auto continueStep = [=] {
+		std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
+		currentFrames = 0;
+		SetState(MediaSinkState::Stopped);
+	};
+
 	if (sourceReader)
-		sourceReader->Stop();
-	SetState(MediaSinkState::Stopped);
+		sourceReader->StopAsync().then(continueStep);
+	else
+		continueStep();
+}
+
+void WASAPIMediaSink::OnEndPlayback()
+{
+	std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
+	sampleRequestedThread->Cancel();
+	FillBufferAvailable(true);
+	THROW_IF_FAILED(audioClient->Stop());
+
+	auto continueStep = [=] {
+		std::lock_guard<decltype(sourceReaderMutex)> locker(sourceReaderMutex);
+
+		currentFrames = 0;
+		SetState(MediaSinkState::Ended);
+	};
+
+	if (sourceReader)
+		sourceReader->StopAsync().then(continueStep);
+	else
+		continueStep();
 }
 
 void WASAPIMediaSink::OnSampleRequested()
@@ -369,7 +442,22 @@ int64_t WASAPIMediaSink::GetPlayingSampleTime(int64_t sampleTime)
 int64_t WASAPIMediaSink::GetCurrentTime()
 {
 	auto dt = (double)currentFrames / deviceInputFormat->nSamplesPerSec;
-	return std::max(0ll, static_cast<int64_t>(dt * 1e7 + (starthns == -1 ? 0 : starthns)));
+	return std::max(0ll, static_cast<int64_t>(dt * 1e7 + 
+		(sourceReader ? sourceReader->GetBufferStartPosition() : 0)));
+}
+
+double WASAPIMediaSink::GetVolume()
+{
+	float volume;
+	THROW_IF_FAILED(simpleAudioVolume->GetMasterVolume(&volume));
+	return volume;
+}
+
+void WASAPIMediaSink::SetVolume(double value)
+{
+	value = std::min(1.0, std::max(0.0, value));
+
+	THROW_IF_FAILED(simpleAudioVolume->SetMasterVolume(static_cast<float>(value), nullptr));
 }
 
 MEDIA_CORE_API std::unique_ptr<IMediaSink> __stdcall NS_TOMATO_MEDIA::CreateWASAPIMediaSink()

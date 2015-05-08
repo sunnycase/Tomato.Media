@@ -34,11 +34,10 @@ public:
 	void BeginReadSample(IMFSourceReaderEx* sourceReader);
 	void Stop();
 	void Start();
-	concurrency::task<void> FlushAsync();
+	concurrency::task<void> FlushAsync(IMFSourceReaderEx* sourceReader);
 private:
-	std::function<void(ReadSampleResult)> readSampleCallback;
-	std::recursive_mutex readMutex;
 	concurrency::task_completion_event<void> flushEvent;
+	std::function<void(ReadSampleResult)> readSampleCallback;
 	bool stopped = false;
 };
 
@@ -51,11 +50,12 @@ public:
 	MFSourceReader(IMediaSourceIntern* mediaSource);
 
 	virtual void Start(int64_t hns);
-	virtual void Stop();
+	virtual concurrency::task<void> StopAsync();
 	virtual size_t Read(byte* buffer, size_t bufferSize);
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod);
 	virtual SourceReaderState GetState() const { return readerState; }
 	virtual void SetCurrentPosition(int64_t hns);
+	virtual int64_t GetBufferStartPosition() const noexcept { return bufferStartPosition; }
 private:
 	void InitializeOutputMediaType(const WAVEFORMATEX* outputFormat);
 	void Initialize(wrl::ComPtr<IMFByteStream>&& byteStream);
@@ -70,13 +70,14 @@ private:
 	wrl::ComPtr<IMFSourceReaderEx> sourceReader;
 	wrl::ComPtr<IMFMediaType> outputMT;
 
-	volatile SourceReaderState readerState = SourceReaderState::NotInitialized;
+	SourceReaderState readerState = SourceReaderState::NotInitialized;
 	MFMMCSSProvider mmcssProvider;
 	ring_buffer<byte> decodedBuffer;
 	unique_cotaskmem<WAVEFORMATEX> outputFormat;
 	size_t bytesPerPeriodLength;
-	std::recursive_mutex stateMutex;
 	concurrency::event requestEvent;
+	int64_t bufferStartPosition = 0;
+	bool firstSample = true;
 };
 
 NSED_TOMATO_MEDIA

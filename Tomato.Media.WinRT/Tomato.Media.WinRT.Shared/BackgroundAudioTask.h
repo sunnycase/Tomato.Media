@@ -22,10 +22,13 @@ namespace Tomato
 			virtual void Run(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^taskInstance);
 
 			///<summary>初始化</summary>
-			static Windows::Foundation::IAsyncAction^ Initialize();
+			static Windows::Foundation::IAsyncAction^ Initialize(Windows::UI::Core::CoreDispatcher^ uiDispatcher);
 			///<summary>设置媒体源</summary>
 			static Windows::Foundation::IAsyncAction^ SetMediaSource(Platform::String^ path);
 			static void StartPlayback();
+			static void StartPlayback(Windows::Foundation::TimeSpan time);
+			static void PausePlayback();
+			static void StopPlayback();
 
 			///<summary>设置是否启用系统媒体传输控件</summary>
 			property static bool IsSystemMediaControlEnabled
@@ -68,14 +71,17 @@ namespace Tomato
 			static event Windows::Foundation::EventHandler<Platform::Object^>^ StopButtonPressed;
 			static event Windows::Foundation::EventHandler<Platform::Object^>^ PreviousButtonPressed;
 			static event Windows::Foundation::EventHandler<Platform::Object^>^ NextButtonPressed;
+			static event Windows::Foundation::EventHandler<Platform::Object^>^ MediaEnded;
 			static event Windows::Foundation::EventHandler<Windows::Media::MediaPlaybackStatus>^ MediaPlaybackStatusChanged;
 		private:
 			void OnInitialize();
 			void InitializeMediaTransportControls();
 			void OnButtonPressed(Windows::Media::SystemMediaTransportControls ^sender, Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs ^args);
-			void RunOnUIDispatcher(std::function<void()>&& handler);
 			void OnSetMediaSource(Windows::Foundation::Collections::ValueSet^ value);
 			void OnStartPlayback();
+			void OnSeekPlayback(Windows::Foundation::Collections::ValueSet^ value);
+			void OnPausePlayback();
+			void OnStopPlayback();
 
 			void OnMediaOpened(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 			void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
@@ -90,15 +96,18 @@ namespace Tomato
 			void SendStatusMessageToForeground(Platform::String^ message);
 
 			static void EnsureInitialized();
+			static void RunOnUIDispatcher(std::function<void()>&& handler);
 			static void OnMediaPlaybackStatusChanged(Windows::Media::MediaPlaybackStatus status);
 		private:
 			Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> Deferral;
 			Windows::Media::Playback::MediaPlayer^ mediaPlayer;
 			Windows::Media::SystemMediaTransportControls^ mediaTransportControls;
 			concurrency::task_completion_event<void> mediaOpenedEvent;
-			Windows::UI::Core::CoreDispatcher^ uiDispatcher;
+			static Windows::UI::Core::CoreDispatcher^ uiDispatcher;
 		private:
 			static bool initialized;
+			void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+			void OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 		};
 
 #endif

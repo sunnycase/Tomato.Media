@@ -65,8 +65,9 @@ ComPtr<IMFMediaType> LibAVAudioSource::CreateMediaType()
 
 void LibAVAudioSource::OnStartAudioStream(REFERENCE_TIME position)
 {
-	THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index,
-		hns2dt(position, audioStream), AVSEEK_FLAG_ANY) >= 0, "Seek failed");
+	if (position != -1)
+		THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index,
+			hns2dt(position, audioStream), AVSEEK_FLAG_ANY) >= 0, "Seek failed");
 }
 
 void LibAVAudioSource::SeekToFrame(uint32_t frameId)
@@ -113,7 +114,7 @@ task<bool> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 				}
 				THROW_IF_FAILED(mediaBuffer->SetCurrentLength(packet.size));
 				THROW_IF_FAILED(sample->AddBuffer(mediaBuffer.Get()));
-				THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream) / 10));
+				THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream)));
 				got = true;
 			}
 		}

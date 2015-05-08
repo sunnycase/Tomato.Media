@@ -151,7 +151,7 @@ void MFAudioStream::OnEndOfStream()
 	if (state != MFMediaStreamState::NotInitialized)
 	{
 		state = MFMediaStreamState::EndOfStream;
-		THROW_IF_FAILED(eventQueue->QueueEventParamUnk(MEEndOfStream, GUID_NULL, S_OK, nullptr));
+		THROW_IF_FAILED(QueueEvent(MEEndOfStream, GUID_NULL, S_OK, nullptr));
 		// 提示音源本流结束
 		audioSource->QueueAsyncOperation(MediaSourceOperationKind::EndOfStream);
 	}
@@ -176,6 +176,7 @@ bool MFAudioStream::DoesNeedMoreData()
 void MFAudioStream::DeliverPayload(IMFSample* sample)
 {
 	std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
+
 	if (sample)
 		samplesCache.emplace(sample);
 	DispatchSampleRequests();
@@ -192,32 +193,68 @@ void MFAudioStream::Start(REFERENCE_TIME position)
 
 	if (state != MFMediaStreamState::NotInitialized)
 	{
-		if (state == MFMediaStreamState::Started)
+		if((state == MFMediaStreamState::Started ||
+			state == MFMediaStreamState::Paused) && position != -1)
 		{
-			PROPVARIANT varStart;
-			PropVariantInit(&varStart);
-			varStart.vt = VT_I8;
-			varStart.hVal.QuadPart = position;
-			THROW_IF_FAILED(QueueEvent(MEStreamSeeked, GUID_NULL, S_OK, &varStart));
+			std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
+
 			samplesCache.swap(decltype(samplesCache)());
-			DispatchSampleRequests();
+			sampleRequests.swap(decltype(sampleRequests)());
 		}
+
+		state = MFMediaStreamState::Started;
+
+		PROPVARIANT varStart;
+		PropVariantInit(&varStart);
+		if (position == -1)
+			varStart.vt = VT_EMPTY;
 		else
 		{
-			state = MFMediaStreamState::Started;
-
-			PROPVARIANT varStart;
-			PropVariantInit(&varStart);
 			varStart.vt = VT_I8;
 			varStart.hVal.QuadPart = position;
-			THROW_IF_FAILED(QueueEvent(MEStreamStarted, GUID_NULL, S_OK, &varStart));
-			DispatchSampleRequests();
 		}
+		THROW_IF_FAILED(QueueEvent(actived ? MEStreamSeeked : MEStreamStarted, GUID_NULL, S_OK, &varStart));
+		DispatchSampleRequests();
 	}
 }
 
 void MFAudioStream::Pause()
 {
 	if (state == MFMediaStreamState::Started)
+	{
 		state = MFMediaStreamState::Paused;
+		THROW_IF_FAILED(QueueEvent(MEStreamPaused, GUID_NULL, S_OK, nullptr));
+	}
+}
+
+void MFAudioStream::Stop()
+{
+	if (state == MFMediaStreamState::Started ||
+		state == MFMediaStreamState::Stopped ||
+		state == MFMediaStreamState::Paused ||
+		state == MFMediaStreamState::EndOfStream)
+	{
+		std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
+
+		samplesCache.swap(decltype(samplesCache)());
+		sampleRequests.swap(decltype(sampleRequests)());
+		state = MFMediaStreamState::Stopped;
+
+		THROW_IF_FAILED(QueueEvent(MEStreamStopped, GUID_NULL, S_OK, nullptr));
+	}
+}
+
+void MFAudioStream::Active(bool active)
+{
+	if (active != actived)
+	{
+		actived = active;
+		if (!active)
+		{
+			std::lock_guard<decltype(sampleMutex)> locker(sampleMutex);
+
+			samplesCache.swap(decltype(samplesCache)());
+			sampleRequests.swap(decltype(sampleRequests)());
+		}
+	}
 }

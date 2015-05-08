@@ -68,40 +68,36 @@ MFSourceReader::MFSourceReader(IMediaSourceIntern* mediaSource)
 void MFSourceReader::Start(int64_t hns)
 {
 	if (readerState == SourceReaderState::Ready ||
-		readerState == SourceReaderState::Stopped)
+		readerState == SourceReaderState::Stopped ||
+		readerState == SourceReaderState::Ended)
 	{
-		decodedBuffer.clear();
-		if (hns != -1)
-			SetCurrentPosition(hns);
+		if (hns != -1) SetCurrentPosition(hns);
 		readerState = SourceReaderState::PreRoll;
 		sourceReaderCallback->Start();
 		sourceReaderCallback->BeginReadSample(sourceReader.Get());
 	}
-	else if (readerState == SourceReaderState::Playing && hns != -1)
-	{
-		readerState = SourceReaderState::Seeking;
-		requestEvent.set();
-		sourceReaderCallback->FlushAsync().then([=]
-		{
-			decodedBuffer.clear();
-
-			SetCurrentPosition(hns);
-			readerState = SourceReaderState::PreRoll;
-			sourceReaderCallback->Start();
-			sourceReaderCallback->BeginReadSample(sourceReader.Get());
-		});
-		sourceReaderCallback->Stop();
-		THROW_IF_FAILED(sourceReader->Flush(MF_SOURCE_READER_ALL_STREAMS));
-	}
 }
 
-void MFSourceReader::Stop()
+task<void> MFSourceReader::StopAsync()
 {
-	requestEvent.reset();
-	readerState = SourceReaderState::Stopped;
-	sourceReaderCallback->Stop();
-	requestEvent.set();
-	decodedBuffer.clear();
+	if (readerState == SourceReaderState::Playing ||
+		readerState == SourceReaderState::Ended)
+	{
+		// 停止读取任务
+		readerState = SourceReaderState::Stopped;
+
+		sourceReaderCallback->Stop();
+		requestEvent.set();
+		return sourceReaderCallback->FlushAsync(sourceReader.Get())
+			.then([=]
+		{
+			// 清理缓冲
+			decodedBuffer.clear();
+			firstSample = true;
+			bufferStartPosition = 0;
+		});
+	}
+	return task_from_result();
 }
 
 size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
@@ -109,15 +105,15 @@ size_t MFSourceReader::Read(byte * buffer, size_t bufferSize)
 	if (!IsPreRollFilled())
 		requestEvent.set();
 
-	// 缓冲时不返回数据
-	if (readerState == SourceReaderState::PreRoll ||
-		readerState == SourceReaderState::Seeking)
+	// 缓冲时、媒体结束不返回数据
+	if (readerState == SourceReaderState::PreRoll)
 		return 0;
 	if (decodedBuffer.tell_not_get() == 0)
 	{
 		// 读取结束
-		if (readerState == SourceReaderState::Stopped) return 0;
-		else 
+		if (readerState == SourceReaderState::Stopped ||
+			readerState == SourceReaderState::Ended) return 0;
+		else
 			return 0;
 	}
 	else
@@ -144,7 +140,6 @@ void MFSourceReader::SetCurrentPosition(int64_t hns)
 	PropVariantInit(&positionVar);
 	positionVar.vt = VT_I8;
 	positionVar.hVal.QuadPart = hns;
-	//sourceReader->SetCurrentPosition(GUID_NULL, positionVar);
 	THROW_IF_FAILED(sourceReader->SetCurrentPosition(GUID_NULL, positionVar));
 }
 
@@ -203,34 +198,11 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 	if ((result.streamFlags & MF_SOURCE_READERF_ENDOFSTREAM) ||
 		(result.streamFlags & MF_SOURCE_READERF_CURRENTMEDIATYPECHANGED))
 	{
-		readerState = SourceReaderState::Stopped;
+		readerState = SourceReaderState::Ended;
 		return;
 	}
 
-	{
-		ComPtr<IMFMediaBuffer> mediaBuffer;
-		BYTE* audioData = nullptr;
-		DWORD audioDataLength = 0;
-
-		// Since we are storing the raw byte data, convert this to a single buffer
-		THROW_IF_FAILED(result.sample->ConvertToContiguousBuffer(&mediaBuffer));
-		// Lock the sample
-		mfbuffer_locker locker(mediaBuffer.Get());
-		THROW_IF_FAILED(locker.lock(&audioData, nullptr, &audioDataLength));
-
-		THROW_IF_NOT(audioDataLength != 0, "无法识别的音频数据");
-
-		auto read = decodedBuffer.write(audioData, audioDataLength);
-		// 没有写完，需要等待读取
-		while (read < audioDataLength )
-		{
-			audioData += read;
-			audioDataLength -= read;
-			if (requestEvent.wait() != 0 || readerState == SourceReaderState::Stopped ||
-				readerState == SourceReaderState::Seeking)return;
-			read = decodedBuffer.write(audioData, audioDataLength);
-		}
-	}
+	EnqueueSample(result.sample);
 	// Pre-roll PREROLL_DURATION seconds worth of data
 	if (readerState == SourceReaderState::PreRoll)
 	{
@@ -242,7 +214,8 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 		}
 	}
 	// 停止状态下不再继续读取
-	if (readerState != SourceReaderState::Stopped)
+	if (readerState != SourceReaderState::Stopped &&
+		readerState != SourceReaderState::Ended)
 	{
 		requestEvent.reset();
 		// Call ReadSample for next asynchronous sample event
@@ -252,6 +225,36 @@ void MFSourceReader::OnSampleRead(ReadSampleResult result)
 
 void MFSourceReader::EnqueueSample(ComPtr<IMFSample>& sample)
 {
+	ComPtr<IMFMediaBuffer> mediaBuffer;
+	BYTE* audioData = nullptr;
+	DWORD audioDataLength = 0;
+
+	// Since we are storing the raw byte data, convert this to a single buffer
+	THROW_IF_FAILED(sample->ConvertToContiguousBuffer(&mediaBuffer));
+
+	// 第一个样本则记录开始时间
+	if (firstSample)
+	{
+		THROW_IF_FAILED(sample->GetSampleTime(&bufferStartPosition));
+		firstSample = false;
+	}
+
+	// Lock the sample
+	mfbuffer_locker locker(mediaBuffer.Get());
+	THROW_IF_FAILED(locker.lock(&audioData, nullptr, &audioDataLength));
+
+	THROW_IF_NOT(audioDataLength != 0, "无法识别的音频数据");
+
+	auto read = decodedBuffer.write(audioData, audioDataLength);
+	// 没有写完，需要等待读取
+	while (read < audioDataLength)
+	{
+		audioData += read;
+		audioDataLength -= read;
+		if (requestEvent.wait() != 0 || readerState == SourceReaderState::Stopped ||
+			readerState == SourceReaderState::Ended)return;
+		read = decodedBuffer.write(audioData, audioDataLength);
+	}
 }
 
 bool MFSourceReader::IsPreRollFilled()
@@ -288,9 +291,10 @@ STDMETHODIMP MFSourceReaderCallback::OnFlush(DWORD dwStreamIndex) noexcept
 	return S_OK;
 }
 
-task<void> MFSourceReaderCallback::FlushAsync()
+task<void> MFSourceReaderCallback::FlushAsync(IMFSourceReaderEx* sourceReader)
 {
-	flushEvent = concurrency::task_completion_event<void>();
+	flushEvent = decltype(flushEvent)();
+	THROW_IF_FAILED(sourceReader->Flush(MF_SOURCE_READER_ALL_STREAMS));
 	return create_task(flushEvent);
 }
 
@@ -308,8 +312,6 @@ void MFSourceReaderCallback::BeginReadSample(IMFSourceReaderEx* sourceReader)
 {
 	if (!stopped)
 	{
-		std::lock_guard<decltype(readMutex)> locker(readMutex);
-
 		THROW_IF_FAILED(sourceReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM,
 			0, nullptr, nullptr, nullptr, nullptr));
 	}

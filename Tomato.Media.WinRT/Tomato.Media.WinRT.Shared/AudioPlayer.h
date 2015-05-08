@@ -15,7 +15,7 @@ namespace Tomato
 			virtual ~AudioPlayer();
 
 			Windows::Foundation::IAsyncAction^ Initialize();
-			void SetMediaSource(MediaSource^ source);
+			Windows::Foundation::IAsyncAction^ SetMediaSource(MediaSource^ source);
 			void StartPlayback();
 			void StartPlayback(Windows::Foundation::TimeSpan time);
 			void PausePlayback();
@@ -57,11 +57,18 @@ namespace Tomato
 				Windows::Foundation::TimeSpan get();
 			}
 
+			property double Volume
+			{
+				double get();
+				void set(double value);
+			}
+
 			event Windows::Foundation::EventHandler<Platform::Object^>^ PlayButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ PauseButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ StopButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ PreviousButtonPressed;
 			event Windows::Foundation::EventHandler<Platform::Object^>^ NextButtonPressed;
+			event Windows::Foundation::EventHandler<Platform::Object^>^ MediaEnded;
 			event Windows::Foundation::EventHandler<Windows::Media::MediaPlaybackStatus>^ MediaPlaybackStatusChanged;
 		private:
 			void InitializeMediaTransportControls();
@@ -75,6 +82,7 @@ namespace Tomato
 			void OnMediaSinkPlaying();
 			void OnMediaSinkPaused();
 			void OnMediaSinkStopped();
+			void OnMediaSinkEnded();
 			void OnMediaPlaybackStatusChanged(Windows::Media::MediaPlaybackStatus status);
 		private:
 			std::unique_ptr<IMediaSink> sink;

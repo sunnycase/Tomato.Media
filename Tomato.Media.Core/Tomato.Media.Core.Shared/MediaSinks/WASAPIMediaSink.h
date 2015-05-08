@@ -18,12 +18,14 @@ public:
 
 	virtual concurrency::task<void> Initialize();
 	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback);
-	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
+	virtual concurrency::task<void> SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
 	virtual void SetTimeChangedCallback(std::function<void(int64_t)> callback);
 	virtual void StartPlayback(int64_t hns);
 	virtual void PausePlayback();
 	virtual void StopPlayback();
 	virtual int64_t GetCurrentTime();
+	virtual double GetVolume();
+	virtual void SetVolume(double value);
 private:
 	// 配置设备
 	void ConfigureDevice();
@@ -34,12 +36,14 @@ private:
 	void FillBufferFromMediaSource(UINT32 framesCount);
 	size_t GetBufferFramesPerPeriod();
 	void InitializeDeviceBuffer();
+	void EndPlayback();
 
 	// 开始播放命令回调
 	void OnStartPlayback();
 	void OnSeekPlayback();
 	void OnPausePlayback();
 	void OnStopPlayback();
+	void OnEndPlayback();
 	// 提供采样请求回调
 	void OnSampleRequested();
 	void SetState(MediaSinkState state, bool fireEvent = true);
@@ -47,6 +51,7 @@ private:
 private:
 	wrl::ComPtr<IAudioClient2> audioClient;
 	wrl::ComPtr<IAudioRenderClient> renderClient;
+	wrl::ComPtr<ISimpleAudioVolume> simpleAudioVolume;
 	MFMMCSSProvider& mcssProvider;
 	MediaSinkState sinkState = MediaSinkState::NotInitialized;
 
@@ -54,6 +59,7 @@ private:
 	std::unique_ptr<MMCSSThread> seekPlaybackThread;
 	std::unique_ptr<MMCSSThread> pauseThread;
 	std::unique_ptr<MMCSSThread> stopThread;
+	std::unique_ptr<MMCSSThread> endThread;
 	std::unique_ptr<MMCSSThread> sampleRequestedThread;
 
 	wrl::Wrappers::Event sampleRequestEvent;			// 请求样本事件

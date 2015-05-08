@@ -17,6 +17,7 @@ enum class MFMediaSourceState
 	Initializing,
 	Starting,
 	Started,
+	Paused,
 	Stopping,
 	Stopped
 };
@@ -79,6 +80,8 @@ protected:
 	virtual concurrency::task<void> OnStreamsRequestData(TOperation& op) = 0;
 	// 开始流
 	virtual void OnStartStream(DWORD streamId, bool selected, REFERENCE_TIME position) = 0;
+	virtual void OnPauseStream(DWORD streamId) = 0;
+	virtual void OnStopStream(DWORD streamId) = 0;
 private:
 	bool HasShutdown() const;
 	// 验证 Presentation Descriptor 有效
@@ -93,6 +96,13 @@ private:
 	// 开始
 	void DoStart(MediaSourceStartOperation* operation);
 	void StartStreams(IMFPresentationDescriptor* pd, REFERENCE_TIME position);
+
+	void DoPause();
+	void PauseStreams();
+
+	void DoStop();
+	void StopStreams();
+
 	// 流停止
 	void OnEndOfStream();
 protected:

@@ -44,6 +44,10 @@ public:
 	void Start(REFERENCE_TIME position);
 	// 暂停
 	void Pause();
+	// 停止
+	void Stop();
+	void Active(bool active);
+	bool IsActived() const noexcept { return actived; }
 private:
 	// 是否需要更多数据
 	bool DoesNeedMoreData();
@@ -62,6 +66,7 @@ private:
 	std::queue<wrl::ComPtr<IMFSample>> samplesCache;		// 采样缓存
 	std::queue<wrl::ComPtr<IUnknown>> sampleRequests;		// 采样请求
 	std::recursive_mutex sampleMutex;
+	bool actived = false;
 };
 
 NSED_TOMATO_MEDIA

@@ -41,6 +41,9 @@ namespace
 		static String^ Initialize;
 		static String^ SetMediaSource;
 		static String^ StartPlayback;
+		static String^ SeekPlayback;
+		static String^ PausePlayback;
+		static String^ StopPlayback;
 		static String^ GetIsPlayEnabled;
 		static String^ SetIsPlayEnabled;
 		static String^ GetIsPauseEnabled;
@@ -56,6 +59,9 @@ namespace
 	String^ AudioControlMessages::Initialize = L"Initialize";
 	String^ AudioControlMessages::SetMediaSource = L"SetMediaSource";
 	String^ AudioControlMessages::StartPlayback = L"StartPlayback";
+	String^ AudioControlMessages::SeekPlayback = L"SeekPlayback";
+	String^ AudioControlMessages::PausePlayback = L"PausePlayback";
+	String^ AudioControlMessages::StopPlayback = L"StopPlayback";
 	String^ AudioControlMessages::GetIsPlayEnabled = L"GetIsPlayEnabled";
 	String^ AudioControlMessages::SetIsPlayEnabled = L"SetIsPlayEnabled";
 	String^ AudioControlMessages::GetIsPauseEnabled = L"GetIsPauseEnabled";
@@ -222,6 +228,7 @@ namespace
 		static String^ StopButtonPressed;
 		static String^ PreviousButtonPressed;
 		static String^ NextButtonPressed;
+		static String^ MediaEnded;
 	};
 
 	String^ AudioStatusMessages::StatusChanged = L"StatusChanged";
@@ -230,9 +237,11 @@ namespace
 	String^ AudioStatusMessages::StopButtonPressed = L"StopButtonPressed";
 	String^ AudioStatusMessages::PreviousButtonPressed = L"PreviousButtonPressed";
 	String^ AudioStatusMessages::NextButtonPressed = L"NextButtonPressed";
+	String^ AudioStatusMessages::MediaEnded = L"MediaEnded";
 }
 
 bool BackgroundAudioTask::initialized = false;
+CoreDispatcher^ BackgroundAudioTask::uiDispatcher = nullptr;
 // 初始化消息 Id
 #define INITIALIZE_MESSAGEID 0
 
@@ -252,8 +261,10 @@ void BackgroundAudioTask::Run(IBackgroundTaskInstance ^taskInstance)
 	Deferral = taskInstance->GetDeferral();
 }
 
-IAsyncAction ^ BackgroundAudioTask::Initialize()
+IAsyncAction ^ BackgroundAudioTask::Initialize(CoreDispatcher^ uiDispatcher)
 {
+	BackgroundAudioTask::uiDispatcher = uiDispatcher;
+
 	return create_async([] {
 		if (!initialized)
 		{
@@ -267,7 +278,8 @@ IAsyncAction ^ BackgroundAudioTask::Initialize()
 					{
 						auto value = static_cast<MediaPlaybackStatus>(
 							static_cast<int>(valueSet->Lookup(AudioControlMessageKeys::Value)));
-						OnMediaPlaybackStatusChanged(value);
+						RunOnUIDispatcher([=] {
+							OnMediaPlaybackStatusChanged(value);});
 					}
 					else if (message == AudioStatusMessages::PlayButtonPressed)
 						PlayButtonPressed(nullptr, nullptr);
@@ -279,6 +291,11 @@ IAsyncAction ^ BackgroundAudioTask::Initialize()
 						PreviousButtonPressed(nullptr, nullptr);
 					else if (message == AudioStatusMessages::NextButtonPressed)
 						NextButtonPressed(nullptr, nullptr);
+					else if (message == AudioStatusMessages::MediaEnded)
+					{
+						RunOnUIDispatcher([=] {
+							MediaEnded(nullptr, nullptr);});
+					}
 				}
 			});
 
@@ -312,6 +329,29 @@ void BackgroundAudioTask::StartPlayback()
 	SendMessageToBackground(AudioControlMessages::StartPlayback);
 }
 
+void BackgroundAudioTask::StartPlayback(TimeSpan time)
+{
+	EnsureInitialized();
+
+	auto value = ref new ValueSet();
+	value->Insert(AudioControlMessageKeys::Value, time);
+	SendMessageToBackground(AudioControlMessages::SeekPlayback, value);
+}
+
+void BackgroundAudioTask::PausePlayback()
+{
+	EnsureInitialized();
+
+	SendMessageToBackground(AudioControlMessages::PausePlayback);
+}
+
+void BackgroundAudioTask::StopPlayback()
+{
+	EnsureInitialized();
+
+	SendMessageToBackground(AudioControlMessages::StopPlayback);
+}
+
 void BackgroundAudioTask::OnInitialize()
 {
 	OutputDebugString(L"Initialize Audio Task.\n");
@@ -323,8 +363,10 @@ void BackgroundAudioTask::OnInitialize()
 		mediaPlayer->MediaOpened += ref new TypedEventHandler<MediaPlayer ^, Platform::Object ^>(
 			this, &BackgroundAudioTask::OnMediaOpened);
 		mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Windows::Media::Playback::MediaPlayerFailedEventArgs ^>(this, &Tomato::Media::BackgroundAudioTask::OnMediaFailed);
+		mediaPlayer->MediaEnded += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &Tomato::Media::BackgroundAudioTask::OnMediaEnded);
 		mediaPlayer->CurrentStateChanged += ref new TypedEventHandler<MediaPlayer ^, Object ^>(
 			this, &BackgroundAudioTask::OnCurrentStateChanged);
+		mediaPlayer->SeekCompleted += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &Tomato::Media::BackgroundAudioTask::OnSeekCompleted);
 
 		InitializeMediaTransportControls();
 
@@ -426,6 +468,29 @@ void BackgroundAudioTask::OnStartPlayback()
 		mediaPlayer->Play();
 }
 
+void BackgroundAudioTask::OnSeekPlayback(ValueSet ^ value)
+{
+	if (mediaPlayer->CanSeek)
+	{
+		auto position = static_cast<TimeSpan>(value->Lookup(AudioControlMessageKeys::Value));
+		mediaPlayer->Position = position;
+		if (mediaPlayer->CurrentState == MediaPlayerState::Paused ||
+			mediaPlayer->CurrentState == MediaPlayerState::Stopped)
+			mediaPlayer->Play();
+	}
+}
+
+void BackgroundAudioTask::OnPausePlayback()
+{
+	mediaPlayer->Pause();
+}
+
+void BackgroundAudioTask::OnStopPlayback()
+{
+	mediaPlayer->Pause();
+	mediaPlayer->Position = TimeSpan{ 0 };
+}
+
 void BackgroundAudioTask::ReplyMessageToForeground(String ^ message, uint64_t messageId)
 {
 	auto valueSet = ref new ValueSet();
@@ -510,6 +575,12 @@ void BackgroundAudioTask::OnMessageReceivedFromForeground(Object ^sender, MediaP
 			OnSetMediaSource(args->Data);
 		else if (message == AudioControlMessages::StartPlayback)
 			OnStartPlayback();
+		else if (message == AudioControlMessages::SeekPlayback)
+			OnSeekPlayback(args->Data);
+		else if (message == AudioControlMessages::PausePlayback)
+			OnPausePlayback();
+		else if (message == AudioControlMessages::StopPlayback)
+			OnStopPlayback();
 		DEFINE_MEDIA_TRANS_BOOL_ACCESSER_HANDLER(IsPlayEnabled)
 			DEFINE_MEDIA_TRANS_BOOL_ACCESSER_HANDLER(IsPauseEnabled)
 			DEFINE_MEDIA_TRANS_BOOL_ACCESSER_HANDLER(IsNextEnabled)
@@ -665,4 +736,19 @@ TimeSpan BackgroundAudioTask::CurrentTime::get()
 	return BackgroundMediaPlayer::Current->Position;
 }
 
+void BackgroundAudioTask::OnMediaEnded(MediaPlayer ^sender, Object ^args)
+{
+	SendStatusMessageToForeground(AudioStatusMessages::MediaEnded);
+}
+
+void BackgroundAudioTask::OnSeekCompleted(MediaPlayer ^sender, Object ^args)
+{
+	RunOnUIDispatcher([=]
+	{
+		mediaTransportControls->PlaybackStatus = MediaPlaybackStatus::Playing;
+		mediaTransportControls->DisplayUpdater->Update();
+	});
+}
+
 #endif
+

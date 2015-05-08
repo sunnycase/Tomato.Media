@@ -23,10 +23,10 @@ enum class SourceReaderState
 	PreRoll,
 	// 正在播放
 	Playing,
-	// 设定读取位置
-	Seeking,
 	// 已停止
-	Stopped
+	Stopped,
+	// 媒体已结束
+	Ended
 };
 
 // 媒体源读取器
@@ -39,7 +39,7 @@ public:
 	// 开始读取
 	virtual void Start(int64_t hns = 0) = 0;
 	// 停止
-	virtual void Stop() = 0;
+	virtual concurrency::task<void> StopAsync() = 0;
 	// 设置音频格式
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod) = 0;
 	// 读取数据
@@ -48,6 +48,8 @@ public:
 	virtual SourceReaderState GetState() const = 0;
 	// 设置当前时间
 	virtual void SetCurrentPosition(int64_t hns) = 0;
+	// 获取缓冲起始时间
+	virtual int64_t GetBufferStartPosition() const noexcept = 0;
 };
 
 MEDIA_CORE_API std::unique_ptr<ISourceReader> __stdcall CreateMFSourceReader(IMediaSource* mediaSource);

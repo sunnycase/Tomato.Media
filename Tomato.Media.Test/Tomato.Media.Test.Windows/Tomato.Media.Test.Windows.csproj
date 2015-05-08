@@ -115,8 +115,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Package.StoreAssociation.xml" />
-    <None Include="- 雨降花 .mp3" />
+    <Content Include="- 雨降花 .mp3" />
     <None Include="02. 涙色の翼.flac" />
     <None Include="04. 全天候型いらっしゃいませ.flac" />
     <Content Include="04.花篝り.APE" />

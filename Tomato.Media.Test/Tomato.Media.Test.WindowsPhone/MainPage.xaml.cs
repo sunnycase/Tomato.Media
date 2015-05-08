@@ -80,21 +80,22 @@ namespace Tomato.Media.Test
 
         private void Timer_Tick(object sender, object e)
         {
-            //Model.CurrentTime = player.CurrentTime.TotalSeconds;
-            //System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", player.CurrentTime));
+            Model.CurrentTime = BackgroundAudioTask.CurrentTime.TotalSeconds;
+            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", BackgroundAudioTask.CurrentTime));
         }
 
         async void Play(CoreDispatcher dispatcher, SystemMediaTransportControls controls)
         {
             if (!initialized)
             {
-                await BackgroundAudioTask.Initialize();
+                await BackgroundAudioTask.Initialize(dispatcher);
                 BackgroundAudioTask.IsPlayEnabled = true;
-               BackgroundAudioTask.IsPauseEnabled = true;
-               BackgroundAudioTask.PauseButtonPressed += Player_OnPauseButtonPressed;
-               BackgroundAudioTask.PlayButtonPressed += Player_OnPlayButtonPressed;
-               BackgroundAudioTask.StopButtonPressed += Player_OnStopButtonPressed;
-               BackgroundAudioTask.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
+                BackgroundAudioTask.IsPauseEnabled = true;
+                BackgroundAudioTask.PauseButtonPressed += Player_OnPauseButtonPressed;
+                BackgroundAudioTask.PlayButtonPressed += Player_OnPlayButtonPressed;
+                BackgroundAudioTask.StopButtonPressed += Player_OnStopButtonPressed;
+                BackgroundAudioTask.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
+                BackgroundAudioTask.MediaEnded += BackgroundAudioTask_MediaEnded;
                 BackgroundAudioTask.IsSystemMediaControlEnabled = true;
             }
             for (int i = 0; i < 0; i++)
@@ -103,8 +104,9 @@ namespace Tomato.Media.Test
                 await s.InitializeFullMetadatas();
             }
             var file = await Package.Current.InstalledLocation.GetFileAsync(files[0]);
-            //sl_Time.Maximum = mediaSource.Duration.TotalSeconds;
-            //await mediaSource.InitializeFullMetadatas();
+            var mediaSource = await MediaSource.CreateFromFile(file);
+            sl_Time.Maximum = mediaSource.Duration.TotalSeconds;
+            await mediaSource.InitializeFullMetadatas();
             //var lrc = mediaSource.Lyrics;
             //var lrcAna = new LyricsAnalyzer(lrc);
             //var rows = lrcAna.Rows.ToArray();
@@ -116,6 +118,11 @@ namespace Tomato.Media.Test
             timer.Start();
         }
 
+        private void BackgroundAudioTask_MediaEnded(object sender, object e)
+        {
+            BackgroundAudioTask.StartPlayback(TimeSpan.FromTicks(0));
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -125,18 +132,12 @@ namespace Tomato.Media.Test
 
         private async void Player_MediaPlaybackStatusChanged(object sender, MediaPlaybackStatus e)
         {
-            if (e == MediaPlaybackStatus.Stopped)
-            {
-                await BackgroundAudioTask.SetMediaSource(null);
-                //player.StartPlayback(TimeSpan.FromTicks(0));
-            }
-            //else if (e == MediaPlaybackStatus.Playing && timer.IsEnabled == false)
-            //    timer.Start();
+
         }
 
         private void Player_OnStopButtonPressed(object sender, object e)
         {
-            //BackgroundAudioTask.StopPlayback();
+            BackgroundAudioTask.StopPlayback();
         }
 
         private void Player_OnPlayButtonPressed(object sender, object e)
@@ -146,7 +147,7 @@ namespace Tomato.Media.Test
 
         private void Player_OnPauseButtonPressed(object sender, object e)
         {
-            //player.PausePlayback();
+            BackgroundAudioTask.PausePlayback();
         }
 
         void Seek()
@@ -159,8 +160,7 @@ namespace Tomato.Media.Test
                 Path = new PropertyPath("CurrentTime")
             });
             Model.CurrentTime = value;
-            timer.Stop();
-            //BackgroundAudioTask.StartPlayback(TimeSpan.FromSeconds(value));
+            BackgroundAudioTask.StartPlayback(TimeSpan.FromSeconds(value));
         }
 
         private void sl_Time_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -175,14 +175,14 @@ namespace Tomato.Media.Test
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //BackgroundMediaPlayer.Current.CurrentStateChanged += Current_CurrentStateChanged;
-            await BackgroundAudioTask.Initialize();
-            BackgroundAudioTask.IsPlayEnabled = true;
-            BackgroundAudioTask.IsSystemMediaControlEnabled = true;
-            var file = await Package.Current.InstalledLocation.GetFileAsync(files[0]);
-            await BackgroundAudioTask.SetMediaSource(file.Path);
-            BackgroundAudioTask.StartPlayback();
+            //await BackgroundAudioTask.Initialize();
+            //BackgroundAudioTask.IsPlayEnabled = true;
+            //BackgroundAudioTask.IsSystemMediaControlEnabled = true;
+            //var file = await Package.Current.InstalledLocation.GetFileAsync(files[0]);
+            //await BackgroundAudioTask.SetMediaSource(file.Path);
+            //BackgroundAudioTask.StartPlayback();
 
-            Debug.WriteLine("Initialized.");
+            //Debug.WriteLine("Initialized.");
         }
     }
 }
