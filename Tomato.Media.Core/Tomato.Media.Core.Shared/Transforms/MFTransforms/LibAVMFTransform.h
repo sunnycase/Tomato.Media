@@ -17,11 +17,6 @@ public:
 	LibAVMFTransform();
 	virtual ~LibAVMFTransform();
 private:
-	STDMETHODIMP GetOutputStreamInfo(
-		DWORD                     dwOutputStreamID,
-		MFT_OUTPUT_STREAM_INFO *  pStreamInfo
-		);
-
 	virtual void OnValidateInputType(IMFMediaType* type);
 	virtual void OnValidateOutputType(IMFMediaType* type);
 	// 获取输出帧大小
@@ -42,7 +37,13 @@ private:
 	WAVEFORMATLIBAV waveFormat;
 	WAVEFORMATEX outputFormat;
 	std::vector<wrl::ComPtr<IMFMediaType>> availableOutputTypes;
+	AVSampleFormat sampleFormat;
+	SwrContext* swrContext = nullptr;
+	unique_avframe frame;
 	bool codecOpened = false;
+	wrl::ComPtr<IMFMediaBuffer> outputBuffer;
+	size_t outputSamples = 0;
+	size_t outputBufferSize = 0;
 };
 
 NSED_TOMATO_MEDIA

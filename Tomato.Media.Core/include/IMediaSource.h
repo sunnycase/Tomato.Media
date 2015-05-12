@@ -7,6 +7,8 @@
 #pragma once
 #include "platform.h"
 
+struct IMFByteStream;
+
 NSDEF_TOMATO_MEDIA
 
 class MediaMetadataContainer;
@@ -26,6 +28,11 @@ public:
 	virtual const MediaMetadataContainer& GetMetadatas() const = 0;
 	// 获取长度
 	virtual int64_t GetDuration() = 0;
+	// 创建 Media Foundation 字节流
+	virtual Microsoft::WRL::ComPtr<IMFByteStream> CreateMFByteStream() = 0;
+#ifdef __cplusplus_winrt
+	virtual Windows::Storage::Streams::IRandomAccessStream^ CreateRTRandomAccessStream() = 0;
+#endif
 };
 
 MEDIA_CORE_API std::unique_ptr<IMediaSource> __stdcall CreateRTMediaSource(Windows::Storage::Streams::IRandomAccessStream^ stream);

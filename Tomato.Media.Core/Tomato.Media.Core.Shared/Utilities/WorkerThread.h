@@ -1,6 +1,6 @@
 ﻿//
 // Tomato Media
-// [Internal] MMCSS 线程
+// [Internal] 工作线程
 // 
 // (c) SunnyCase 
 // 创建日期 2015-03-15
@@ -9,12 +9,12 @@
 
 NSDEF_TOMATO_MEDIA
 
-// MMCSS 线程
-class MMCSSThread
+// 工作线程
+class WorkerThread
 {
 public:
-	MMCSSThread() {}
-	virtual ~MMCSSThread() {}
+	WorkerThread() {}
+	virtual ~WorkerThread() {}
 
 	// 执行一次
 	virtual void Execute() = 0;

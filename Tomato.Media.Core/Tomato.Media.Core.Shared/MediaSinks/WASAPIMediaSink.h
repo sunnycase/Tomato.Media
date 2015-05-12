@@ -6,7 +6,7 @@
 // 创建日期 2015-03-14
 #pragma once
 #include "../include/IMediaSink.h"
-#include "Utilities/MFMMCSSProvider.h"
+#include "Utilities/WorkerQueueProvider.h"
 
 NSDEF_TOMATO_MEDIA
 
@@ -14,19 +14,20 @@ NSDEF_TOMATO_MEDIA
 class WASAPIMediaSink : public IMediaSink
 {
 public:
-	WASAPIMediaSink();
+	WASAPIMediaSink(IMediaSinkHandler& handler);
 
-	virtual concurrency::task<void> Initialize();
-	virtual void SetStateChangedCallback(std::function<void(MediaSinkState)> callback);
-	virtual concurrency::task<void> SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
-	virtual void SetTimeChangedCallback(std::function<void(int64_t)> callback);
-	virtual void StartPlayback(int64_t hns);
-	virtual void PausePlayback();
-	virtual void StopPlayback();
-	virtual int64_t GetCurrentTime();
+	virtual void SetMediaSourceReader(std::shared_ptr<ISourceReader> sourceReader);
+	virtual MediaSinkStatus GetCurrentStatus() const noexcept { return sinkState; }
+	virtual void Start();
+	virtual void Pause();
+	virtual void Stop();
+	virtual int64_t GetPosition() const;
+	virtual void SetPosition(int64_t position);
+	virtual int64_t GetDuration() const;
 	virtual double GetVolume();
-	virtual void SetVolume(double value);
+	virtual void SetVolume(double volume);
 private:
+	concurrency::task<void> InitializeDevice();
 	// 配置设备
 	void ConfigureDevice();
 	// 获取设备剩余缓冲帧数
@@ -36,43 +37,44 @@ private:
 	void FillBufferFromMediaSource(UINT32 framesCount);
 	size_t GetBufferFramesPerPeriod();
 	void InitializeDeviceBuffer();
-	void EndPlayback();
 
 	// 开始播放命令回调
-	void OnStartPlayback();
-	void OnSeekPlayback();
-	void OnPausePlayback();
-	void OnStopPlayback();
-	void OnEndPlayback();
+	void OnStart();
+	void OnSeek();
+	void OnPause();
+	void OnStop();
+	void OnMediaEnded();
 	// 提供采样请求回调
 	void OnSampleRequested();
-	void SetState(MediaSinkState state, bool fireEvent = true);
-	int64_t GetPlayingSampleTime(int64_t sampleTime);
+	void SetStatus(MediaSinkStatus status);
+	void ReportOnError(concurrency::task<void> task);
 private:
 	wrl::ComPtr<IAudioClient2> audioClient;
 	wrl::ComPtr<IAudioRenderClient> renderClient;
 	wrl::ComPtr<ISimpleAudioVolume> simpleAudioVolume;
-	MFMMCSSProvider& mcssProvider;
-	MediaSinkState sinkState = MediaSinkState::NotInitialized;
+	std::unique_ptr<WorkerQueueProvider> mcssProvider;
+	MediaSinkStatus sinkState = MediaSinkStatus::Closed;
+	// 加载设备任务
+	concurrency::task<void> loadDeviceTask;
 
-	std::unique_ptr<MMCSSThread> startPlaybackThread;
-	std::unique_ptr<MMCSSThread> seekPlaybackThread;
-	std::unique_ptr<MMCSSThread> pauseThread;
-	std::unique_ptr<MMCSSThread> stopThread;
-	std::unique_ptr<MMCSSThread> endThread;
-	std::unique_ptr<MMCSSThread> sampleRequestedThread;
+	std::unique_ptr<WorkerThread> startThread;
+	std::unique_ptr<WorkerThread> seekThread;
+	std::unique_ptr<WorkerThread> setMediaSourceReaderThread;
+	std::unique_ptr<WorkerThread> pauseThread;
+	std::unique_ptr<WorkerThread> stopThread;
+	std::unique_ptr<WorkerThread> sampleRequestedThread;
 
 	wrl::Wrappers::Event sampleRequestEvent;			// 请求样本事件
 	unique_cotaskmem<WAVEFORMATEX> deviceInputFormat;
 	REFERENCE_TIME hnsDefaultBufferDuration;
 	UINT32 deviceBufferFrames;
-	std::recursive_mutex sourceReaderMutex;
+	wrl::Wrappers::CriticalSection stateMonitor;
 	std::shared_ptr<ISourceReader> sourceReaderHolder;
 	ISourceReader* sourceReader = nullptr;
-	std::function<void(MediaSinkState)> stateChangedCallback;
-	std::function<void(int64_t)> timeChangedCallback;
-	int64_t starthns = -1;
 	uint32_t currentFrames = 0;
+	IMediaSinkHandler& sinkHandler;
+	bool seeking = false;
+	int64_t seekPosition = 0;
 };
 
 NSED_TOMATO_MEDIA

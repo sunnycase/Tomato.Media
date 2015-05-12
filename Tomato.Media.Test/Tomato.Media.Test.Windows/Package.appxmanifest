@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="10874Tomato.TomatoMusic" Publisher="CN=054DD4F6-0572-4A2D-AF34-B9CF23FCCE83" Version="1.1.0.0" />
+  <Identity Name="10874Tomato.Media.Test.Windows" Publisher="CN=054DD4F6-0572-4A2D-AF34-B9CF23FCCE83" Version="1.1.0.0" />
   <Properties>
-    <DisplayName>Tomato Music</DisplayName>
+    <DisplayName>Tomato.Media.Test.Windows</DisplayName>
     <PublisherDisplayName>岁纳Tomato</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

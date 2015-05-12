@@ -18,7 +18,7 @@ class MFAudioStream : public wrl::RuntimeClass<wrl::RuntimeClassFlags<
 {
 public:
 	// 缓存的Sample数量
-	const size_t PreRollSample = 5;
+	const size_t PreRollSample = 1;
 
 	MFAudioStream(AudioSourceBase* audioSource, wrl::ComPtr<IMFStreamDescriptor> streamDescriptor);
 	virtual ~MFAudioStream();

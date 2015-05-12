@@ -17,6 +17,7 @@
 #include "any.h"
 #include "MediaMetadata.h"
 #include "IMediaSource.h"
+#include "WindowsCoreMediaSource.h"
 #include "ISourceReader.h"
 #include "IMediaSink.h"
 #include "Lyrics.h"

@@ -46,6 +46,8 @@ public:
 	virtual size_t Read(byte* buffer, size_t bufferSize) = 0;
 	// 获取状态
 	virtual SourceReaderState GetState() const = 0;
+	// 获取总长度
+	virtual int64_t GetDuration() const noexcept = 0;
 	// 设置当前时间
 	virtual void SetCurrentPosition(int64_t hns) = 0;
 	// 获取缓冲起始时间

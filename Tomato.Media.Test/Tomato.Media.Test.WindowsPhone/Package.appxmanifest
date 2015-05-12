@@ -22,7 +22,7 @@
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
       </m3:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Tomato.Media.BackgroundAudioTask">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Tomato.Media.BackgroundAudioPlayer">
           <BackgroundTasks>
             <Task Type="audio" />
           </BackgroundTasks>

@@ -5,7 +5,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Lyrics.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BackgroundAudioTask.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IAudioPlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayerAgent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinkHandlerAgent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -14,6 +16,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Lyrics.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BackgroundAudioTask.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinkHandlerAgent.cpp" />
   </ItemGroup>
 </Project>

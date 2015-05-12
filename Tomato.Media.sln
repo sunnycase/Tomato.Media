@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tomato.Media.Test.BackgroundAudioHandler", "Tomato.Media.Test\Tomato.Media.Test.BackgroundAudioHandler\Tomato.Media.Test.BackgroundAudioHandler.csproj", "{BF071EA0-DC95-4A53-AF27-7EE0C0121947}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Tomato.Media.WinRT\Tomato.Media.WinRT.Shared\Tomato.Media.WinRT.Shared.vcxitems*{cadb4f8f-7e2d-4870-b0aa-2f5a29c76d34}*SharedItemsImports = 4
@@ -225,6 +227,26 @@ Global
 		{60027FA9-BA5B-460B-8090-E8A0801612B7}.Release|x64.ActiveCfg = Release|Any CPU
 		{60027FA9-BA5B-460B-8090-E8A0801612B7}.Release|x64.Build.0 = Release|Any CPU
 		{60027FA9-BA5B-460B-8090-E8A0801612B7}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|ARM.ActiveCfg = Debug|ARM
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|ARM.Build.0 = Debug|ARM
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|Win32.ActiveCfg = Debug|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|Win32.Build.0 = Debug|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|x64.Build.0 = Debug|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|x86.ActiveCfg = Debug|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Debug|x86.Build.0 = Debug|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|ARM.ActiveCfg = Release|ARM
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|ARM.Build.0 = Release|ARM
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|Win32.ActiveCfg = Release|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|Win32.Build.0 = Release|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|x64.ActiveCfg = Release|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|x64.Build.0 = Release|Any CPU
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|x86.ActiveCfg = Release|x86
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,5 +263,6 @@ Global
 		{5564A3CC-B147-48A5-B081-FD3BCEA9655E} = {CEF36A0B-40DA-408E-B38A-39F3351F99C2}
 		{49369AC2-9136-429C-9BB1-729B4189A3EE} = {A5FA6FBF-3032-4C6C-83AE-2012F3FC3C41}
 		{60027FA9-BA5B-460B-8090-E8A0801612B7} = {A5FA6FBF-3032-4C6C-83AE-2012F3FC3C41}
+		{BF071EA0-DC95-4A53-AF27-7EE0C0121947} = {B8689556-253E-4437-BFF1-ACF79E49FFDF}
 	EndGlobalSection
 EndGlobal

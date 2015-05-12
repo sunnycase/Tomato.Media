@@ -17,6 +17,11 @@ using namespace concurrency;
 DEFINE_GUID(NS_TOMATO_MEDIA::KSDATAFORMAT_SUBTYPE_LIBAV,
 	0xe49a298, 0xbd9d, 0x47e8, 0xac, 0x23, 0x17, 0xaa, 0x1d, 0xd9, 0x2c, 0x27);
 
+// {2EF3EA41-3F8D-4E0A-AF46-F8E2E610D5D8}
+DEFINE_GUID(NS_TOMATO_MEDIA::MFSampleExtension_LibAVPacket,
+	0x2ef3ea41, 0x3f8d, 0x4e0a, 0xaf, 0x46, 0xf8, 0xe2, 0xe6, 0x10, 0xd5, 0xd8);
+
+
 struct LibAVRegistry
 {
 	LibAVRegistry()
@@ -83,7 +88,7 @@ int MFAVIOContext::ReadPacket(void * opaque, uint8_t * buf, int buf_size) noexce
 		QWORD len = 0, pos = 0;
 		THROW_IF_FAILED(ctx->stream->GetLength(&len));
 		THROW_IF_FAILED(ctx->stream->GetCurrentPosition(&pos));
-		auto toRead = std::min(len - pos, (QWORD)buf_size);
+		auto toRead = static_cast<ULONG>(std::min(len - pos, static_cast<QWORD>(buf_size)));
 
 		ULONG read = 0;
 		THROW_IF_FAILED(ctx->stream->Read((BYTE*)buf, toRead, &read));

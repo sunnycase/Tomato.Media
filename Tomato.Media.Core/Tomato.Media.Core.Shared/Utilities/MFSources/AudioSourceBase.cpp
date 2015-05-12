@@ -15,7 +15,7 @@ using namespace concurrency;
 #define LOCK_STATE() std::lock_guard<decltype(stateMutex)> locker(stateMutex)
 
 AudioSourceBase::AudioSourceBase()
-	:MFOperationQueue(MFMMCSSProvider::GetDefault())
+	:MFOperationQueue(WorkerQueueProvider::GetProAudio())
 {
 
 }
@@ -248,7 +248,7 @@ HRESULT AudioSourceBase::Stop()
 
 HRESULT AudioSourceBase::GetService(_In_ REFGUID guidService, _In_ REFIID riid, _Out_opt_ LPVOID *ppvObject)
 {
-	if (ppvObject)
+	if (!ppvObject)
 		return E_POINTER;
 
 	// 不支持的服务

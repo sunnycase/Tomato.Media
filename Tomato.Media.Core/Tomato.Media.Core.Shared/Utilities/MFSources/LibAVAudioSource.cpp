@@ -14,18 +14,18 @@ using namespace NS_TOMATO_MEDIA;
 using namespace wrl;
 using namespace concurrency;
 
-inline REFERENCE_TIME dt2hns(int dt, AVStream* stream)
+inline REFERENCE_TIME dt2hns(int64_t dt, AVStream* stream)
 {
 	auto sec_base = (float)stream->time_base.num / stream->time_base.den;
 	auto hns = dt * sec_base * 1e7;
 	return static_cast<REFERENCE_TIME>(hns);
 }
 
-inline int hns2dt(REFERENCE_TIME hns, AVStream* stream)
+inline int64_t hns2dt(REFERENCE_TIME hns, AVStream* stream)
 {
 	auto sec_base = (float)stream->time_base.num / stream->time_base.den;
 	auto dt = hns / sec_base / 1e7;
-	return static_cast<int>(dt);
+	return static_cast<int64_t>(dt);
 }
 
 LibAVAudioSource::LibAVAudioSource()
@@ -65,6 +65,9 @@ ComPtr<IMFMediaType> LibAVAudioSource::CreateMediaType()
 
 void LibAVAudioSource::OnStartAudioStream(REFERENCE_TIME position)
 {
+	std::wstringstream ss;
+	ss << L"Seek " << position << std::endl;
+	OutputDebugString(ss.str().c_str());
 	if (position != -1)
 		THROW_IF_NOT(av_seek_frame(avfmtctx.get(), audioStream->index,
 			hns2dt(position, audioStream), AVSEEK_FLAG_ANY) >= 0, "Seek failed");
@@ -87,38 +90,43 @@ task<bool> LibAVAudioSource::OnReadSample(ComPtr<IMFSample> sample)
 	while (!got)
 	{
 		auto ret = av_read_frame(fmtctx, &packet);
-		if (ret < 0)
+		try
 		{
-			if ((ret == AVERROR_EOF || avio_feof(fmtctx->pb)) ||
-				(fmtctx->pb && fmtctx->pb->error))
+			if (ret < 0)
 			{
-				EndOfDeliver();
-			}
-			return task_from_result(false);
-		}
-		else if (packet.buf)
-		{
-			if (packet.stream_index == audioStream->index)
-			{
-				auto size = packet.size;
-				ComPtr<IMFMediaBuffer> mediaBuffer;
-				auto maxSize = packet.size - packet.size % FF_INPUT_BUFFER_PADDING_SIZE;
-				if (maxSize < packet.size) maxSize += FF_INPUT_BUFFER_PADDING_SIZE;
-				THROW_IF_FAILED(MFCreateMemoryBuffer(maxSize, &mediaBuffer));
+				if ((ret == AVERROR_EOF || avio_feof(fmtctx->pb)) ||
+					(fmtctx->pb && fmtctx->pb->error))
 				{
-					mfbuffer_locker locker(mediaBuffer.Get());
-					BYTE* data;
-					THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
-					memset(data, 0, maxSize);
-					memcpy_s(data, size, packet.data, packet.size);
+					EndOfDeliver();
 				}
-				THROW_IF_FAILED(mediaBuffer->SetCurrentLength(packet.size));
-				THROW_IF_FAILED(sample->AddBuffer(mediaBuffer.Get()));
-				THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream)));
-				got = true;
+				return task_from_result(false);
 			}
+			else if (packet.buf)
+			{
+				if (packet.stream_index == audioStream->index)
+				{
+					ComPtr<IMFMediaBuffer> mediaBuffer;
+					THROW_IF_FAILED(MFCreateAlignedMemoryBuffer(packet.size, FF_INPUT_BUFFER_PADDING_SIZE,
+						&mediaBuffer));
+					{
+						mfbuffer_locker locker(mediaBuffer.Get());
+						BYTE* data;
+						THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
+						memcpy_s(data, packet.size, packet.data, packet.size);
+					}
+					THROW_IF_FAILED(mediaBuffer->SetCurrentLength(packet.size));
+					THROW_IF_FAILED(sample->AddBuffer(mediaBuffer.Get()));
+					THROW_IF_FAILED(sample->SetSampleTime(dt2hns(packet.pts, audioStream)));
+					got = true;
+				}
+			}
+			av_free_packet(&packet);
 		}
-		av_free_packet(&packet);
+		catch (...)
+		{
+			av_free_packet(&packet);
+			throw;
+		}
 	}
 	return task_from_result(true);
 }
@@ -130,7 +138,7 @@ void LibAVAudioSource::OnConfigurePresentationDescriptor(IMFPresentationDescript
 
 void LibAVAudioSource::CreateAVFormatContext(wrl::ComPtr<IMFByteStream> stream)
 {
-	avioctx = std::make_unique<MFAVIOContext>(stream, 4096 * 10, false);
+	avioctx = std::make_unique<MFAVIOContext>(stream, 4096 * 1, false);
 
 	auto fmtctx = OpenAVFormatContext(avioctx->Get());
 	THROW_IF_NOT(avformat_find_stream_info(fmtctx.get(), nullptr) >= 0, L"Read stream info error.");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -68,8 +69,8 @@ namespace Tomato.Media.Test
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            var value = sl_Time.ReadLocalValue(Slider.ValueProperty);
-            if (value is double)
+            var binding = sl_Time.GetBindingExpression(Slider.ValueProperty);
+            if (binding == null)
             {
                 Seek();
             }
@@ -78,8 +79,9 @@ namespace Tomato.Media.Test
 
         private void Timer_Tick(object sender, object e)
         {
-            Model.CurrentTime = player.CurrentTime.TotalSeconds;
-            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", player.CurrentTime));
+            Model.CurrentTime = player.Position.TotalSeconds;
+            sl_Time.Maximum = player.Duration.TotalSeconds;
+            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", player.Position));
         }
 
         async void Play(CoreDispatcher dispatcher, SystemMediaTransportControls controls)
@@ -87,14 +89,12 @@ namespace Tomato.Media.Test
             if (player == null)
             {
                 player = new AudioPlayer(dispatcher, controls);
-                await player.Initialize();
                 player.IsPlayEnabled = player.IsPauseEnabled = true;
-                player.PauseButtonPressed += Player_OnPauseButtonPressed;
-                player.PlayButtonPressed += Player_OnPlayButtonPressed;
-                player.StopButtonPressed += Player_OnStopButtonPressed;
+                player.MediaTransportButtonPressed += Player_MediaTransportButtonPressed;
                 player.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
+                player.MediaOpened += Player_MediaOpened;
                 player.MediaEnded += Player_MediaEnded;
-                player.IsSystemMediaControlEnabled = true;
+                player.IsMediaTransportControlsEnabled = true;
             }
             for (int i = 0; i < 0; i++)
             {
@@ -110,14 +110,24 @@ namespace Tomato.Media.Test
             //System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
             //var mediaSource = await MediaSource.CreateFromFile(await
             //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
-            await player.SetMediaSource(mediaSource);
+            player.SetMediaSource(mediaSource);
+            //player.StartPlayback();
+            //timer.Start();
+        }
+
+        private void Player_MediaOpened(object sender, object e)
+        {
             player.StartPlayback();
-            timer.Start();
+        }
+
+        private void Player_MediaTransportButtonPressed(object sender, SystemMediaTransportControlsButton e)
+        {
+
         }
 
         private void Player_MediaEnded(object sender, object e)
         {
-            player.StartPlayback(TimeSpan.FromTicks(0));
+            //player.StartPlayback(TimeSpan.FromTicks(0));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -129,43 +139,81 @@ namespace Tomato.Media.Test
 
         private void Player_MediaPlaybackStatusChanged(object sender, MediaPlaybackStatus e)
         {
+            switch (e)
+            {
+                case MediaPlaybackStatus.Closed:
+                    timer.Stop();
+                    break;
+                case MediaPlaybackStatus.Changing:
+                    break;
+                case MediaPlaybackStatus.Stopped:
+                    Model.CurrentTime = 0;
+                    timer.Stop();
+                    break;
+                case MediaPlaybackStatus.Playing:
+                    timer.Start();
+                    break;
+                case MediaPlaybackStatus.Paused:
+                    timer.Stop();
+                    break;
+                default:
+                    break;
+            }
+            Debug.WriteLine(e.ToString());
         }
 
-        private void Player_OnStopButtonPressed(object sender, object e)
-        {
-            player.StopPlayback();
-        }
 
-        private void Player_OnPlayButtonPressed(object sender, object e)
-        {
-            player.StartPlayback();
-        }
-
-        private void Player_OnPauseButtonPressed(object sender, object e)
-        {
-            player.PausePlayback();
-        }
-
+        bool seeking = false;
         void Seek()
         {
-            var value = sl_Time.Value;
-            sl_Time.ClearValue(Slider.ValueProperty);
-            sl_Time.SetBinding(Slider.ValueProperty, new Binding
+            if (!seeking)
             {
-                Source = Model,
-                Path = new PropertyPath("CurrentTime")
-            });
-            Model.CurrentTime = value;
-            player.StartPlayback(TimeSpan.FromSeconds(value));
+                seeking = true;
+                var value = sl_Time.Value;
+                sl_Time.ClearValue(Slider.ValueProperty);
+                sl_Time.SetBinding(Slider.ValueProperty, new Binding
+                {
+                    Source = Model,
+                    Path = new PropertyPath("CurrentTime")
+                });
+                Model.CurrentTime = value;
+                player.Position = TimeSpan.FromSeconds(value);
+                seeking = false;
+            }
         }
 
         private void sl_Time_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            var value = sl_Time.ReadLocalValue(Slider.ValueProperty);
-            if (value is double && !isDraging)
+            var binding = sl_Time.GetBindingExpression(Slider.ValueProperty);
+            if (binding == null && !isDraging)
             {
                 Seek();
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (player.CurrentStatus == MediaPlaybackStatus.Paused ||
+                player.CurrentStatus == MediaPlaybackStatus.Stopped)
+                player.StartPlayback();
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (player.CurrentStatus == MediaPlaybackStatus.Playing)
+                player.PausePlayback();
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (player.CurrentStatus == MediaPlaybackStatus.Playing ||
+                player.CurrentStatus == MediaPlaybackStatus.Paused)
+                player.StopPlayback();
+        }
+
+        private void SwitchButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

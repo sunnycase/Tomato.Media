@@ -49,12 +49,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
@@ -124,8 +118,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\memory.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.h">
-      <Filter>Headers\MediaSources</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\WindowsCoreMediaSource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\WorkerThread.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFWorkerQueueProvider.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\WorkerQueueProvider.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +150,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\MFTransforms\LibAVMFTransform.cpp">
       <Filter>Sources\Transforms\MFTransforms</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp">
-      <Filter>Sources\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Platform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\libavhelpers.cpp">
@@ -198,8 +198,11 @@
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\memory.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.cpp">
-      <Filter>Sources\MediaSources</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowsCoreMediaSource.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFWorkerQueueProvider.cpp">
+      <Filter>Sources\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

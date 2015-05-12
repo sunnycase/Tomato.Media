@@ -23,6 +23,17 @@
       <Project>{5564a3cc-b147-48a5-b081-fd3bcea9655e}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BackgroundAudioIPC.cpp" />
+    <ClCompile Include="BackgroundAudioPlayer.cpp" />
+    <ClCompile Include="BackgroundAudioPlayerClient.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BackgroundAudioIPC.h" />
+    <ClInclude Include="BackgroundAudioPlayer.h" />
+    <ClInclude Include="BackgroundAudioPlayerClient.h" />
+    <ClInclude Include="IBackgroundAudioHandler.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{cadb4f8f-7e2d-4870-b0aa-2f5a29c76d34}</ProjectGuid>
     <RootNamespace>Tomato.Media</RootNamespace>

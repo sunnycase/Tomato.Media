@@ -28,6 +28,8 @@ LibAVMFTransform::~LibAVMFTransform()
 		avcodec_close(waveFormat.CodecContext);
 		codecOpened = false;
 	}
+	if (swrContext)
+		swr_free(&swrContext);
 }
 
 void LibAVMFTransform::OnValidateInputType(IMFMediaType * type)
@@ -67,19 +69,7 @@ void LibAVMFTransform::OnValidateOutputType(IMFMediaType * type)
 
 DWORD LibAVMFTransform::OnGetOutputFrameSize() const noexcept
 {
-	return 0;
-}
-
-HRESULT LibAVMFTransform::GetOutputStreamInfo(
-	DWORD                     dwOutputStreamID,
-	MFT_OUTPUT_STREAM_INFO *  pStreamInfo
-	)
-{
-	auto hr = AudioFrameDecoderBase::GetOutputStreamInfo(dwOutputStreamID, pStreamInfo);
-	if (SUCCEEDED(hr))
-		pStreamInfo->dwFlags |= MFT_OUTPUT_STREAM_PROVIDES_SAMPLES;
-
-	return hr;
+	return outputBufferSize;
 }
 
 ComPtr<IMFMediaType> LibAVMFTransform::OnSetInputType(IMFMediaType * type)
@@ -96,40 +86,69 @@ ComPtr<IMFMediaType> LibAVMFTransform::OnSetOutputType(IMFMediaType * type)
 	THROW_IF_NOT(avcodec_open2(waveFormat.CodecContext, codec, nullptr) == 0,
 		"Open decoder error.");
 	codecOpened = true;
-	
+
 	WAVEFORMATEX* format;
 	UINT32 size;
 	THROW_IF_FAILED(MFCreateWaveFormatExFromMFMediaType(type, &format, &size));
 	unique_cotaskmem<WAVEFORMATEX> coFormat(format);
 	outputFormat = *format;
+
+	sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_NONE;
+	if (format->wFormatTag == WAVE_FORMAT_PCM)
+	{
+		switch (format->wBitsPerSample)
+		{
+		case 8:
+			sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_U8;
+			break;
+		case 16:
+			sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S16;
+			break;
+		case 32:
+			sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S32;
+			break;
+		}
+	}
+	else if (format->wFormatTag == WAVE_FORMAT_IEEE_FLOAT)
+	{
+		switch (waveFormat.Format.wBitsPerSample)
+		{
+		case 16:
+			sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_FLT;
+			break;
+		case 32:
+			sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_DBL;
+			break;
+		}
+	}
+	if (sampleFormat == AVSampleFormat::AV_SAMPLE_FMT_NONE)
+		THROW_IF_NOT(false, "format not support.");
+
+	swrContext = swr_alloc_set_opts(nullptr, av_get_default_channel_layout(
+		outputFormat.nChannels), sampleFormat, outputFormat.nSamplesPerSec,
+		waveFormat.CodecContext->channel_layout,
+		waveFormat.CodecContext->sample_fmt, waveFormat.CodecContext->sample_rate, 0, nullptr);
+	THROW_IF_NOT(swrContext && swr_init(swrContext) >= 0, "Cannot load resampler.");
 	return type;
 }
 
 void LibAVMFTransform::OnReceiveInput(IMFSample * sample)
 {
-}
+	DWORD bufferCount;
+	ComPtr<IMFMediaBuffer> buffer;
+	THROW_IF_FAILED(sample->GetBufferCount(&bufferCount));
+	THROW_IF_NOT(bufferCount == 1, "Invalid buffer count.");
+	THROW_IF_FAILED(sample->GetBufferByIndex(0, &buffer));
 
-void LibAVMFTransform::OnProduceOutput(IMFSample * input, MFT_OUTPUT_DATA_BUFFER & output)
-{
 	ComPtr<IMFSample> outputSample;
 	THROW_IF_FAILED(MFCreateSample(&outputSample));
-	LONGLONG sampleTime = 0;
-	if (SUCCEEDED(input->GetSampleTime(&sampleTime)))
-		THROW_IF_FAILED(outputSample->SetSampleTime(sampleTime));
 
-	DWORD bufferCount;
-	THROW_IF_FAILED(input->GetBufferCount(&bufferCount));
-	THROW_IF_NOT(bufferCount == 1, "Buffer count must be 1.");
-	ComPtr<IMFMediaBuffer> buffer;
-	THROW_IF_FAILED(input->GetBufferByIndex(0, &buffer));
-	DWORD bufferLen = 0;
-	THROW_IF_FAILED(buffer->GetCurrentLength(&bufferLen));
-
-	size_t samples = 0;
+	outputSamples = 0;
+	outputBufferSize = 0;
 	{
 		mfbuffer_locker locker(buffer.Get());
-		BYTE* data;
-		THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
+		BYTE* data; DWORD bufferLen;
+		THROW_IF_FAILED(locker.lock(&data, nullptr, &bufferLen));
 		AVPacket packet;
 		av_init_packet(&packet);
 		packet.data = data;
@@ -142,15 +161,44 @@ void LibAVMFTransform::OnProduceOutput(IMFSample * input, MFT_OUTPUT_DATA_BUFFER
 			auto pair = DecodeFrame(packet, buffer);
 			if (buffer)
 				THROW_IF_FAILED(outputSample->AddBuffer(buffer.Get()));
-			samples += pair.first;
+			outputSamples += pair.first;
 			if (!pair.second) break;
 		}
 	}
+	THROW_IF_FAILED(outputSample->ConvertToContiguousBuffer(outputBuffer.ReleaseAndGetAddressOf()));
+}
 
-	THROW_IF_FAILED(outputSample->SetSampleDuration(samples * 1.0e7 /
-		(double)outputFormat.nSamplesPerSec));
+void LibAVMFTransform::OnProduceOutput(IMFSample * input, MFT_OUTPUT_DATA_BUFFER & output)
+{
+	if (!output.pSample)
+		THROW_IF_FAILED(E_POINTER);
+	DWORD bufferCount;
+	ComPtr<IMFMediaBuffer> buffer;
+	THROW_IF_FAILED(output.pSample->GetBufferCount(&bufferCount));
+	THROW_IF_NOT(bufferCount == 1, "Invalid buffer count.");
+	THROW_IF_FAILED(output.pSample->GetBufferByIndex(0, &buffer));
 
-	output.pSample = outputSample.Detach();
+	{
+		mfbuffer_locker lockerIn(outputBuffer.Get()), lockerOut(buffer.Get());
+		BYTE* dataIn, *dataOut;
+		DWORD maxLengthIn, maxLengthOut, cntLengthIn, cntLengthOut;
+		THROW_IF_FAILED(lockerIn.lock(&dataIn, &maxLengthIn, &cntLengthIn));
+		THROW_IF_FAILED(lockerOut.lock(&dataOut, &maxLengthOut, &cntLengthOut));
+		THROW_IF_NOT(maxLengthOut >= cntLengthIn, "Buffer is too small.");
+		THROW_IF_NOT(memcpy_s(dataOut, maxLengthOut, dataIn, cntLengthIn) == 0,
+			"Copy data failed.");
+	}
+
+	THROW_IF_FAILED(buffer->SetCurrentLength(outputBufferSize));
+
+	LONGLONG sampleTime = 0;
+	if (SUCCEEDED(input->GetSampleTime(&sampleTime)))
+		THROW_IF_FAILED(output.pSample->SetSampleTime(sampleTime));
+
+	THROW_IF_FAILED(output.pSample->SetSampleDuration(static_cast<LONGLONG>(
+		outputSamples * 1.0e7 / outputFormat.nSamplesPerSec)));
+
+	//output.pSample = outputSample.Detach();
 }
 
 void LibAVMFTransform::InitializeLibAVFormat(IMFMediaType* type)
@@ -187,8 +235,12 @@ std::pair<uint32_t, bool> LibAVMFTransform::DecodeFrame(AVPacket& packet, wrl::C
 	if (packet.size == 0)
 		return{ 0, false };
 
-	unique_avframe frame(av_frame_alloc());
-	THROW_IF_NOT(frame, "Cannot allocate frame.");
+	if (!frame)
+	{
+		frame.reset(av_frame_alloc());
+		THROW_IF_NOT(frame, "Cannot allocate frame.");
+	}
+
 	int got_frame = 0;
 
 	auto ret = avcodec_decode_audio4(waveFormat.CodecContext, frame.get(), &got_frame, &packet);
@@ -200,61 +252,26 @@ std::pair<uint32_t, bool> LibAVMFTransform::DecodeFrame(AVPacket& packet, wrl::C
 
 	if (got_frame)
 	{
-		auto& format = outputFormat;
-		AVSampleFormat sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_NONE;
-		if (format.wFormatTag == WAVE_FORMAT_PCM)
-		{
-			switch (format.wBitsPerSample)
-			{
-			case 8:
-				sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_U8;
-				break;
-			case 16:
-				sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S16;
-				break;
-			case 32:
-				sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S32;
-				break;
-			}
-		}
-		else if (format.wFormatTag == WAVE_FORMAT_IEEE_FLOAT)
-		{
-			switch (waveFormat.Format.wBitsPerSample)
-			{
-			case 16:
-				sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_FLT;
-				break;
-			case 32:
-				sampleFormat = AVSampleFormat::AV_SAMPLE_FMT_DBL;
-				break;
-			}
-		}
-		if (sampleFormat == AVSampleFormat::AV_SAMPLE_FMT_NONE)
-			THROW_IF_NOT(false, "format not support.");
-
-		auto size = av_samples_get_buffer_size(nullptr, format.nChannels,
-			frame->nb_samples, sampleFormat, format.nBlockAlign);
+		auto size = av_samples_get_buffer_size(nullptr, outputFormat.nChannels,
+			frame->nb_samples, sampleFormat, outputFormat.nBlockAlign);
 
 		THROW_IF_FAILED(MFCreateMemoryBuffer(size, buffer.ReleaseAndGetAddressOf()));
-		auto swrCtx = swr_alloc_set_opts(nullptr, av_get_default_channel_layout(format.nChannels),
-			sampleFormat, format.nSamplesPerSec, frame->channel_layout,
-			waveFormat.CodecContext->sample_fmt, waveFormat.CodecContext->sample_rate, 0, nullptr);
+
 		int converted = 0;
-		THROW_IF_NOT(swrCtx && swr_init(swrCtx) >= 0, "Cannot load resampler.");
 		{
 			mfbuffer_locker locker(buffer.Get());
 			BYTE* data;
 			THROW_IF_FAILED(locker.lock(&data, nullptr, nullptr));
 			uint8_t* out[] = { data };
-			converted = swr_convert(swrCtx, out, frame->nb_samples,
+			converted = swr_convert(swrContext, out, frame->nb_samples,
 				(const uint8_t**)frame->extended_data, frame->nb_samples);
 			THROW_IF_NOT(converted == frame->nb_samples, "Resample failed.");
 		}
-		av_frame_unref(frame.get());
-		swr_free(&swrCtx);
 
+		av_frame_unref(frame.get());
 		THROW_IF_FAILED(buffer->SetCurrentLength(size));
 
+		outputBufferSize += size;
 		return{ converted, packet.size > 0 };
 	}
 	else

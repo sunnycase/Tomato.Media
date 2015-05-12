@@ -36,6 +36,18 @@ IAsyncOperation<MediaSource^>^ MediaSource::CreateFromFile(StorageFile ^ file)
 	});
 }
 
+IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(Streams::IRandomAccessStream^ stream)
+{
+	return create_async([=]
+	{
+		auto source = ref new MediaSource(stream);
+		return source->Get()->Initialize().then([=]
+		{
+			return source;
+		});
+	});
+}
+
 IAsyncAction ^ MediaSource::InitializeFullMetadatas()
 {
 	return create_async([=]

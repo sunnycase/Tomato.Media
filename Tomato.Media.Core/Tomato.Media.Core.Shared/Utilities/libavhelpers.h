@@ -69,6 +69,9 @@ private:
 
 // LibAV 可解码
 extern const GUID KSDATAFORMAT_SUBTYPE_LIBAV;
+// LibAV Packet
+// 类型：Packet
+extern const GUID MFSampleExtension_LibAVPacket;
 
 struct WAVEFORMATLIBAV : public WAVEFORMATEXTENSIBLE
 {

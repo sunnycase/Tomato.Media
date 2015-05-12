@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
+using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -54,6 +55,7 @@ namespace Tomato.Media.Test
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
+        BackgroundAudioPlayerClient audioClient;
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             var thumb = sl_Time.GetFirstDescendantOfType<Thumb>();
@@ -70,8 +72,8 @@ namespace Tomato.Media.Test
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            var value = sl_Time.ReadLocalValue(Slider.ValueProperty);
-            if (value is double)
+            var binding = sl_Time.GetBindingExpression(Slider.ValueProperty);
+            if (binding == null)
             {
                 Seek();
             }
@@ -80,23 +82,19 @@ namespace Tomato.Media.Test
 
         private void Timer_Tick(object sender, object e)
         {
-            Model.CurrentTime = BackgroundAudioTask.CurrentTime.TotalSeconds;
-            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", BackgroundAudioTask.CurrentTime));
+            Model.CurrentTime = audioClient.Position.TotalSeconds;
+            sl_Time.Maximum = audioClient.Duration.TotalSeconds;
+            System.Diagnostics.Debug.WriteLine(string.Format("CurrentTime: {0}", audioClient.Position));
         }
 
-        async void Play(CoreDispatcher dispatcher, SystemMediaTransportControls controls)
+        async void Play()
         {
             if (!initialized)
             {
-                await BackgroundAudioTask.Initialize(dispatcher);
-                BackgroundAudioTask.IsPlayEnabled = true;
-                BackgroundAudioTask.IsPauseEnabled = true;
-                BackgroundAudioTask.PauseButtonPressed += Player_OnPauseButtonPressed;
-                BackgroundAudioTask.PlayButtonPressed += Player_OnPlayButtonPressed;
-                BackgroundAudioTask.StopButtonPressed += Player_OnStopButtonPressed;
-                BackgroundAudioTask.MediaPlaybackStatusChanged += Player_MediaPlaybackStatusChanged;
-                BackgroundAudioTask.MediaEnded += BackgroundAudioTask_MediaEnded;
-                BackgroundAudioTask.IsSystemMediaControlEnabled = true;
+                initialized = true;
+                var type = typeof(BackgroundAudioHandler.BackgroundAudioHandler);
+                audioClient = new BackgroundAudioPlayerClient(type.FullName);
+                audioClient.MessageReceivedFromBackground += AudioClient_MessageReceivedFromBackground;
             }
             for (int i = 0; i < 0; i++)
             {
@@ -105,29 +103,31 @@ namespace Tomato.Media.Test
             }
             var file = await Package.Current.InstalledLocation.GetFileAsync(files[0]);
             var mediaSource = await MediaSource.CreateFromFile(file);
-            sl_Time.Maximum = mediaSource.Duration.TotalSeconds;
             await mediaSource.InitializeFullMetadatas();
             //var lrc = mediaSource.Lyrics;
             //var lrcAna = new LyricsAnalyzer(lrc);
-            //var rows = lrcAna.Rows.ToArray();
-            //System.Diagnostics.Debug.WriteLine(string.Format("Duration: {0}", mediaSource.Duration));
-            //var mediaSource = await MediaSource.CreateFromFile(await
-            //    Windows.Storage.StorageFile.GetFileFromPathAsync(@"D:\Media\Music\Vocal\东方Project\-物凄い狂っとるフランちゃんが物凄いうた.mp3"));
-            await BackgroundAudioTask.SetMediaSource(file.Path);
-            BackgroundAudioTask.StartPlayback();
             timer.Start();
         }
 
-        private void BackgroundAudioTask_MediaEnded(object sender, object e)
+        private void AudioClient_MessageReceivedFromBackground(object sender, ValueSet e)
         {
-            BackgroundAudioTask.StartPlayback(TimeSpan.FromTicks(0));
+        }
+
+        private void Controls_ButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Controls_PropertyChanged(SystemMediaTransportControls sender, SystemMediaTransportControlsPropertyChangedEventArgs args)
+        {
+
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            Play(Dispatcher, SystemMediaTransportControls.GetForCurrentView());
+            Play();
         }
 
         private async void Player_MediaPlaybackStatusChanged(object sender, MediaPlaybackStatus e)
@@ -135,38 +135,32 @@ namespace Tomato.Media.Test
 
         }
 
-        private void Player_OnStopButtonPressed(object sender, object e)
-        {
-            BackgroundAudioTask.StopPlayback();
-        }
-
-        private void Player_OnPlayButtonPressed(object sender, object e)
-        {
-            BackgroundAudioTask.StartPlayback();
-        }
-
-        private void Player_OnPauseButtonPressed(object sender, object e)
-        {
-            BackgroundAudioTask.PausePlayback();
-        }
-
+        bool seeking = false;
         void Seek()
         {
-            var value = sl_Time.Value;
-            sl_Time.ClearValue(Slider.ValueProperty);
-            sl_Time.SetBinding(Slider.ValueProperty, new Binding
+            if (!seeking)
             {
-                Source = Model,
-                Path = new PropertyPath("CurrentTime")
-            });
-            Model.CurrentTime = value;
-            BackgroundAudioTask.StartPlayback(TimeSpan.FromSeconds(value));
+                seeking = true;
+                var value = sl_Time.Value;
+                sl_Time.ClearValue(Slider.ValueProperty);
+                sl_Time.SetBinding(Slider.ValueProperty, new Binding
+                {
+                    Source = Model,
+                    Path = new PropertyPath("CurrentTime")
+                });
+                Model.CurrentTime = value;
+                audioClient.SendMessageToBackground(new ValueSet
+                {
+                    { "Seek", TimeSpan.FromSeconds(value) }
+                });
+                seeking = false;
+            }
         }
 
         private void sl_Time_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            var value = sl_Time.ReadLocalValue(Slider.ValueProperty);
-            if (value is double && !isDraging)
+            var binding = sl_Time.GetBindingExpression(Slider.ValueProperty);
+            if (binding == null && !isDraging)
             {
                 Seek();
             }
@@ -174,15 +168,34 @@ namespace Tomato.Media.Test
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            //BackgroundMediaPlayer.Current.CurrentStateChanged += Current_CurrentStateChanged;
-            //await BackgroundAudioTask.Initialize();
-            //BackgroundAudioTask.IsPlayEnabled = true;
-            //BackgroundAudioTask.IsSystemMediaControlEnabled = true;
-            //var file = await Package.Current.InstalledLocation.GetFileAsync(files[0]);
-            //await BackgroundAudioTask.SetMediaSource(file.Path);
-            //BackgroundAudioTask.StartPlayback();
+            audioClient.SendMessageToBackground(new ValueSet
+            {
+                { "Play", null }
+            });
+        }
 
-            //Debug.WriteLine("Initialized.");
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            audioClient.SendMessageToBackground(new ValueSet
+            {
+                { "Stop", null }
+            });
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            audioClient.SendMessageToBackground(new ValueSet
+            {
+                { "Pause", null }
+            });
+        }
+
+        private void SwitchButton_Click(object sender, RoutedEventArgs e)
+        {
+            audioClient.SendMessageToBackground(new ValueSet
+            {
+                { "Switch", null }
+            });
         }
     }
 }

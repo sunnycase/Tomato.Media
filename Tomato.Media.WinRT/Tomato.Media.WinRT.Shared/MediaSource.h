@@ -9,6 +9,7 @@ namespace Tomato
 		{
 		public:
 			static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromFile(Windows::Storage::StorageFile^ file);
+			static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromStream(Windows::Storage::Streams::IRandomAccessStream^ stream);
 
 			///<summay>加载完整元数据</summay>
 			Windows::Foundation::IAsyncAction^ InitializeFullMetadatas();

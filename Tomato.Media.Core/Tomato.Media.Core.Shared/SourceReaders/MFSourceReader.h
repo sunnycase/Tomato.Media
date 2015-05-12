@@ -7,7 +7,6 @@
 #pragma once
 #include "../MediaSources/IMediaSourceIntern.h"
 #include "../include/ISourceReader.h"
-#include "Utilities/MFMMCSSProvider.h"
 #include "Utilities/ring_buffer.hpp"
 
 NSDEF_TOMATO_MEDIA
@@ -54,6 +53,7 @@ public:
 	virtual size_t Read(byte* buffer, size_t bufferSize);
 	virtual void SetAudioFormat(const WAVEFORMATEX* format, uint32_t framesPerPeriod);
 	virtual SourceReaderState GetState() const { return readerState; }
+	virtual int64_t GetDuration() const noexcept { return duration; }
 	virtual void SetCurrentPosition(int64_t hns);
 	virtual int64_t GetBufferStartPosition() const noexcept { return bufferStartPosition; }
 private:
@@ -71,12 +71,11 @@ private:
 	wrl::ComPtr<IMFMediaType> outputMT;
 
 	SourceReaderState readerState = SourceReaderState::NotInitialized;
-	MFMMCSSProvider mmcssProvider;
 	ring_buffer<byte> decodedBuffer;
 	unique_cotaskmem<WAVEFORMATEX> outputFormat;
 	size_t bytesPerPeriodLength;
 	concurrency::event requestEvent;
-	int64_t bufferStartPosition = 0;
+	int64_t bufferStartPosition = 0, duration = -1;
 	bool firstSample = true;
 };
 

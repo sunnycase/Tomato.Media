@@ -20,13 +20,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\ISourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\Lyrics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\MediaMetadata.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\include\WindowsCoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\tomato.media.core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\include\win32_exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\IMediaSourceIntern.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h" />
@@ -49,22 +49,22 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\mfhelpers.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMediaStreamState.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFOperationQueue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\AudioSourceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\LibAVAudioSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\MediaSourceOperation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFSources\SingleStreamAudioSourceBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MMCSSThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFWorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\ring_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\TaskCompletionEvent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\WorkerQueueProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Lyrics.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadata.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSinks\WASAPIMediaSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\RTMediaSource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\WindowsCoreMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp" />
@@ -83,11 +83,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFAudioStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\ByteStreamHandlerBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFByteStreamHandlers\LibAVByteStreamHandler.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMMCSSProvider.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFWorkerQueueProvider.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\AudioSourceBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\LibAVAudioSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\MediaSourceOperation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFSources\SingleStreamAudioSourceBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowsCoreMediaSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="SourceItemsFromImports" />

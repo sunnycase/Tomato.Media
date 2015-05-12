@@ -9,72 +9,52 @@ using namespace Windows::Media;
 using namespace Windows::UI::Core;
 using namespace concurrency;
 
-AudioPlayer::AudioPlayer()
-	:AudioPlayer(Windows::UI::Xaml::Window::Current->Dispatcher,
-		SystemMediaTransportControls::GetForCurrentView())
-{
-}
-
 AudioPlayer::AudioPlayer(CoreDispatcher^ uiDispatcher, SystemMediaTransportControls^ mediaControls)
-	: uiDispatcher(uiDispatcher), mediaControls(mediaControls)
+	:uiDispatcher(uiDispatcher), mediaControls(mediaControls), sinkHandler(this),
+	sink(CreateWASAPIMediaSink(sinkHandler)), currentStatus(MediaPlaybackStatus::Closed)
 {
-	sink = CreateWASAPIMediaSink();
-	WeakReference wr(this);
-	sink->SetStateChangedCallback([wr](MediaSinkState state)
-	{
-		auto player = wr.Resolve<AudioPlayer>();
-		player->OnMediaSinkStateChanged(state);
-	});
-}
+	if (!uiDispatcher)
+		throw ref new InvalidArgumentException(L"uiDispatcher can't be null.");
+	if (!mediaControls)
+		throw ref new InvalidArgumentException(L"mediaControls can't be null.");
 
-AudioPlayer::~AudioPlayer()
-{
-
-}
-
-IAsyncAction ^ AudioPlayer::Initialize()
-{
 	InitializeMediaTransportControls();
-	return create_async([this]
-	{
-		sink->Initialize();
-	});
 }
 
-IAsyncAction^ AudioPlayer::SetMediaSource(MediaSource^ source)
+void AudioPlayer::SetMediaSource(MediaSource^ source)
 {
-	OnSetMediaSource(source);
+	auto updater = mediaControls->DisplayUpdater;
+
 	if (source)
 	{
-		return create_async([=] {
-			auto reader = CreateMFSourceReader(source->Get());
-			return sink->SetMediaSourceReader(std::move(reader));
-		});
+		sink->SetMediaSourceReader(CreateMFSourceReader(source->Get()));
+		updater->MusicProperties->Title = source->Title;
+		updater->MusicProperties->AlbumArtist = source->AlbumArtist;
+		updater->MusicProperties->Artist = source->Artist;
 	}
 	else
-		return create_async([=] {
-		sink->SetMediaSourceReader(nullptr);
-	});
+	{
+		updater->MusicProperties->Title = nullptr;
+		updater->MusicProperties->AlbumArtist = nullptr;
+		updater->MusicProperties->Artist = nullptr;
+	}
+	mediaControls->PlaybackStatus = MediaPlaybackStatus::Closed;
+	updater->Update();
 }
 
 void AudioPlayer::StartPlayback()
 {
-	sink->StartPlayback();
-}
-
-void AudioPlayer::StartPlayback(TimeSpan time)
-{
-	sink->StartPlayback(time.Duration);
+	sink->Start();
 }
 
 void AudioPlayer::PausePlayback()
 {
-	sink->PausePlayback();
+	sink->Pause();
 }
 
 void AudioPlayer::StopPlayback()
 {
-	sink->StopPlayback();
+	sink->Stop();
 }
 
 void AudioPlayer::InitializeMediaTransportControls()
@@ -88,12 +68,12 @@ void AudioPlayer::InitializeMediaTransportControls()
 	mediaControls->DisplayUpdater->Update();
 }
 
-bool AudioPlayer::IsSystemMediaControlEnabled::get()
+bool AudioPlayer::IsMediaTransportControlsEnabled::get()
 {
 	return mediaControls->IsEnabled;
 }
 
-void AudioPlayer::IsSystemMediaControlEnabled::set(bool value)
+void AudioPlayer::IsMediaTransportControlsEnabled::set(bool value)
 {
 	mediaControls->IsEnabled = value;
 }
@@ -101,147 +81,69 @@ void AudioPlayer::IsSystemMediaControlEnabled::set(bool value)
 void AudioPlayer::OnButtonPressed(SystemMediaTransportControls ^sender,
 	SystemMediaTransportControlsButtonPressedEventArgs ^args)
 {
-	auto button = args->Button;
-	RunOnUIDispatcher([=]
-	{
-		switch (args->Button)
-		{
-		case SystemMediaTransportControlsButton::Play:
-			PlayButtonPressed(this, nullptr);
-			break;
-		case SystemMediaTransportControlsButton::Pause:
-			PauseButtonPressed(this, nullptr);
-			break;
-		case SystemMediaTransportControlsButton::Stop:
-			StopButtonPressed(this, nullptr);
-			break;
-		case SystemMediaTransportControlsButton::Previous:
-			PreviousButtonPressed(this, nullptr);
-			break;
-		case SystemMediaTransportControlsButton::Next:
-			NextButtonPressed(this, nullptr);
-			break;
-		default:
-			break;
-		}
-	});
+	MediaTransportButtonPressed(this, args->Button);
 }
 
 void AudioPlayer::RunOnUIDispatcher(std::function<void()>&& handler)
 {
-	if (uiDispatcher)
-		uiDispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler(std::move(handler)));
-	else
-		handler();
+	uiDispatcher->RunAsync(CoreDispatcherPriority::Normal,
+		ref new DispatchedHandler(std::move(handler)));
 }
 
-void AudioPlayer::OnSetMediaSource(MediaSource^ source)
+void AudioPlayer::OnSinkStatusChanged(MediaSinkStatus status)
 {
-	RunOnUIDispatcher([=]
+	switch (status)
 	{
-		auto updater = mediaControls->DisplayUpdater;
-		if (source)
-		{
-			updater->MusicProperties->Title = source->Title;
-			updater->MusicProperties->AlbumArtist = source->AlbumArtist;
-			updater->MusicProperties->Artist = source->Artist;
-		}
-		else
-		{
-			updater->MusicProperties->Title = nullptr;
-			updater->MusicProperties->AlbumArtist = nullptr;
-			updater->MusicProperties->Artist = nullptr;
-		}
-
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Closed;
-		updater->Update();
-	});
-}
-
-void AudioPlayer::OnMediaSinkStateChanging()
-{
-	RunOnUIDispatcher([=]
-	{
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Changing;
-	});
-}
-
-void AudioPlayer::OnMediaSinkPlaying()
-{
-	RunOnUIDispatcher([=]
-	{
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Playing;
-		mediaControls->DisplayUpdater->Update();
-	});
-}
-
-void AudioPlayer::OnMediaSinkPaused()
-{
-	RunOnUIDispatcher([=]
-	{
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Paused;
-	});
-}
-
-void AudioPlayer::OnMediaSinkStopped()
-{
-	RunOnUIDispatcher([=]
-	{
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
-	});
-}
-
-void AudioPlayer::OnMediaSinkEnded()
-{
-	RunOnUIDispatcher([=]
-	{
-		mediaControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
-	});
-}
-
-void AudioPlayer::OnMediaPlaybackStatusChanged(MediaPlaybackStatus status)
-{
-	RunOnUIDispatcher([=]
-	{
-		MediaPlaybackStatusChanged(this, status);
-	});
-}
-
-void AudioPlayer::OnMediaSinkStateChanged(MediaSinkState state)
-{
-	switch (state)
-	{
-	case MediaSinkState::StartPlaying:
-		OnMediaSinkStateChanging();
+	case MediaSinkStatus::Closed:
+		SetMediaPlaybackStatus(MediaPlaybackStatus::Closed);
 		break;
-	case MediaSinkState::Playing:
-		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Playing);
-		OnMediaSinkPlaying();
+	case MediaSinkStatus::Changing:
+		SetMediaPlaybackStatus(MediaPlaybackStatus::Changing);
 		break;
-	case MediaSinkState::Pausing:
-		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Changing);
-		OnMediaSinkStateChanging();
+	case MediaSinkStatus::Started:
+		SetMediaPlaybackStatus(MediaPlaybackStatus::Playing);
 		break;
-	case MediaSinkState::Paused:
-		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Paused);
-		OnMediaSinkPaused();
+	case MediaSinkStatus::Paused:
+		SetMediaPlaybackStatus(MediaPlaybackStatus::Paused);
 		break;
-	case MediaSinkState::Stopping:
-		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Changing);
-		OnMediaSinkStateChanging();
+	case MediaSinkStatus::Stopped:
+		SetMediaPlaybackStatus(MediaPlaybackStatus::Stopped);
 		break;
-	case MediaSinkState::Stopped:
-		OnMediaPlaybackStatusChanged(MediaPlaybackStatus::Stopped);
-		OnMediaSinkStopped();
-		break;
-	case MediaSinkState::Ended:
-		RunOnUIDispatcher([=]
-		{
-			MediaEnded(this, nullptr);
-		});
-		OnMediaSinkStopped();
 	default:
 		break;
+	}
+}
+
+void AudioPlayer::OnSinkMediaOpened()
+{
+	MediaOpened(this, nullptr);
+}
+
+void AudioPlayer::OnSinkMediaEnded()
+{
+	MediaEnded(this, nullptr);
+}
+
+void AudioPlayer::OnSinkSeekCompleted()
+{
+	SeekCompleted(this, nullptr);
+}
+
+void AudioPlayer::OnSinkError(HRESULT error)
+{
+	Error(this, HResult{ error });
+}
+
+void AudioPlayer::SetMediaPlaybackStatus(MediaPlaybackStatus newStatus)
+{
+	if (currentStatus != newStatus)
+	{
+		currentStatus = newStatus;
+		RunOnUIDispatcher([=]
+		{
+			mediaControls->PlaybackStatus = newStatus;
+			MediaPlaybackStatusChanged(this, newStatus);
+		});
 	}
 }
 
@@ -253,7 +155,6 @@ bool AudioPlayer::IsPlayEnabled::get()
 void AudioPlayer::IsPlayEnabled::set(bool value)
 {
 	mediaControls->IsPlayEnabled = value;
-	mediaControls->DisplayUpdater->Update();
 }
 
 bool AudioPlayer::IsPauseEnabled::get()
@@ -264,7 +165,16 @@ bool AudioPlayer::IsPauseEnabled::get()
 void AudioPlayer::IsPauseEnabled::set(bool value)
 {
 	mediaControls->IsPauseEnabled = value;
-	mediaControls->DisplayUpdater->Update();
+}
+
+bool AudioPlayer::IsStopEnabled::get()
+{
+	return mediaControls->IsStopEnabled;
+}
+
+void AudioPlayer::IsStopEnabled::set(bool value)
+{
+	mediaControls->IsStopEnabled = value;
 }
 
 bool AudioPlayer::IsNextEnabled::get()
@@ -275,7 +185,6 @@ bool AudioPlayer::IsNextEnabled::get()
 void AudioPlayer::IsNextEnabled::set(bool value)
 {
 	mediaControls->IsNextEnabled = value;
-	mediaControls->DisplayUpdater->Update();
 }
 
 bool AudioPlayer::IsPreviousEnabled::get()
@@ -286,12 +195,21 @@ bool AudioPlayer::IsPreviousEnabled::get()
 void AudioPlayer::IsPreviousEnabled::set(bool value)
 {
 	mediaControls->IsPreviousEnabled = value;
-	mediaControls->DisplayUpdater->Update();
 }
 
-TimeSpan AudioPlayer::CurrentTime::get()
+TimeSpan AudioPlayer::Position::get()
 {
-	return TimeSpan{ sink->GetCurrentTime() };
+	return TimeSpan{ sink->GetPosition() };
+}
+
+void AudioPlayer::Position::set(TimeSpan position)
+{
+	sink->SetPosition(position.Duration);
+}
+
+TimeSpan AudioPlayer::Duration::get()
+{
+	return TimeSpan{ sink->GetDuration() };
 }
 
 double AudioPlayer::Volume::get()
@@ -302,4 +220,9 @@ double AudioPlayer::Volume::get()
 void AudioPlayer::Volume::set(double value)
 {
 	sink->SetVolume(value);
+}
+
+MediaPlaybackStatus AudioPlayer::CurrentStatus::get()
+{
+	return currentStatus;
 }

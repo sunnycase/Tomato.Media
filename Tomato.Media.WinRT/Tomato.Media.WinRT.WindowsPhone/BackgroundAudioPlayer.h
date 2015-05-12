@@ -1,29 +1,29 @@
-﻿#pragma once
+﻿//
+// Tomato Media
+// 后台音频播放器
+// 
+// (c) SunnyCase 
+// 创建日期 2015-05-11
+#pragma once
 #include "IAudioPlayer.h"
-#include "MediaSource.h"
-#include "MediaSinkHandlerAgent.h"
+#include "IBackgroundAudioHandler.h"
 
 namespace Tomato
 {
 	namespace Media
 	{
-		///<summary>音频播放器</summary>
+		// 后台音频播放器
 		[Windows::Foundation::Metadata::WebHostHidden]
-		public ref class AudioPlayer sealed : public IAudioPlayer
+		public ref class BackgroundAudioPlayer sealed : public IAudioPlayer,
+			public Windows::ApplicationModel::Background::IBackgroundTask
 		{
 		public:
-			AudioPlayer(Windows::UI::Core::CoreDispatcher^ uiDispatcher, 
-				Windows::Media::SystemMediaTransportControls^ mediaControls);
+			BackgroundAudioPlayer();
 
 			property Windows::Media::MediaPlaybackStatus CurrentStatus
 			{
 				virtual Windows::Media::MediaPlaybackStatus get();
 			}
-
-			virtual void SetMediaSource(MediaSource^ mediaSource);
-			virtual void StartPlayback();
-			virtual void PausePlayback();
-			virtual void StopPlayback();
 
 			property bool IsMediaTransportControlsEnabled
 			{
@@ -72,11 +72,10 @@ namespace Tomato
 				virtual Windows::Foundation::TimeSpan get();
 			}
 
-			property double Volume
-			{
-				double get();
-				void set(double value);
-			}
+			virtual void SetMediaSource(MediaSource^ mediaSource);
+			virtual void StartPlayback();
+			virtual void PausePlayback();
+			virtual void StopPlayback();
 
 			virtual event Windows::Foundation::EventHandler<Windows::Foundation::HResult>^ Error;
 			virtual event Windows::Foundation::EventHandler<Windows::Media::MediaPlaybackStatus>^ MediaPlaybackStatusChanged;
@@ -84,26 +83,33 @@ namespace Tomato
 			virtual event Windows::Foundation::EventHandler<Platform::Object^>^ MediaOpened;
 			virtual event Windows::Foundation::EventHandler<Platform::Object^>^ MediaEnded;
 			virtual event Windows::Foundation::EventHandler<Platform::Object^>^ SeekCompleted;
+
+			// 通过 IBackgroundTask 继承
+			virtual void Run(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^taskInstance);
 		private:
+			// 激活音频处理器
+			void ActivateAudioHandler();
 			void InitializeMediaTransportControls();
-
-			void OnButtonPressed(Windows::Media::SystemMediaTransportControls ^sender, Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs ^args);
-			void RunOnUIDispatcher(std::function<void()>&& handler);
+			void AttachEventHandlers();
 			void SetMediaPlaybackStatus(Windows::Media::MediaPlaybackStatus newStatus);
+			// 设置停止状态，可能需要 Seek
+			void SetStopMayNeedSeek();
 
-			void OnSinkStatusChanged(MediaSinkStatus status);
-			void OnSinkMediaOpened();
-			void OnSinkMediaEnded();
-			void OnSinkSeekCompleted();
-			void OnSinkError(HRESULT error);
+			void OnMessageReceivedFromForeground(Platform::Object ^sender, Windows::Media::Playback::MediaPlayerDataReceivedEventArgs ^args);
+			void OnMediaOpened(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+			void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+			void OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args);
+			void OnButtonPressed(Windows::Media::SystemMediaTransportControls ^sender, Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs ^args);
+			void OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+			void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 
-			friend class MediaSinkHandlerAgent;
+			void ReportOnError(concurrency::task<void> task);
 		private:
-			MediaSinkHandlerAgent sinkHandler;
-			std::unique_ptr<IMediaSink> sink;
-			Windows::Media::SystemMediaTransportControls^ mediaControls;
-			Windows::UI::Core::CoreDispatcher^ uiDispatcher;
+			Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
 			Windows::Media::MediaPlaybackStatus currentStatus;
+			IBackgroundAudioHandler^ audioHandler;
+			Windows::Media::SystemMediaTransportControls^ mediaTransportControls;
+			bool nextPauseIsStop = false, nextSeekIsStop = false, seeking = false, mediaEnded = false;
 		};
 	}
 }

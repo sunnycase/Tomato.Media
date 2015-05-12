@@ -187,6 +187,14 @@ void MFSourceReader::ConfigureSourceReader()
 	// 获取解码后的波形格式
 	THROW_IF_FAILED(MFCreateWaveFormatExFromMFMediaType(outputMT.Get(), &pwfx, &cbFormat));
 	outputFormat.reset(pwfx);
+
+	PROPVARIANT propDuration;
+	if (SUCCEEDED(sourceReader->GetPresentationAttribute(MF_SOURCE_READER_MEDIASOURCE,
+		MF_PD_DURATION, &propDuration)))
+	{
+		duration = propDuration.hVal.QuadPart;
+		THROW_IF_FAILED(PropVariantClear(&propDuration));
+	}
 }
 
 void MFSourceReader::OnSampleRead(ReadSampleResult result)

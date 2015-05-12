@@ -12,6 +12,16 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
           DataContext="{StaticResource ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Slider Name="sl_Time" Margin="10" Value="{Binding CurrentTime}" ValueChanged="sl_Time_ValueChanged"/>
+        <StackPanel Grid.Row="1">
+            <Button Click="Button_Click">Play</Button>
+            <Button Click="PauseButton_Click">Pause</Button>
+            <Button Click="StopButton_Click">Stop</Button>
+            <Button Click="SwitchButton_Click">Switch</Button>
+        </StackPanel>
     </Grid>
 </Page>

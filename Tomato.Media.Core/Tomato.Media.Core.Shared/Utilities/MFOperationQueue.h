@@ -5,7 +5,7 @@
 // (c) SunnyCase 
 // 创建日期 2014-10-30
 #pragma once
-#include "MFMMCSSProvider.h"
+#include "WorkerQueueProvider.h"
 #include <concurrent_queue.h>
 
 namespace Tomato
@@ -18,8 +18,8 @@ namespace Tomato
 	public:
 		using operation_t = TOperation;
 	protected:
-		MFOperationQueue(Media::MFMMCSSProvider& mmcss)
-			:invoker(mmcss.CreateMMCSSThread(std::bind(
+		MFOperationQueue(Media::WorkerQueueProvider& mmcss)
+			:invoker(mmcss.QueueWorkerThread(std::bind(
 			&MFOperationQueue::OnProcessOperation, this)))
 		{
 
@@ -54,7 +54,7 @@ namespace Tomato
 			}
 		}
 	private:
-		std::unique_ptr<Media::MMCSSThread> invoker;
+		std::unique_ptr<Media::WorkerThread> invoker;
 		concurrency::concurrent_queue<TOperation> operations;
 	};
 }
