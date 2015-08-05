@@ -15,3 +15,9 @@
 
 // TODO:  在此处引用程序需要的其他头文件
 #include <wrl.h>
+#include <mfidl.h>
+#include <mfapi.h>
+#include <mfreadwrite.h>
+
+#include <ppltasks.h>
+#include <d3d11.h>

@@ -16,5 +16,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
   </ItemGroup>
 </Project>

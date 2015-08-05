@@ -7,10 +7,36 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{f69a010e-76dd-4086-b593-bf81346fa6b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Utility">
+      <UniqueIdentifier>{f657855d-581b-4420-b3d6-5ec7ad592bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Utility">
+      <UniqueIdentifier>{d0ac9e5a-70a5-41a2-9c83-7187be1c1a40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

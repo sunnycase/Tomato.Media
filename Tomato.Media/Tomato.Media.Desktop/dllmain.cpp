@@ -4,11 +4,11 @@
 // 作者：SunnyCase
 // 创建时间：2015-08-04
 //
-#include "stdafx.h"
+#include "pch.h"
 
 using namespace Microsoft::WRL;
 
-#if !defined(__WRL_CLASSIC_COM__)
+#if !defined(__WRL_CLASSIC_COM_STRICT__)
 STDAPI DllGetActivationFactory(_In_ HSTRING activatibleClassId, _COM_Outptr_ IActivationFactory** factory)
 {
 	return Module<InProc>::GetModule().GetActivationFactory(activatibleClassId, factory);

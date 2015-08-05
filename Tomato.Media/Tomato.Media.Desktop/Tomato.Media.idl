@@ -1,0 +1,33 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(EAB2ACB5-E326-4816-B22C-56A4BCF9CF1D),
+	helpstring("媒体源接口。"),
+	version(1.0)
+]
+interface IMediaSource : IUnknown
+{
+	[propget, helpstring("获取标题。")]
+	HRESULT Title([out, retval]BSTR* title);
+
+	[propget, helpstring("获取专辑标题。")]
+	HRESULT Album([out, retval]BSTR* album);
+
+	[helpstring("打开流。")]
+	HRESULT Open([in]IStream* pStream);
+};
+
+[
+	uuid(09DE8F00-E4CD-4379-8783-A50276B0FD8C),
+	helpstring("Tomato Media Type Library"),
+	version(1.0)
+]
+library TomatoMediaLib
+{
+	[uuid(42B84052-7FA6-4C4A-8366-8F7E62F5ADF3)]
+	coclass MediaSource
+	{
+		[default] interface IMediaSource;
+	};
+}

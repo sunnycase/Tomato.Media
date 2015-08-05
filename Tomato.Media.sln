@@ -21,6 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "Samples\WinRT
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Tomato.Media\Tomato.Media.Shared\Tomato.Media.Shared.vcxitems*{6d37168d-bda2-460e-986f-5639eee1f8dc}*SharedItemsImports = 4
 		Tomato.Media\Tomato.Media.Shared\Tomato.Media.Shared.vcxitems*{f5a28f95-fc11-43ce-a2b6-9a8649ac606b}*SharedItemsImports = 4
 		Tomato.Media\Tomato.Media.Shared\Tomato.Media.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
 	EndGlobalSection

@@ -25,6 +25,15 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MediaSource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreMediaSource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPresenter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationDataHelper.h">
@@ -43,6 +52,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="platform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaSource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IMediaPlayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreMediaSource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPresenter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
