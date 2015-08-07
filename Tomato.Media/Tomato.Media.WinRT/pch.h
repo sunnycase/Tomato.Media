@@ -1,10 +1,6 @@
 ﻿#pragma once
 
+#include "common_pch.h"
 #include <collection.h>
-#include <ppltasks.h>
-#include <mfidl.h>
-#include <mfapi.h>
-#include <Mferror.h>
-#include <mfreadwrite.h>
 #include <windows.media.core.h>
-#include <d3d11.h>
+#include <windows.ui.xaml.media.dxinterop.h>

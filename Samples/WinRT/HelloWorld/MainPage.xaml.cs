@@ -7,6 +7,7 @@ using BackgroundMediaShared;
 using Tomato.Media;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +26,7 @@ namespace HelloWorld
     public sealed partial class MainPage : Page
     {
         private BackgroundMediaPlayerClient playerClient;
+        private VideoPresenter videoPresenter;
 
         public MainPage()
         {
@@ -33,9 +35,18 @@ namespace HelloWorld
             Loaded += MainPage_Loaded;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
+            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
+
+
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi"));
+            var stream = await file.OpenReadAsync();
+            var mediaSource = await MediaSource.CreateFromStream(stream);
+            videoPresenter = new VideoPresenter();
+            videoPresenter.SetMediaSource(mediaSource);
+
+            videoPresenter.Play();
         }
     }
 }

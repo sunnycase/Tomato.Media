@@ -108,7 +108,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
@@ -137,7 +137,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
@@ -170,7 +170,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
@@ -203,7 +203,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
@@ -242,7 +242,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MediaSource.cpp" />
-    <ClCompile Include="Lifetime.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

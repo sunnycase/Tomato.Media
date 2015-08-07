@@ -50,9 +50,6 @@
     <ClCompile Include="MediaSource.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Lifetime.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

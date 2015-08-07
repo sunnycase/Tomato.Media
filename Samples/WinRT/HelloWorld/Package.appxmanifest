@@ -31,5 +31,6 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="videosLibrary" />
   </Capabilities>
 </Package>
