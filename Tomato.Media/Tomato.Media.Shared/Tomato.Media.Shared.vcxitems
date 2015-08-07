@@ -24,6 +24,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamSink.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VideoEngine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSink.cpp" />

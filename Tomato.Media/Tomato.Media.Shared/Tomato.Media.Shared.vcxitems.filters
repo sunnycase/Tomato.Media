@@ -51,6 +51,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamSink.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -80,5 +83,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSink.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
   </ItemGroup>
 </Project>

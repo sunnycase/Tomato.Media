@@ -35,7 +35,6 @@ private:
 	void ConfigureSourceReader();
 protected:
 	WRL::ComPtr<IMFSourceReader> sourceReader;
-	volatile bool drainSamples;					// ¶ÁÈ¡Ê£Óà²ÉÑù
 	volatile bool isActive;
 };
 
