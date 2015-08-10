@@ -13,3 +13,24 @@
 #include "platform.h"
 
 #define DEFINE_PROPERTY_GET(name, type) __declspec(property(get = get_##name)) type name
+
+#include <functional>
+
+///<summary>ÖÕ½áÆ÷</summary>
+class finalizer final
+{
+public:
+	finalizer(std::function<void()> action)
+		:action(std::move(action))
+	{
+
+	}
+
+	~finalizer()
+	{
+		if (action)
+			action();
+	}
+private:
+	std::function<void()> action;
+};

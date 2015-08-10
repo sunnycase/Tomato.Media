@@ -46,32 +46,22 @@ struct USIZE
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 
-struct VideoSample
-{
-	WRL::ComPtr<ID3D11Texture2D> Texture;
-	REFERENCE_TIME Time, Duration;
-
-	VideoSample(WRL::ComPtr<ID3D11Texture2D> texture, REFERENCE_TIME time, REFERENCE_TIME duration)
-		:Texture(std::move(texture)), Time(time), Duration(duration)
-	{
-
-	}
-};
-
 class VideoSourceReader : public SourceReader
 {
 public:
 	const size_t DefaultVideoCacheTime = 3;
 
-	VideoSourceReader(IDXGIAdapter* dxgiAdapter, ID3D11Device* d3dDevice);
+	VideoSourceReader();
 
-	bool TryReadVideoSample(VideoSample& sample);
-	IMFMediaType* GetOutputMediaType() const noexcept { return outputMT.Get(); }
-	// 通过 RuntimeClass 继承
-	STDMETHODIMP OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample) override;
+	bool TryReadVideoSample(WRL::ComPtr<IMFSample>& sample);
 
+	DEFINE_PROPERTY_GET(OutputMediaType, IMFMediaType*);
+	IMFMediaType* get_OutputMediaType() const noexcept { return outputMT.Get(); }
 	DEFINE_PROPERTY_GET(FrameSize, USIZE);
 	USIZE get_FrameSize() const { return frameSize; }
+
+	// 通过 RuntimeClass 继承
+	STDMETHODIMP OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample) override;
 protected:
 	virtual void ConfigureAttributes(IMFAttributes* attributes) override;
 	virtual void SetStreamSelection(IMFSourceReader* sourceReader) override;
@@ -81,10 +71,9 @@ private:
 	void DispatchIncomingSample(IMFSample* pSample);
 	void PostSampleRequestIfNeed();
 private:
-	std::queue<VideoSample> videoCache;
+	std::queue<WRL::ComPtr<IMFSample>> videoCache;
 	USIZE frameSize = { 0 };
 	size_t videoCacheSize;
-	WRL::ComPtr<ID3D11Device> d3dDevice;
 	WRL::ComPtr<IMFMediaType> outputMT;
 	UINT resetToken;
 	std::recursive_mutex videoCacheMutex;

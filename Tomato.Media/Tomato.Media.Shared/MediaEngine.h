@@ -5,41 +5,30 @@
 // 创建时间：2015-08-06
 //
 #pragma once
-#include "common.h"
-#include "Utility/MediaEngineNotify.h"
+#include "SourceReader.h"
+#include "IVideoRender.h"
 
 DEFINE_NS_MEDIA
 
-#if (WINVER >= _WIN32_WINNT_WIN8)
-
-class MediaEngine : public std::enable_shared_from_this<MediaEngine>
-{
-protected:
-	MediaEngine();
-
-	virtual void ConfigureFactoryAttributes(IMFAttributes* attributes) {}
-private:
-	void OnMediaEngineEventNotify(DWORD event);
-	void InitializeMediaEngine();
-private:
-	WRL::ComPtr<MediaEngineNotify> engineNotify;
-	WRL::ComPtr<IMFMediaEngineEx> mediaEngine;
-};
-
-class VideoMediaEngine : public MediaEngine
+class MediaEngine
 {
 public:
-	static std::shared_ptr<VideoMediaEngine> Make();
-protected:
-	VideoMediaEngine();
+	MediaEngine();
 
-	virtual void ConfigureFactoryAttributes(IMFAttributes* attributes) override;
+	DEFINE_PROPERTY_GET(FrameSize, USIZE);
+	USIZE get_FrameSize() const { return sourceReader->FrameSize; }
+	DEFINE_PROPERTY_GET(VideoRender, WRL::ComPtr<IVideoRender>);
+	WRL::ComPtr<IVideoRender> get_VideoRender() const;
+
+	void SetMediaSource(IMFMediaSource* mediaSource);
+	void Play();
 private:
-	WRL::ComPtr<IMFDXGIDeviceManager> InitializeDXGIDeviceManager();
+	void ConfigureSourceReader(IMFMediaSource* mediaSource);
+	void ConfigureMediaSink();
 private:
-	UINT resetToken;
+	WRL::ComPtr<VideoSourceReader> sourceReader;
+	WRL::ComPtr<IMFMediaSink> mediaSink;
+	WRL::ComPtr<IMFStreamSink> videoSink;
 };
-
-#endif
 
 END_NS_MEDIA

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
@@ -25,11 +26,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)VideoEngine.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSink.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StreamSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
@@ -37,8 +39,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)VideoEngine.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSink.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StreamSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
 </Project>

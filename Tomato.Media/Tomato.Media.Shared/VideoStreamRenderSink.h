@@ -1,19 +1,22 @@
 //
 // Tomato Media
-// Stream Sink
+// 视频流渲染 Sink
 // 
 // 作者：SunnyCase 
 // 创建日期 2015-08-07
 #pragma once
-#include "common.h"
+#include "IVideoRender.h"
 #include <mfidl.h>
+#include <mutex>
 
 DEFINE_NS_MEDIA
 
-class StreamSink : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFStreamSink, IMFMediaTypeHandler>
+///<summary>视频流 Sink</summary>
+class VideoStreamRenderSink : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFStreamSink, IMFMediaTypeHandler>
 {
 public:
-	StreamSink(DWORD identifier, IMFMediaSink* mediaSink);
+	///<remarks>不对 mediaSink 增加引用计数，mediaSink 的有效性由本对象的所有者保证。</remarks>
+	VideoStreamRenderSink(DWORD identifier, IMFMediaSink* mediaSink, IVideoRender* videoRender);
 
 	// 通过 RuntimeClass 继承
 	STDMETHODIMP GetEvent(DWORD dwFlags, IMFMediaEvent ** ppEvent) override;
@@ -34,10 +37,15 @@ public:
 	STDMETHODIMP GetCurrentMediaType(IMFMediaType ** ppMediaType) override;
 	STDMETHODIMP GetMajorType(GUID * pguidMajorType) override;
 private:
-	WRL::ComPtr<IMFMediaEventQueue> eventQueue;
-	IMFMediaSink* mediaSink;
+	void OnSetMediaType();
+private:
 	DWORD identifier;
+	IMFMediaSink* mediaSink;
+	UINT32 frameWidth, frameHeight;
+	WRL::ComPtr<IVideoRender> videoRender;
+	WRL::ComPtr<IMFMediaEventQueue> eventQueue;
 	WRL::ComPtr<IMFMediaType> mediaType;
+	std::mutex stateMutex;
 };
 
 END_NS_MEDIA

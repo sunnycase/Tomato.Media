@@ -45,6 +45,7 @@ namespace HelloWorld
             var mediaSource = await MediaSource.CreateFromStream(stream);
             videoPresenter = new VideoPresenter();
             videoPresenter.SetMediaSource(mediaSource);
+            img_Video.Source = videoPresenter.ImageSource;
 
             videoPresenter.Play();
         }

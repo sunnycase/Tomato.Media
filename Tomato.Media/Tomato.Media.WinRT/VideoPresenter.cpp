@@ -22,21 +22,21 @@ VideoPresenter::VideoPresenter()
 
 void VideoPresenter::SetMediaSource(MediaSource^ mediaSource)
 {
-	videoEngine.SetMediaSource(mediaSource->MFMediaSource);
+	mediaEngine.SetMediaSource(mediaSource->MFMediaSource);
 	InitializeSurfaceImageSource();
 }
 
 void VideoPresenter::InitializeSurfaceImageSource()
 {
-	const auto frameSize(videoEngine.FrameSize);
+	const auto frameSize(mediaEngine.FrameSize);
 
 	imageSource = ref new SurfaceImageSource(static_cast<int>(frameSize.Width), static_cast<int>(frameSize.Height), true);
-	ComPtr<IUnknown> unkImageSourceNative(reinterpret_cast<IUnknown*>(imageSource));
-	ThrowIfFailed(unkImageSourceNative.As(&imageSourceNative));
-	ThrowIfFailed(imageSourceNative->SetDevice(videoEngine.D2dDevice));
+
+	auto videoRender(mediaEngine.VideoRender);
+	videoRender->SetSurfaceImageSource(imageSource, frameSize.Width, frameSize.Height);
 }
 
 void VideoPresenter::Play()
 {
-	videoEngine.Play();
+	mediaEngine.Play();
 }

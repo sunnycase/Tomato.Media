@@ -13,6 +13,9 @@
     <Filter Include="源文件\Utility">
       <UniqueIdentifier>{d0ac9e5a-70a5-41a2-9c83-7187be1c1a40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{cfcad880-5c55-4b0d-8dd2-9256f9dec496}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
@@ -39,20 +42,23 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)VideoEngine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSink.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StreamSink.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h">
       <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,21 +74,31 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)StreamSink.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)VideoEngine.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSink.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

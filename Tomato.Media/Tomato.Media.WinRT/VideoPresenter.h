@@ -7,7 +7,7 @@
 #pragma once
 #include "common.h"
 #include "MediaSource.h"
-#include "VideoEngine.h"
+#include "MediaEngine.h"
 #include <windows.ui.xaml.media.dxinterop.h>
 
 DEFINE_NS_MEDIA
@@ -31,8 +31,8 @@ private:
 	void InitializeSurfaceImageSource();
 private:
 	Windows::UI::Xaml::Media::Imaging::SurfaceImageSource^ imageSource;
-	WRL::ComPtr<ISurfaceImageSourceNativeWithD2D> imageSourceNative;
-	VideoEngine videoEngine;
+	WRL::ComPtr<ISurfaceImageSourceNative> sisNative;
+	MediaEngine mediaEngine;
 };
 
 END_NS_MEDIA

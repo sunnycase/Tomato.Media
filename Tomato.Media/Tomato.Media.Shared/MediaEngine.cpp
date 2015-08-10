@@ -6,98 +6,58 @@
 //
 #include "pch.h"
 #include "MediaEngine.h"
+#include "MediaRenderSink.h"
 
 using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
 
-#if (WINVER >= _WIN32_WINNT_WIN8)
-
-namespace
-{
-	class MediaEngineExtension : public RuntimeClass<RuntimeClassFlags<RuntimeClassType::ClassicCom>, IMFMediaEngineExtension>
-	{
-	public:
-		MediaEngineExtension(IMFMediaSource* mediaSource)
-		{
-
-		}
-	private:
-
-	};
-}
-
 MediaEngine::MediaEngine()
-{
-	std::weak_ptr<MediaEngine> weak(shared_from_this());
-	engineNotify = Make<MediaEngineNotify>([weak](DWORD event) {
-		auto me = weak.lock();
-		if (me) me->OnMediaEngineEventNotify(event);
-	});
-
-	InitializeMediaEngine();
-}
-
-void MediaEngine::InitializeMediaEngine()
-{
-	ComPtr<IMFMediaEngineClassFactory> factory;
-	ThrowIfFailed(CoCreateInstance(CLSID_MFMediaEngineClassFactory, nullptr, CLSCTX_INPROC, IID_PPV_ARGS(&factory)));
-
-	ComPtr<IMFAttributes> attributes;
-	ThrowIfFailed(MFCreateAttributes(&attributes, 3));
-	ThrowIfFailed(attributes->SetUnknown(MF_MEDIA_ENGINE_CALLBACK, engineNotify.Get()));
-	ConfigureFactoryAttributes(attributes.Get());
-
-	ComPtr<IMFMediaEngine> tmpMediaEngine;
-	ThrowIfFailed(factory->CreateInstance(0, attributes.Get(), &tmpMediaEngine));
-	ThrowIfFailed(tmpMediaEngine.As(&mediaEngine));
-}
-
-void MediaEngine::OnMediaEngineEventNotify(DWORD event)
+	:sourceReader(Make<VideoSourceReader>()), mediaSink(Make<MediaRenderSink>())
 {
 
 }
 
-VideoMediaEngine::VideoMediaEngine()
+void MediaEngine::SetMediaSource(IMFMediaSource* mediaSource)
 {
-
+	ConfigureSourceReader(mediaSource);
 }
 
-std::shared_ptr<VideoMediaEngine> VideoMediaEngine::Make()
+void MediaEngine::ConfigureSourceReader(IMFMediaSource* mediaSource)
 {
-	return std::shared_ptr<VideoMediaEngine>(new VideoMediaEngine());
+	sourceReader->SetMediaSource(mediaSource);
+	ConfigureMediaSink();
 }
 
-ComPtr<IMFDXGIDeviceManager> VideoMediaEngine::InitializeDXGIDeviceManager()
+void MediaEngine::ConfigureMediaSink()
 {
-	auto flags = static_cast<D3D11_CREATE_DEVICE_FLAG>(D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT);
-	const D3D_FEATURE_LEVEL featureLevels[] = {
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0,
-		D3D_FEATURE_LEVEL_9_3,
-		D3D_FEATURE_LEVEL_9_2,
-		D3D_FEATURE_LEVEL_9_1,
-	};
+	ThrowIfFailed(mediaSink->GetStreamSinkByIndex(1, &videoSink));
+	ComPtr<IMFMediaTypeHandler> mediaTypeHandler;
+	ThrowIfFailed(videoSink->GetMediaTypeHandler(&mediaTypeHandler));
+	ThrowIfFailed(mediaTypeHandler->SetCurrentMediaType(sourceReader->OutputMediaType));
+}
 
-	ComPtr<ID3D11Device> d3dDevice;
-	if (SUCCEEDED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLevels, ARRAYSIZE(featureLevels),
-		D3D11_SDK_VERSION, &d3dDevice, nullptr, nullptr)))
+void MediaEngine::Play()
+{
+	sourceReader->Start();
+
+	create_task([=]
 	{
-		ComPtr<IMFDXGIDeviceManager> dxgiDeviceManager;
-		ThrowIfFailed(MFCreateDXGIDeviceManager(&resetToken, &dxgiDeviceManager));
-		ThrowIfFailed(dxgiDeviceManager->ResetDevice(d3dDevice.Get(), resetToken));
-
-		return dxgiDeviceManager;
-	}
-	return nullptr;
+		while (true)
+		{
+			ComPtr<IMFSample> videoSample;
+			if (sourceReader->TryReadVideoSample(videoSample))
+			{
+				ThrowIfFailed(videoSink->ProcessSample(videoSample.Get()));
+			}
+			Sleep(1000);
+		}
+	});
 }
 
-void VideoMediaEngine::ConfigureFactoryAttributes(IMFAttributes* attributes)
+ComPtr<IVideoRender> MediaEngine::get_VideoRender() const
 {
-	auto dxgiDeviceManager(InitializeDXGIDeviceManager());
-	ThrowIfFailed(attributes->SetUnknown(MF_MEDIA_ENGINE_DXGI_MANAGER, dxgiDeviceManager.Get()));
+	ComPtr<IVideoRender> videoRender;
+	ThrowIfFailed(MFGetService(mediaSink.Get(), MF_TM_VIDEORENDER_SERVICE, IID_PPV_ARGS(&videoRender)));
+	return videoRender;
 }
-
-#endif

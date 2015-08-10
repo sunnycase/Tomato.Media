@@ -13,6 +13,7 @@ using namespace WRL;
 
 SourceReader::SourceReader()
 {
+
 }
 
 void SourceReader::InitializeSourceReader(IMFMediaSource* mediaSource)
@@ -50,14 +51,13 @@ void SourceReader::OnEndOfStream()
 void SourceReader::Start()
 {
 	isActive = true;
-	drainSamples = false;
 
 	PostSampleRequest();
 }
 
 void SourceReader::PostSampleRequest()
 {
-	ThrowIfFailed(sourceReader->ReadSample(MF_SOURCE_READER_ANY_STREAM, drainSamples ? MF_SOURCE_READER_CONTROLF_DRAIN : 0, nullptr, nullptr, nullptr, nullptr));
+	ThrowIfFailed(sourceReader->ReadSample(MF_SOURCE_READER_ANY_STREAM, 0, nullptr, nullptr, nullptr, nullptr));
 }
 
 HRESULT SourceReader::OnFlush(DWORD dwStreamIndex)
@@ -72,10 +72,9 @@ HRESULT SourceReader::OnEvent(DWORD dwStreamIndex, IMFMediaEvent * pEvent)
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 
-VideoSourceReader::VideoSourceReader(IDXGIAdapter* dxgiAdapter, ID3D11Device* d3dDevice)
-	:d3dDevice(d3dDevice)
+VideoSourceReader::VideoSourceReader()
 {
-	InitializeDXGIDeviceManager(dxgiAdapter);
+	InitializeDXGIDeviceManager(nullptr);
 }
 
 void VideoSourceReader::InitializeDXGIDeviceManager(IDXGIAdapter* dxgiAdapter)
@@ -159,59 +158,7 @@ void VideoSourceReader::DispatchIncomingSample(IMFSample* pSample)
 	{
 		std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
 
-		// 获取 Buffer 数量
-		DWORD bufferCount;
-		ThrowIfFailed(pSample->GetBufferCount(&bufferCount));
-
-		ComPtr<ID3D11Texture2D> texture;
-		for (DWORD i = 0; i < 1; i++)
-		{
-			ComPtr<IMFMediaBuffer> buffer;
-			ThrowIfFailed(pSample->GetBufferByIndex(i, &buffer));
-
-			ComPtr<IMFDXGIBuffer> dxgiBuffer;
-			if (SUCCEEDED(buffer.As(&dxgiBuffer)))
-				ThrowIfFailed(dxgiBuffer->GetResource(IID_PPV_ARGS(&texture)));
-			else
-			{
-				ComPtr<IMF2DBuffer> buffer2d;
-				ThrowIfFailed(buffer.As(&buffer2d));
-
-				D3D11_TEXTURE2D_DESC desc{ 0 };
-				desc.Width = frameSize.Width;
-				desc.Height = frameSize.Height;
-				desc.MipLevels = 1;
-				desc.ArraySize = 1;
-				desc.Format = DXGI_FORMAT_NV12;
-				desc.SampleDesc.Count = 1;
-				desc.Usage = D3D11_USAGE_IMMUTABLE;
-				desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-				try
-				{
-					BYTE* base; LONG pitch;
-					ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
-
-					D3D11_SUBRESOURCE_DATA data{ base, static_cast<UINT>(pitch), 0 };
-
-					ThrowIfFailed(d3dDevice->CreateTexture2D(&desc, &data, &texture));
-					buffer2d->Unlock2D();
-				}
-				catch (...)
-				{
-					buffer2d->Unlock2D();
-					throw;
-				}
-			}
-		}
-
-		if (texture)
-		{
-			REFERENCE_TIME time, duration;
-			ThrowIfFailed(pSample->GetSampleTime(&time));
-			ThrowIfFailed(pSample->GetSampleDuration(&duration));
-			videoCache.emplace(texture, time, duration);
-		}
+		videoCache.emplace(pSample);
 	}
 	PostSampleRequestIfNeed();
 }
@@ -228,7 +175,7 @@ void VideoSourceReader::PostSampleRequestIfNeed()
 		PostSampleRequest();
 }
 
-bool VideoSourceReader::TryReadVideoSample(VideoSample& sample)
+bool VideoSourceReader::TryReadVideoSample(ComPtr<IMFSample>& sample)
 {
 	if (!videoCache.empty())
 	{
