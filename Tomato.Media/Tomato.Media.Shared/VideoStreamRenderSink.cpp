@@ -46,9 +46,7 @@ HRESULT VideoStreamRenderSink::QueueEvent(MediaEventType met, REFGUID guidExtend
 
 HRESULT VideoStreamRenderSink::GetMediaSink(IMFMediaSink ** ppMediaSink)
 {
-	*ppMediaSink = mediaSink;
-	mediaSink->AddRef();
-	return S_OK;
+	return mediaSink.CopyTo(ppMediaSink);
 }
 
 HRESULT VideoStreamRenderSink::GetIdentifier(DWORD * pdwIdentifier)
@@ -68,7 +66,7 @@ HRESULT VideoStreamRenderSink::ProcessSample(IMFSample * pSample)
 	try
 	{
 		auto frame = videoRender->CreateFrame(pSample, frameWidth, frameHeight);
-		videoRender->RenderFrame(frame.Get());
+		videoRender->RenderFrame(frame);
 	}
 	CATCH_ALL();
 	return S_OK;

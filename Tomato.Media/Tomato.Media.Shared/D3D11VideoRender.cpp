@@ -6,24 +6,51 @@
 // 创建日期 2015-08-10
 #include "pch.h"
 #include "D3D11VideoRender.h"
+#include "ResourceHelper.h"
+#include <DirectXMath.h>
 
 using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
+using namespace DirectX;
+
+namespace
+{
+	struct alignas(16) Vertex
+	{
+		XMFLOAT4A Position;
+		XMFLOAT4A Color;
+		XMFLOAT2A TexCoord;
+	};
+
+	enum { e = sizeof(Vertex) };
+	static_assert(sizeof(Vertex) == 48, "sizeof Vertex must be 12.");
+}
 
 D3D11VideoRender::D3D11VideoRender()
 {
+
 }
 
-void D3D11VideoRender::Initialize()
+task<void> D3D11VideoRender::Initialize()
 {
-	CreateDeviceResources();
+	if (!initStarted.exchange(true))
+		initTask = InitializeCore();
+	return initTask;
 }
 
-void D3D11VideoRender::CreateDeviceResources()
+task<void> D3D11VideoRender::InitializeCore()
+{
+	return CreateDeviceResources();
+}
+
+task<void> D3D11VideoRender::CreateDeviceResources()
 {
 	// 创建 D3D 设备
-	D3D11_CREATE_DEVICE_FLAG flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+	UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#if _DEBUG
+	flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 	const D3D_FEATURE_LEVEL featureLevels[] = {
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
@@ -36,9 +63,88 @@ void D3D11VideoRender::CreateDeviceResources()
 
 	ThrowIfFailed(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
 		d3dDevice.ReleaseAndGetAddressOf(), &featureLevel, d3dDeviceContext.ReleaseAndGetAddressOf()));
+
+	// 加载并设置 Vertex Shader
+	ComPtr<D3D11VideoRender> thisGuard(this);
+	return BlobResource::LoadFromResource(Resources::DefaultVideoVS)
+		.then([thisGuard, this](std::shared_ptr<BlobResource> blob)
+	{
+		ComPtr<ID3D11VertexShader> vertexShader;
+		ThrowIfFailed(d3dDevice->CreateVertexShader(blob->GetPointer(), blob->GetLength(), nullptr, &vertexShader));
+		d3dDeviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+
+		// 加载并设置 Input Layout
+		ComPtr<ID3D11InputLayout> inputLayout;
+		D3D11_INPUT_ELEMENT_DESC inputElements[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXTCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		ThrowIfFailed(d3dDevice->CreateInputLayout(inputElements, ARRAYSIZE(inputElements),
+			blob->GetPointer(), blob->GetLength(), &inputLayout));
+		d3dDeviceContext->IASetInputLayout(inputLayout.Get());
+
+		// 加载 Pixel Shader
+		return BlobResource::LoadFromResource(Resources::DefaultVideoPS);
+	}).then([thisGuard, this](std::shared_ptr<BlobResource> blob)
+	{
+		// 设置 Pixel Shader
+		ComPtr<ID3D11PixelShader> pixelShader;
+		ThrowIfFailed(d3dDevice->CreatePixelShader(blob->GetPointer(), blob->GetLength(), nullptr, &pixelShader));
+		d3dDeviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+		// 设置设备状态
+		ConfigureDeviceState();
+	});
 }
 
-ComPtr<ID3D11Texture2D> D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
+void D3D11VideoRender::ConfigureDeviceState()
+{
+	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void D3D11VideoRender::CreateVideoLayerResources(float width, float height)
+{
+	// Vertex Buffer
+	Vertex vertices[] = {
+		{ { 0.f, 0.f, 0.f, 0.f }, { 1.f, 1.f, 1.f, 1.f }, { 0.f, 0.f } },
+		{ { width, 0.f, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } },
+		{ { width, height, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } },
+		{ { 0.f, height, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } }
+	};
+	D3D11_BUFFER_DESC desc = { 0 };
+	desc.ByteWidth = sizeof(vertices);
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.StructureByteStride = sizeof(Vertex);
+	D3D11_SUBRESOURCE_DATA data = { 0 };
+	data.pSysMem = vertices;
+	data.SysMemPitch = sizeof(Vertex);
+	ThrowIfFailed(d3dDevice->CreateBuffer(&desc, &data, &videoLayerVB));
+
+	if (!videoLayerIB)
+	{
+		// Index Buffer
+		UINT indexes[] = { 0, 1, 2, 0, 2, 3 };
+		desc.ByteWidth = sizeof(indexes);
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		desc.StructureByteStride = sizeof(UINT);
+		data.pSysMem = indexes;
+		data.SysMemPitch = sizeof(UINT);
+		ThrowIfFailed(d3dDevice->CreateBuffer(&desc, &data, &videoLayerIB));
+	}
+
+	// Viewport
+	D3D11_VIEWPORT viewport = { 0 };
+	viewport.Width = width;
+	viewport.Height = height;
+	viewport.MinDepth = 0.f;
+	viewport.MaxDepth = 1.f;
+	d3dDeviceContext->RSSetViewports(1, &viewport);
+}
+
+Frame D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
 {
 	// 获取 Buffer 数量
 	DWORD bufferCount;
@@ -50,39 +156,40 @@ ComPtr<ID3D11Texture2D> D3D11VideoRender::CreateFrame(IMFSample * sample, UINT w
 		ComPtr<IMFMediaBuffer> buffer;
 		ThrowIfFailed(sample->GetBufferByIndex(i, &buffer));
 
-		ComPtr<IMFDXGIBuffer> dxgiBuffer;
-		if (SUCCEEDED(buffer.As(&dxgiBuffer)))
-			ThrowIfFailed(dxgiBuffer->GetResource(IID_PPV_ARGS(&texture)));
-		else
-		{
-			ComPtr<IMF2DBuffer> buffer2d;
-			ThrowIfFailed(buffer.As(&buffer2d));
+		ComPtr<IMF2DBuffer> buffer2d;
+		ThrowIfFailed(buffer.As(&buffer2d));
 
-			D3D11_TEXTURE2D_DESC desc{ 0 };
-			desc.Width = width;
-			desc.Height = height;
-			desc.MipLevels = 1;
-			desc.ArraySize = 1;
-			desc.Format = DXGI_FORMAT_NV12;
-			desc.SampleDesc.Count = 1;
-			desc.Usage = D3D11_USAGE_IMMUTABLE;
-			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		D3D11_TEXTURE2D_DESC desc{ 0 };
+		desc.Width = width;
+		desc.Height = height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_NV12;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-			BYTE* base; LONG pitch;
-			ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
-			finalizer fin([&] { buffer2d->Unlock2D();});
+		BYTE* base; LONG pitch;
+		ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
+		finalizer fin([&] { buffer2d->Unlock2D();});
 
-			D3D11_SUBRESOURCE_DATA data{ base, static_cast<UINT>(pitch), 0 };
-
-			ThrowIfFailed(d3dDevice->CreateTexture2D(&desc, &data, &texture));
-		}
+		D3D11_SUBRESOURCE_DATA data{ base, static_cast<UINT>(pitch), 0 };
+		ThrowIfFailed(d3dDevice->CreateTexture2D(&desc, &data, &texture));
 	}
-	return texture;
+	ComPtr<ID3D11ShaderResourceView> luminanceView, chrominanceView;
+	D3D11_SHADER_RESOURCE_VIEW_DESC resDesc = CD3D11_SHADER_RESOURCE_VIEW_DESC(
+		texture.Get(), D3D11_SRV_DIMENSION_TEXTURE2D, DXGI_FORMAT_R8_UNORM);
+	ThrowIfFailed(d3dDevice->CreateShaderResourceView(texture.Get(), &resDesc, &luminanceView));
+
+	resDesc = CD3D11_SHADER_RESOURCE_VIEW_DESC(
+		texture.Get(), D3D11_SRV_DIMENSION_TEXTURE2D, DXGI_FORMAT_R8G8_UNORM);
+	ThrowIfFailed(d3dDevice->CreateShaderResourceView(texture.Get(), &resDesc, &chrominanceView));
+	return{ luminanceView, chrominanceView };
 }
 
-void D3D11VideoRender::RenderFrame(ID3D11Texture2D * texture)
+void D3D11VideoRender::RenderFrame(const Frame& frame)
 {
-	RenderFrameToSurfaceImageSource(texture);
+	RenderFrameToSurfaceImageSource(frame);
 }
 
 #ifdef __cplusplus_winrt
@@ -103,16 +210,22 @@ void D3D11VideoRender::SetSurfaceImageSource(Windows::UI::Xaml::Media::Imaging::
 		ThrowIfFailed(sisNative->SetDevice(dxgiDevice.Get()));
 		sisWidth = width;
 		sisHeight = height;
+
+		Initialize().then([=] {
+			CreateVideoLayerResources(static_cast<float>(width), static_cast<float>(height));
+		});
 	}
 }
 
 #endif
 
-#include <windows.ui.core.h>
-
-void D3D11VideoRender::RenderFrameToSurfaceImageSource(ID3D11Texture2D* texture)
+void D3D11VideoRender::RenderFrameToSurfaceImageSource(const Frame& frame)
 {
+	if (!initTask.is_done())
+		ThrowIfFailed(E_NOT_VALID_STATE);
+
 #ifdef __cplusplus_winrt
+	Frame frameHolder(frame);
 	sisDispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([=]
 	{
 		ComPtr<IDXGISurface> surface;
@@ -135,9 +248,24 @@ void D3D11VideoRender::RenderFrameToSurfaceImageSource(ID3D11Texture2D* texture)
 			ComPtr<ID3D11RenderTargetView> renderTargetView;
 			ThrowIfFailed(d3dDevice->CreateRenderTargetView(renderTarget.Get(), nullptr, &renderTargetView));
 
-			static const float clearColor[] = { 1.f, 1.f, 0.f, 1.f };
-			d3dDeviceContext->ClearRenderTargetView(renderTargetView.Get(), clearColor);
+			DrawVideoLayer(renderTargetView.GetAddressOf(), frameHolder);
 		}
 	}));
 #endif
+}
+
+void D3D11VideoRender::DrawVideoLayer(ID3D11RenderTargetView** target, const Frame& frame)
+{
+	static const float clearColor[] = { 1.f, 1.f, 1.f, 1.f };
+	d3dDeviceContext->ClearRenderTargetView(*target, clearColor);
+
+	d3dDeviceContext->OMSetRenderTargets(1, target, nullptr);
+
+	UINT strides = 4; UINT offset = 0;
+	d3dDeviceContext->IASetVertexBuffers(0, 1, videoLayerVB.GetAddressOf(), &strides, &offset);
+	d3dDeviceContext->IASetIndexBuffer(videoLayerIB.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	ID3D11ShaderResourceView* resViews[] = { frame.Luminance.Get(), frame.Chrominance.Get() };
+	d3dDeviceContext->PSSetShaderResources(0, 2, resViews);
+	d3dDeviceContext->DrawIndexed(4, 0, 0);
 }

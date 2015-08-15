@@ -11,6 +11,9 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{d6f0c6fa-64eb-49fd-9f2a-0440e0b41e19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="生成的文件">
+      <UniqueIdentifier>{0dee47e8-3325-4f08-80ed-22460a370de4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationDataHelper.cpp">
@@ -32,6 +35,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="VideoPresenter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,6 +70,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="VideoPresenter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

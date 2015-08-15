@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
@@ -49,5 +51,8 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)DefaultVideoShader.hlsli" />
   </ItemGroup>
 </Project>

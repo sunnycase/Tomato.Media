@@ -15,7 +15,6 @@ DEFINE_NS_MEDIA
 class VideoStreamRenderSink : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFStreamSink, IMFMediaTypeHandler>
 {
 public:
-	///<remarks>不对 mediaSink 增加引用计数，mediaSink 的有效性由本对象的所有者保证。</remarks>
 	VideoStreamRenderSink(DWORD identifier, IMFMediaSink* mediaSink, IVideoRender* videoRender);
 
 	// 通过 RuntimeClass 继承
@@ -40,8 +39,8 @@ private:
 	void OnSetMediaType();
 private:
 	DWORD identifier;
-	IMFMediaSink* mediaSink;
 	UINT32 frameWidth, frameHeight;
+	WRL::ComPtr<IMFMediaSink> mediaSink;
 	WRL::ComPtr<IVideoRender> videoRender;
 	WRL::ComPtr<IMFMediaEventQueue> eventQueue;
 	WRL::ComPtr<IMFMediaType> mediaType;

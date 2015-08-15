@@ -6,16 +6,23 @@
 // 创建日期 2015-08-10
 #pragma once
 #include "common.h"
+#include <ppltasks.h>
 #include <mfidl.h>
 
 DEFINE_NS_MEDIA
 
+struct Frame
+{
+	WRL::ComPtr<ID3D11ShaderResourceView> Luminance;
+	WRL::ComPtr<ID3D11ShaderResourceView> Chrominance;
+};
+
 ///<summary>视频渲染器接口</summary>
 struct DECLSPEC_UUID("E27E2141-0935-4CE7-8550-2B7B4DA8B5E9") IVideoRender : public IUnknown
 {
-	virtual void Initialize() = 0;
-	virtual WRL::ComPtr<ID3D11Texture2D> CreateFrame(IMFSample* sample, UINT width, UINT height) = 0;
-	virtual void RenderFrame(ID3D11Texture2D* texture) = 0;
+	virtual concurrency::task<void> Initialize() = 0;
+	virtual Frame CreateFrame(IMFSample* sample, UINT width, UINT height) = 0;
+	virtual void RenderFrame(const Frame& frame) = 0;
 
 #ifdef __cplusplus_winrt
 	virtual void SetSurfaceImageSource(Windows::UI::Xaml::Media::Imaging::SurfaceImageSource^ imageSource, UINT width, UINT height) = 0;

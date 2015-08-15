@@ -5,6 +5,9 @@
 // 创建时间：2015-08-04
 //
 #include "pch.h"
+#include "platform.h"
+
+HMODULE ModuleHandle;
 
 using namespace Microsoft::WRL;
 
@@ -29,6 +32,8 @@ STDAPI DllCanUnloadNow()
 
 STDAPI_(BOOL) DllMain(_In_opt_ HINSTANCE hinst, DWORD reason, _In_opt_ void*)
 {
+	ModuleHandle = hinst;
+
 	if (reason == DLL_PROCESS_ATTACH)
 	{
 		DisableThreadLibraryCalls(hinst);

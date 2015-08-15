@@ -25,6 +25,15 @@ inline void ThrowIfFailed(HRESULT hr, const wchar_t* message)
 	throw tomato_error{ hr,message };
 }
 
+template<typename T>
+void ThrowWin32IfNot(T value)
+{
+	if(!value) _com_raise_error(HRESULT_FROM_WIN32(GetLastError()));
+}
+
 #define CATCH_ALL() catch(tomato_error& ex){ return ex.hr;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
 
 namespace WRL = Microsoft::WRL;
+
+// ±¾Ä£¿é¾ä±ú
+extern HMODULE ModuleHandle;

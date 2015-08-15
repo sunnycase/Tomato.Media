@@ -112,8 +112,8 @@
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(ProjectName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>Tomato.Media.rgs</RegistrarScriptFile>
+      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
+      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
       <ComponentFileName>$(TargetPath)</ComponentFileName>
     </Manifest>
     <ResourceCompile>
@@ -122,6 +122,9 @@
     <Midl>
       <HeaderFileName>%(Filename)_i.h</HeaderFileName>
     </Midl>
+    <FxCompile>
+      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -141,8 +144,8 @@
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(ProjectName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>Tomato.Media.rgs</RegistrarScriptFile>
+      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
+      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
       <ComponentFileName>$(TargetPath)</ComponentFileName>
     </Manifest>
     <ResourceCompile>
@@ -151,6 +154,9 @@
     <Midl>
       <HeaderFileName>%(Filename)_i.h</HeaderFileName>
     </Midl>
+    <FxCompile>
+      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -174,8 +180,8 @@
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(ProjectName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>Tomato.Media.rgs</RegistrarScriptFile>
+      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
+      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
       <ComponentFileName>$(TargetPath)</ComponentFileName>
     </Manifest>
     <ResourceCompile>
@@ -184,6 +190,9 @@
     <Midl>
       <HeaderFileName>%(Filename)_i.h</HeaderFileName>
     </Midl>
+    <FxCompile>
+      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -207,8 +216,8 @@
     </Link>
     <Manifest>
       <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(ProjectName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>Tomato.Media.rgs</RegistrarScriptFile>
+      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
+      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
       <ComponentFileName>$(TargetPath)</ComponentFileName>
     </Manifest>
     <ResourceCompile>
@@ -217,10 +226,14 @@
     <Midl>
       <HeaderFileName>%(Filename)_i.h</HeaderFileName>
     </Midl>
+    <FxCompile>
+      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MediaSource.h" />
     <ClInclude Include="platform.h" />
+    <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />
@@ -248,6 +261,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="Tomato.Media.Desktop.cpp" />
     <ClCompile Include="Tomato.Media_i.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
