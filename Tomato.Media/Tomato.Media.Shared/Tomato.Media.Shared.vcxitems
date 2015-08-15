@@ -29,6 +29,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +43,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp" />
   </ItemGroup>
   <ItemGroup>

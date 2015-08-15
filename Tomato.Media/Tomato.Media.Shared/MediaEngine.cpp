@@ -43,6 +43,8 @@ void MediaEngine::Play()
 
 	create_task([=]
 	{
+		Sleep(2000);
+
 		while (true)
 		{
 			ComPtr<IMFSample> videoSample;
@@ -50,7 +52,7 @@ void MediaEngine::Play()
 			{
 				ThrowIfFailed(videoSink->ProcessSample(videoSample.Get()));
 			}
-			Sleep(1000);
+			Sleep(100);
 		}
 	});
 }

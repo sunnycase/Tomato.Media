@@ -63,6 +63,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -96,6 +99,7 @@
       <Filter>源文件\Utility</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">

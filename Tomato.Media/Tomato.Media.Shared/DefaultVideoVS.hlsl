@@ -11,6 +11,7 @@ PixelInput main(VertexInput input)
 	PixelInput output;
 	output.Position = input.Position;
 	output.Color = float4(1.0f, 0.0f, 1.0f, 1.0f);
+	output.TexCoord = input.TexCoord;
 
 	return output;
 }

@@ -8,6 +8,7 @@
 #include "D3D11VideoRender.h"
 #include "ResourceHelper.h"
 #include <DirectXMath.h>
+#include "Utility/WICHelper.h"
 
 using namespace NS_MEDIA;
 using namespace concurrency;
@@ -25,6 +26,12 @@ namespace
 
 	enum { e = sizeof(Vertex) };
 	static_assert(sizeof(Vertex) == 48, "sizeof Vertex must be 12.");
+
+	static WICHelper& GetWIC()
+	{
+		static WICHelper wic;
+		return wic;
+	}
 }
 
 D3D11VideoRender::D3D11VideoRender()
@@ -93,6 +100,7 @@ task<void> D3D11VideoRender::CreateDeviceResources()
 		ThrowIfFailed(d3dDevice->CreatePixelShader(blob->GetPointer(), blob->GetLength(), nullptr, &pixelShader));
 		d3dDeviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 
+		CreateVideoLayerResources();
 		// …Ë÷√…Ë±∏◊¥Ã¨
 		ConfigureDeviceState();
 	});
@@ -100,48 +108,36 @@ task<void> D3D11VideoRender::CreateDeviceResources()
 
 void D3D11VideoRender::ConfigureDeviceState()
 {
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	D3D11_SAMPLER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+	ComPtr<ID3D11SamplerState> samplerState;
+	ThrowIfFailed(d3dDevice->CreateSamplerState(&desc, &samplerState));
+	d3dDeviceContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 }
 
-void D3D11VideoRender::CreateVideoLayerResources(float width, float height)
+void D3D11VideoRender::CreateVideoLayerResources()
 {
 	// Vertex Buffer
 	Vertex vertices[] = {
-		{ { 0.f, 0.f, 0.f, 0.f }, { 1.f, 1.f, 1.f, 1.f }, { 0.f, 0.f } },
-		{ { width, 0.f, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } },
-		{ { width, height, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } },
-		{ { 0.f, height, 0.f, 0.f },{ 1.f, 1.f, 1.f, 1.f },{ 0.f, 0.f } }
+		{ { +1.f, +1.f, 0.9999999f, 1.f }, { 1.f, 1.f, 1.f, 1.f }, { 1.f, 0.f } },
+		{ { +1.f, -1.f, 0.9999999f, 1.f }, { 1.f, 1.f, 1.f, 1.f }, { 1.f, 1.f } },
+		{ { -1.f, +1.f, 0.9999999f, 1.f }, { 1.f, 1.f, 1.f, 1.f }, { 0.f, 0.f } },
+		{ { -1.f, -1.f, 0.9999999f, 1.f }, { 1.f, 1.f, 1.f, 1.f }, { 0.f, 1.f } }
 	};
 	D3D11_BUFFER_DESC desc = { 0 };
 	desc.ByteWidth = sizeof(vertices);
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.StructureByteStride = sizeof(Vertex);
 	D3D11_SUBRESOURCE_DATA data = { 0 };
 	data.pSysMem = vertices;
-	data.SysMemPitch = sizeof(Vertex);
+	data.SysMemPitch = 0;
 	ThrowIfFailed(d3dDevice->CreateBuffer(&desc, &data, &videoLayerVB));
-
-	if (!videoLayerIB)
-	{
-		// Index Buffer
-		UINT indexes[] = { 0, 1, 2, 0, 2, 3 };
-		desc.ByteWidth = sizeof(indexes);
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.StructureByteStride = sizeof(UINT);
-		data.pSysMem = indexes;
-		data.SysMemPitch = sizeof(UINT);
-		ThrowIfFailed(d3dDevice->CreateBuffer(&desc, &data, &videoLayerIB));
-	}
-
-	// Viewport
-	D3D11_VIEWPORT viewport = { 0 };
-	viewport.Width = width;
-	viewport.Height = height;
-	viewport.MinDepth = 0.f;
-	viewport.MaxDepth = 1.f;
-	d3dDeviceContext->RSSetViewports(1, &viewport);
 }
 
 Frame D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
@@ -166,7 +162,7 @@ Frame D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
 		desc.ArraySize = 1;
 		desc.Format = DXGI_FORMAT_NV12;
 		desc.SampleDesc.Count = 1;
-		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 		BYTE* base; LONG pitch;
@@ -212,7 +208,13 @@ void D3D11VideoRender::SetSurfaceImageSource(Windows::UI::Xaml::Media::Imaging::
 		sisHeight = height;
 
 		Initialize().then([=] {
-			CreateVideoLayerResources(static_cast<float>(width), static_cast<float>(height));
+			// Viewport
+			D3D11_VIEWPORT viewport = { 0 };
+			viewport.Width = width;
+			viewport.Height = height;
+			viewport.MinDepth = 0.f;
+			viewport.MaxDepth = 1.f;
+			d3dDeviceContext->RSSetViewports(1, &viewport);
 		});
 	}
 }
@@ -249,6 +251,10 @@ void D3D11VideoRender::RenderFrameToSurfaceImageSource(const Frame& frame)
 			ThrowIfFailed(d3dDevice->CreateRenderTargetView(renderTarget.Get(), nullptr, &renderTargetView));
 
 			DrawVideoLayer(renderTargetView.GetAddressOf(), frameHolder);
+
+#if _DEBUG
+			GetWIC().SaveTexture(d3dDeviceContext.Get(), renderTarget.Get());
+#endif
 		}
 	}));
 #endif
@@ -261,11 +267,11 @@ void D3D11VideoRender::DrawVideoLayer(ID3D11RenderTargetView** target, const Fra
 
 	d3dDeviceContext->OMSetRenderTargets(1, target, nullptr);
 
-	UINT strides = 4; UINT offset = 0;
+	UINT strides = sizeof(Vertex); UINT offset = 0;
+	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	d3dDeviceContext->IASetVertexBuffers(0, 1, videoLayerVB.GetAddressOf(), &strides, &offset);
-	d3dDeviceContext->IASetIndexBuffer(videoLayerIB.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	ID3D11ShaderResourceView* resViews[] = { frame.Luminance.Get(), frame.Chrominance.Get() };
 	d3dDeviceContext->PSSetShaderResources(0, 2, resViews);
-	d3dDeviceContext->DrawIndexed(4, 0, 0);
+	d3dDeviceContext->Draw(4, 0);
 }

@@ -32,7 +32,7 @@ private:
 	concurrency::task<void> InitializeCore();
 	concurrency::task<void> CreateDeviceResources();
 	void ConfigureDeviceState();
-	void CreateVideoLayerResources(float width, float height);
+	void CreateVideoLayerResources();
 	void DrawVideoLayer(ID3D11RenderTargetView** target, const Frame& frame);
 	void RenderFrameToSurfaceImageSource(const Frame& frame);
 private:
@@ -41,7 +41,7 @@ private:
 	D3D_FEATURE_LEVEL featureLevel;
 	std::atomic_bool initStarted = false;
 	concurrency::task<void> initTask;
-	WRL::ComPtr<ID3D11Buffer> videoLayerVB, videoLayerIB;
+	WRL::ComPtr<ID3D11Buffer> videoLayerVB;
 #ifdef __cplusplus_winrt
 	Windows::UI::Core::CoreDispatcher^ sisDispatcher;
 	WRL::ComPtr<ISurfaceImageSourceNative> sisNative;

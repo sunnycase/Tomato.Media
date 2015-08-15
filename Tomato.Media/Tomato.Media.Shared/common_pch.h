@@ -15,3 +15,4 @@
 #include <Mfmediaengine.h>
 #include <wrl.h>
 #include <DirectXMath.h>
+#include <wincodec.h>
