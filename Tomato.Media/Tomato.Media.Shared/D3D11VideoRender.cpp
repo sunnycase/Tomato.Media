@@ -115,6 +115,8 @@ void D3D11VideoRender::ConfigureDeviceState()
 	desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	desc.MinLOD = 0;
+	desc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	ComPtr<ID3D11SamplerState> samplerState;
 	ThrowIfFailed(d3dDevice->CreateSamplerState(&desc, &samplerState));
@@ -152,25 +154,42 @@ Frame D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
 		ComPtr<IMFMediaBuffer> buffer;
 		ThrowIfFailed(sample->GetBufferByIndex(i, &buffer));
 
-		ComPtr<IMF2DBuffer> buffer2d;
-		ThrowIfFailed(buffer.As(&buffer2d));
+		ComPtr<IMFDXGIBuffer> dxgiBuffer;
+		if (!SUCCEEDED(buffer.As(&dxgiBuffer)))
+		{
+			ThrowIfFailed(dxgiBuffer->GetResource(IID_PPV_ARGS(&texture)));
+			D3D11_TEXTURE2D_DESC desc;
+			texture->GetDesc(&desc);
+			desc.Height = desc.Height;
+		}
+		else
+		{
+			ComPtr<IMF2DBuffer> buffer2d;
+			ThrowIfFailed(buffer.As(&buffer2d));
 
-		D3D11_TEXTURE2D_DESC desc{ 0 };
-		desc.Width = width;
-		desc.Height = height;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_NV12;
-		desc.SampleDesc.Count = 1;
-		desc.Usage = D3D11_USAGE_IMMUTABLE;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			DWORD bufferSize;
+			ThrowIfFailed(buffer2d->GetContiguousLength(&bufferSize));
 
-		BYTE* base; LONG pitch;
-		ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
-		finalizer fin([&] { buffer2d->Unlock2D();});
+			BYTE* base; LONG pitch;
+			ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
+			finalizer fin([&] { buffer2d->Unlock2D();});
 
-		D3D11_SUBRESOURCE_DATA data{ base, static_cast<UINT>(pitch), 0 };
-		ThrowIfFailed(d3dDevice->CreateTexture2D(&desc, &data, &texture));
+			//width = pitch;
+			height = bufferSize / pitch * 2 / 3;
+
+			D3D11_TEXTURE2D_DESC desc{ 0 };
+			desc.Width = width;
+			desc.Height = height;
+			desc.MipLevels = 1;
+			desc.ArraySize = 1;
+			desc.Format = DXGI_FORMAT_NV12;
+			desc.SampleDesc.Count = 1;
+			desc.Usage = D3D11_USAGE_IMMUTABLE;
+			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+			D3D11_SUBRESOURCE_DATA data{ base, static_cast<UINT>(pitch), 0 };
+			ThrowIfFailed(d3dDevice->CreateTexture2D(&desc, &data, &texture));
+		}
 	}
 	ComPtr<ID3D11ShaderResourceView> luminanceView, chrominanceView;
 	D3D11_SHADER_RESOURCE_VIEW_DESC resDesc = CD3D11_SHADER_RESOURCE_VIEW_DESC(
@@ -234,7 +253,8 @@ void D3D11VideoRender::RenderFrameToSurfaceImageSource(const Frame& frame)
 		POINT offset;
 
 		auto beginDrawHR = sisNative->BeginDraw({ 0, 0, static_cast<LONG>(sisWidth), static_cast<LONG>(sisHeight) }, &surface, &offset);
-		if (beginDrawHR == DXGI_ERROR_DEVICE_REMOVED || beginDrawHR == DXGI_ERROR_DEVICE_RESET)
+		if (beginDrawHR == DXGI_ERROR_DEVICE_REMOVED || beginDrawHR == DXGI_ERROR_DEVICE_RESET ||
+			FAILED(beginDrawHR))
 		{
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 			::RoOriginateError(beginDrawHR, nullptr);
@@ -251,10 +271,6 @@ void D3D11VideoRender::RenderFrameToSurfaceImageSource(const Frame& frame)
 			ThrowIfFailed(d3dDevice->CreateRenderTargetView(renderTarget.Get(), nullptr, &renderTargetView));
 
 			DrawVideoLayer(renderTargetView.GetAddressOf(), frameHolder);
-
-#if _DEBUG
-			GetWIC().SaveTexture(d3dDeviceContext.Get(), renderTarget.Get());
-#endif
 		}
 	}));
 #endif

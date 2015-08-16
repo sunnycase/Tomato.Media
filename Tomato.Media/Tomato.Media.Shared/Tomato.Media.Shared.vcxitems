@@ -19,8 +19,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NonCopyable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
@@ -29,7 +31,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,10 +42,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />

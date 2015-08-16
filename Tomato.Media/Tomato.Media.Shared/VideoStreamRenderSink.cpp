@@ -18,41 +18,13 @@ namespace
 	};
 }
 
-VideoStreamRenderSink::VideoStreamRenderSink(DWORD identifier, IMFMediaSink* mediaSink, IVideoRender* videoRender)
-	:identifier(identifier), mediaSink(mediaSink), videoRender(videoRender)
-{
-	ThrowIfFailed(MFCreateEventQueue(&eventQueue));
-}
+#define LOCK_STATE() std::lock_guard<decltype(stateMutex)> locker(stateMutex)
+#define CHECK_INITED() if(sinkState == NotInitialized) return MF_E_NOT_INITIALIZED
+#define CHECK_INITED_THROW() if(sinkState == NotInitialized) ThrowIfFailed(MF_E_NOT_INITIALIZED)
 
-HRESULT VideoStreamRenderSink::GetEvent(DWORD dwFlags, IMFMediaEvent ** ppEvent)
+VideoStreamRenderSink::VideoStreamRenderSink(DWORD identifier, MediaRenderSink* mediaSink, IVideoRender* videoRender)
+	:StreamRenderSinkBase(identifier, mediaSink), videoRender(videoRender)
 {
-	return eventQueue->GetEvent(dwFlags, ppEvent);
-}
-
-HRESULT VideoStreamRenderSink::BeginGetEvent(IMFAsyncCallback * pCallback, IUnknown * punkState)
-{
-	return eventQueue->BeginGetEvent(pCallback, punkState);
-}
-
-HRESULT VideoStreamRenderSink::EndGetEvent(IMFAsyncResult * pResult, IMFMediaEvent ** ppEvent)
-{
-	return eventQueue->EndGetEvent(pResult, ppEvent);
-}
-
-HRESULT VideoStreamRenderSink::QueueEvent(MediaEventType met, REFGUID guidExtendedType, HRESULT hrStatus, const PROPVARIANT * pvValue)
-{
-	return eventQueue->QueueEventParamVar(met, guidExtendedType, hrStatus, pvValue);
-}
-
-HRESULT VideoStreamRenderSink::GetMediaSink(IMFMediaSink ** ppMediaSink)
-{
-	return mediaSink.CopyTo(ppMediaSink);
-}
-
-HRESULT VideoStreamRenderSink::GetIdentifier(DWORD * pdwIdentifier)
-{
-	*pdwIdentifier = identifier;
-	return S_OK;
 }
 
 HRESULT VideoStreamRenderSink::GetMediaTypeHandler(IMFMediaTypeHandler ** ppHandler)
@@ -79,6 +51,13 @@ HRESULT VideoStreamRenderSink::PlaceMarker(MFSTREAMSINK_MARKER_TYPE eMarkerType,
 
 HRESULT VideoStreamRenderSink::Flush(void)
 {
+	LOCK_STATE();
+	CHECK_INITED();
+	try
+	{
+		FlushCore(false);
+	}
+	CATCH_ALL();
 	return S_OK;
 }
 
@@ -137,20 +116,22 @@ HRESULT VideoStreamRenderSink::GetMediaTypeByIndex(DWORD dwIndex, IMFMediaType *
 
 HRESULT VideoStreamRenderSink::SetCurrentMediaType(IMFMediaType * pMediaType)
 {
-	auto hr = IsMediaTypeSupported(pMediaType, nullptr);
-	if (SUCCEEDED(hr))
+	auto hr = S_OK;
+	try
 	{
-		try
+		LOCK_STATE();
+		if (sinkState != NotInitialized) return E_NOT_VALID_STATE;
+		if (mediaType.Get() != pMediaType)
 		{
-			std::lock_guard<decltype(stateMutex)> locker(stateMutex);
-			if (mediaType.Get() != pMediaType)
+			hr = IsMediaTypeSupported(pMediaType, nullptr);
+			if (SUCCEEDED(hr))
 			{
 				mediaType = pMediaType;
 				OnSetMediaType();
 			}
 		}
-		CATCH_ALL();
 	}
+	CATCH_ALL();
 	return hr;
 }
 
@@ -158,7 +139,7 @@ HRESULT VideoStreamRenderSink::GetCurrentMediaType(IMFMediaType ** ppMediaType)
 {
 	try
 	{
-		std::lock_guard<decltype(stateMutex)> locker(stateMutex);
+		LOCK_STATE();
 		if (mediaType)
 			return mediaType.CopyTo(ppMediaType);
 		return MF_E_NOT_INITIALIZED;
@@ -172,8 +153,39 @@ HRESULT VideoStreamRenderSink::GetMajorType(GUID * pguidMajorType)
 	return S_OK;
 }
 
+void VideoStreamRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
+{
+	LOCK_STATE();
+	CHECK_INITED_THROW();
+
+	// ×´Ì¬±ØÐëÎªÉÐÎ´¿ªÊ¼»º³å
+	if (sinkState != Initialized) 
+		ThrowIfFailed(E_NOT_VALID_STATE);
+	sinkState = Prerolling;
+}
+
 void VideoStreamRenderSink::OnSetMediaType()
 {
 	videoRender->Initialize();
 	ThrowIfFailed(MFGetAttributeSize(mediaType.Get(), MF_MT_FRAME_SIZE, &frameWidth, &frameHeight));
+
+	FlushCore(true);
+}
+
+void VideoStreamRenderSink::FlushCore(bool setInited)
+{
+	if (setInited)
+	{
+		assert(sinkState == NotInitialized);
+		sinkState = Initialized;
+	}
+}
+
+void VideoStreamRenderSink::PostSampleRequest()
+{
+	ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamSinkRequestSample, GUID_NULL, S_OK, nullptr));
+}
+
+void VideoStreamRenderSink::PostSampleRequestIfNeeded()
+{
 }

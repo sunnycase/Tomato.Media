@@ -10,6 +10,7 @@
 #include "common.h"
 #include <mfidl.h>
 #include <ppltasks.h>
+#include <memory>
 
 DEFINE_NS_MEDIA
 
@@ -20,37 +21,34 @@ class MFAsyncCallback : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::Runt
 {
 public:
 	typedef HRESULT(T::*Callback)(IMFAsyncResult *pAsyncResult);
-	MFAsyncCallback(T* pParent, Callback callback, DWORD queueId = 0)
-		:parent(pParent), callback(callback), queueId(queueId)
+	MFAsyncCallback(std::weak_ptr<T> pParent, Callback callback, DWORD queueId = 0)
+		:parent(std::move(pParent)), callback(callback), queueId(queueId)
 	{
 	}
 
 	// IMFAsyncCallback methods 
-	STDMETHODIMP GetParameters(DWORD *pdwFlags, DWORD *pdwQueue)
+	STDMETHODIMP GetParameters(DWORD *pdwFlags, DWORD *pdwQueue) override
 	{
 		*pdwQueue = queueId;
 		*pdwFlags = 0;
 		return S_OK;
 	}
 
-	STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult)
+	STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult) override
 	{
-		return (parent->*callback)(pAsyncResult);
+		if(auto validPtr = parent.lock())
+			return (validPtr.get()->*callback)(pAsyncResult);
+		return MF_E_SHUTDOWN;
 	}
 
 	DWORD GetQueueId() const noexcept
 	{
 		return queueId;
 	}
-
-	void SetQueueId(DWORD queueId)
-	{
-		this->queueId = queueId;
-	}
 private:
-	T* parent;
+	std::weak_ptr<T> parent;
 	Callback callback;
-	DWORD queueId;
+	const DWORD queueId;
 };
 
 // Media Foundation 回调

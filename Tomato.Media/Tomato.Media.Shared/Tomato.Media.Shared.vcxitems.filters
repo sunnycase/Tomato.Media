@@ -66,6 +66,21 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NonCopyable.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -98,8 +113,18 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">

@@ -13,7 +13,7 @@ using namespace WRL;
 
 SourceReader::SourceReader()
 {
-
+	
 }
 
 void SourceReader::InitializeSourceReader(IMFMediaSource* mediaSource)
@@ -91,7 +91,7 @@ void VideoSourceReader::InitializeDXGIDeviceManager(IDXGIAdapter* dxgiAdapter)
 	};
 
 	ComPtr<ID3D11Device> d3dDevice;
-	if (SUCCEEDED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, flags, featureLevels, ARRAYSIZE(featureLevels),
+	if (SUCCEEDED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLevels, ARRAYSIZE(featureLevels),
 		D3D11_SDK_VERSION, &d3dDevice, nullptr, nullptr)))
 	{
 		ComPtr<ID3D10Multithread> d3dMultithread;

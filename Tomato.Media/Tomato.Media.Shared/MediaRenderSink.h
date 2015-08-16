@@ -7,14 +7,13 @@
 #pragma once
 #include "common.h"
 #include "IVideoRender.h"
-#include <mfidl.h>
-#include <mutex>
+#include "StreamRenderSinkBase.h"
 
 DEFINE_NS_MEDIA
 
 ///<summary>媒体渲染 Sink</summary>
 ///<remarks>包含一个音频和一个视频流 Sink</remarks>
-class MediaRenderSink : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFMediaSink, IMFGetService, IMFClockStateSink>
+class MediaRenderSink : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFMediaSink, IMFGetService, IMFClockStateSink, IMFMediaSinkPreroll>
 {
 public:
 	MediaRenderSink();
@@ -37,12 +36,14 @@ public:
 	STDMETHODIMP OnClockSetRate(MFTIME hnsSystemTime, float flRate) override;
 
 	STDMETHODIMP GetService(REFGUID guidService, REFIID riid, LPVOID * ppvObject) override;
+
+	STDMETHODIMP NotifyPreroll(MFTIME hnsUpcomingStartTime) override;
 private:
 	///<remarks>调用前需加锁</remarks>
 	WRL::ComPtr<IVideoRender>& GetVideoRender();
 private:
-	std::array<WRL::ComPtr<IMFStreamSink>, 2> streamSinks;
-	WRL::ComPtr<IMFStreamSink> &audioSink, &videoSink;
+	std::array<WRL::ComPtr<StreamRenderSinkBase>, 2> streamSinks;
+	WRL::ComPtr<StreamRenderSinkBase> &audioSink, &videoSink;
 	WRL::ComPtr<IVideoRender> videoRender;
 	WRL::ComPtr<IMFPresentationClock> presentationClock;
 	std::mutex stateMutex;

@@ -20,7 +20,7 @@ MediaRenderSink::MediaRenderSink()
 
 HRESULT MediaRenderSink::GetCharacteristics(DWORD * pdwCharacteristics)
 {
-	*pdwCharacteristics = MEDIASINK_FIXED_STREAMS;
+	*pdwCharacteristics = MEDIASINK_FIXED_STREAMS | MEDIASINK_CAN_PREROLL;
 
 	return S_OK;
 }
@@ -46,6 +46,22 @@ ComPtr<IVideoRender>& MediaRenderSink::GetVideoRender()
 	if (!videoRender)
 		videoRender = Make<D3D11VideoRender>();
 	return videoRender;
+}
+
+HRESULT MediaRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
+{
+	// 检查是否没有选中流
+	if (std::all_of(streamSinks.begin(), streamSinks.end(), [](auto sink) {return !sink;}))
+		return MF_E_SINK_NO_STREAMS;
+
+	// 提醒每个 Stream Sink 开始缓冲
+	try
+	{
+		std::for_each(streamSinks.begin(), streamSinks.end(), [=](auto sink) {
+			sink->NotifyPreroll(hnsUpcomingStartTime); });
+	}
+	CATCH_ALL();
+	return S_OK;
 }
 
 HRESULT MediaRenderSink::GetStreamSinkByIndex(DWORD dwIndex, IMFStreamSink ** ppStreamSink)

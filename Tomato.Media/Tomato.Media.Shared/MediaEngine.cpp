@@ -52,7 +52,7 @@ void MediaEngine::Play()
 			{
 				ThrowIfFailed(videoSink->ProcessSample(videoSample.Get()));
 			}
-			Sleep(100);
+			Sleep(40);
 		}
 	});
 }
