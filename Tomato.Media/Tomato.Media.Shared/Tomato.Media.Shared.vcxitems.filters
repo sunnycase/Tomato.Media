@@ -81,6 +81,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NonCopyable.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -123,6 +126,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include <functional>
 #include <mutex>
 #include <atomic>
+#include <chrono>
 #include <ppltasks.h>
 #include <mfidl.h>
 #include <mfapi.h>
