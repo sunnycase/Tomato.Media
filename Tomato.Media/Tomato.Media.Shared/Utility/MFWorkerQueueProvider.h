@@ -13,11 +13,14 @@ DEFINE_NS_MEDIA
 class MFWorkerQueueProviderRef : public WorkerQueueProvider
 {
 public:
-	explicit MFWorkerQueueProviderRef(DWORD queueId);
+	explicit MFWorkerQueueProviderRef(DWORD queueId) noexcept;
+
+	///<summary>获取此工作队列是否有效</summary>
+	bool IsValid() const noexcept;
 
 	virtual std::shared_ptr<WorkerThread> CreateWorkerThread(std::function<void()> callback) override;
 private:
-	const DWORD queueId;
+	DWORD queueId;
 };
 
 class MFWorkerQueueProvider : public WorkerQueueProvider, NonCopyable

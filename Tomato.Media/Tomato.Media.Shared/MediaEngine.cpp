@@ -7,15 +7,16 @@
 #include "pch.h"
 #include "MediaEngine.h"
 #include "MediaRenderSink.h"
+#include "PresentationClock.h"
 
 using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
 
 MediaEngine::MediaEngine()
-	:sourceReader(Make<VideoSourceReader>()), mediaSink(Make<MediaRenderSink>())
+	:sourceReader(Make<VideoSourceReader>()), mediaSink(Make<MediaRenderSink>()), presentationClock(CreateHighResolutionPresentationClock())
 {
-
+	ThrowIfFailed(mediaSink->SetPresentationClock(presentationClock.Get()));
 }
 
 void MediaEngine::SetMediaSource(IMFMediaSource* mediaSource)
@@ -40,6 +41,17 @@ void MediaEngine::ConfigureMediaSink()
 void MediaEngine::Play()
 {
 	sourceReader->Start();
+
+	// ºÏ≤‚ «∑Ò÷ß≥÷ª∫≥Â
+	ComPtr<IMFMediaSinkPreroll> prerollSink;
+	if (SUCCEEDED(mediaSink.As(&prerollSink)))
+	{
+		ThrowIfFailed(prerollSink->NotifyPreroll(PRESENTATION_CURRENT_POSITION));
+	}
+	else
+	{
+
+	}
 
 	create_task([=]
 	{

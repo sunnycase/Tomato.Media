@@ -8,6 +8,7 @@
 #include <atomic>
 #include <chrono>
 #include <ppltasks.h>
+#include <ppl.h>
 #include <mfidl.h>
 #include <mfapi.h>
 #include <Mferror.h>

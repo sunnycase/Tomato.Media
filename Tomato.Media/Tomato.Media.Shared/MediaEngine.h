@@ -29,6 +29,7 @@ private:
 	WRL::ComPtr<VideoSourceReader> sourceReader;
 	WRL::ComPtr<IMFMediaSink> mediaSink;
 	WRL::ComPtr<IMFStreamSink> videoSink;
+	WRL::ComPtr<IMFPresentationClock> presentationClock;
 };
 
 END_NS_MEDIA

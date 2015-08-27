@@ -63,7 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h">
@@ -72,16 +72,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)NonCopyable.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
   </ItemGroup>
@@ -117,18 +117,18 @@
       <Filter>源文件\Utility</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp">
+      <Filter>源文件\Utility</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
   </ItemGroup>
@@ -139,10 +139,5 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)DefaultVideoShader.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

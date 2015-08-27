@@ -13,6 +13,7 @@
 #include "platform.h"
 
 #define DEFINE_PROPERTY_GET(name, type) __declspec(property(get = get_##name)) type name
+#define ARGUMENT_NOTNULL_HR(pointer) if(!(pointer)) return E_POINTER
 
 #include <functional>
 
@@ -34,3 +35,7 @@ public:
 private:
 	std::function<void()> action;
 };
+
+#include <chrono>
+typedef std::ratio<1, 10000000> hn;
+typedef std::chrono::duration<long long, hn> hnseconds;

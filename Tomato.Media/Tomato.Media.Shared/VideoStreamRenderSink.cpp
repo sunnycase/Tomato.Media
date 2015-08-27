@@ -23,7 +23,7 @@ namespace
 #define CHECK_INITED_THROW() if(sinkState == NotInitialized) ThrowIfFailed(MF_E_NOT_INITIALIZED)
 
 VideoStreamRenderSink::VideoStreamRenderSink(DWORD identifier, MediaRenderSink* mediaSink, IVideoRender* videoRender)
-	:StreamRenderSinkBase(identifier, mediaSink), videoRender(videoRender)
+	:StreamRenderSinkBase(identifier, mediaSink), videoRender(videoRender), workerQueue(MFASYNC_CALLBACK_QUEUE_UNDEFINED)
 {
 }
 
@@ -35,10 +35,16 @@ HRESULT VideoStreamRenderSink::GetMediaTypeHandler(IMFMediaTypeHandler ** ppHand
 
 HRESULT VideoStreamRenderSink::ProcessSample(IMFSample * pSample)
 {
+	if (!pSample) return E_INVALIDARG;
 	try
 	{
-		auto frame = videoRender->CreateFrame(pSample, frameWidth, frameHeight);
-		videoRender->RenderFrame(frame);
+		{
+			LOCK_STATE();
+			CHECK_INITED_THROW();
+			RegisterWorkThreadIfNeeded();
+		}
+
+		OnProcessIncomingSamples(pSample);
 	}
 	CATCH_ALL();
 	return S_OK;
@@ -162,6 +168,7 @@ void VideoStreamRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
 	if (sinkState != Initialized) 
 		ThrowIfFailed(E_NOT_VALID_STATE);
 	sinkState = Prerolling;
+	PostSampleRequest();
 }
 
 void VideoStreamRenderSink::OnSetMediaType()
@@ -183,9 +190,68 @@ void VideoStreamRenderSink::FlushCore(bool setInited)
 
 void VideoStreamRenderSink::PostSampleRequest()
 {
+	CHECK_INITED_THROW();
+
 	ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamSinkRequestSample, GUID_NULL, S_OK, nullptr));
 }
 
 void VideoStreamRenderSink::PostSampleRequestIfNeeded()
 {
+}
+
+void VideoStreamRenderSink::OnProcessIncomingSamples(IMFSample* sample)
+{
+	if (!sample) ThrowIfFailed(E_INVALIDARG);
+
+	LOCK_STATE();
+	CHECK_INITED_THROW();
+
+	auto frame = videoRender->CreateFrame(sample, frameWidth, frameHeight);
+	videoRender->RenderFrame(frame);
+}
+
+void VideoStreamRenderSink::RegisterWorkThreadIfNeeded()
+{
+	if (workThreadRegistered) return;
+
+	if (!workerQueue.IsValid())
+		workerQueue = MFWorkerQueueProvider::GetAudio();
+	
+	auto weak(AsWeak());
+	decodeFrameWorker = workerQueue.CreateWorkerThread([weak]() { if (auto me = weak.Resolve()) ((VideoStreamRenderSink*)me.Get())->OnDecodeFrame(); });
+}
+
+void VideoStreamRenderSink::OnDecodeFrame()
+{
+}
+
+#if (WINVER >= _WIN32_WINNT_WIN8)
+
+HRESULT VideoStreamRenderSink::RegisterThreadsEx(DWORD * pdwTaskIndex, LPCWSTR wszClassName, LONG lBasePriority)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT VideoStreamRenderSink::SetWorkQueueEx(DWORD dwMultithreadedWorkQueueId, LONG lWorkItemBasePriority)
+{
+	return E_NOTIMPL;
+}
+
+#elif (WINVER >= _WIN32_WINNT_VISTA) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+HRESULT VideoStreamRenderSink::RegisterThreads(DWORD dwTaskIndex, LPCWSTR wszClass)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT VideoStreamRenderSink::SetWorkQueue(DWORD dwWorkQueueId)
+{
+	return E_NOTIMPL;
+}
+
+#endif
+
+HRESULT VideoStreamRenderSink::UnregisterThreads(void)
+{
+	return E_NOTIMPL;
 }

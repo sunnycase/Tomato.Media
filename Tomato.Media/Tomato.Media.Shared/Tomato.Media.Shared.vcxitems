@@ -19,7 +19,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NonCopyable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
@@ -27,8 +26,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
@@ -37,6 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
@@ -62,8 +62,5 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)DefaultVideoShader.hlsli" />
   </ItemGroup>
 </Project>

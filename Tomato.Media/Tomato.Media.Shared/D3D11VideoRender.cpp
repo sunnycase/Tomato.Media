@@ -229,8 +229,8 @@ void D3D11VideoRender::SetSurfaceImageSource(Windows::UI::Xaml::Media::Imaging::
 		Initialize().then([=] {
 			// Viewport
 			D3D11_VIEWPORT viewport = { 0 };
-			viewport.Width = width;
-			viewport.Height = height;
+			viewport.Width = static_cast<FLOAT>(width);
+			viewport.Height = static_cast<FLOAT>(height);
 			viewport.MinDepth = 0.f;
 			viewport.MaxDepth = 1.f;
 			d3dDeviceContext->RSSetViewports(1, &viewport);

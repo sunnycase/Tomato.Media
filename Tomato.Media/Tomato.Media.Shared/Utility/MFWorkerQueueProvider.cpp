@@ -129,12 +129,20 @@ MFWorkerQueueProviderRef MFWorkerQueueProvider::GetProAudio()
 	return MFWorkerQueueProviderRef(proAudioProvider.queueId);
 }
 
-MFWorkerQueueProviderRef::MFWorkerQueueProviderRef(DWORD queueId)
+MFWorkerQueueProviderRef::MFWorkerQueueProviderRef(DWORD queueId) noexcept
 	:queueId(queueId)
 {
 }
 
+bool MFWorkerQueueProviderRef::IsValid() const noexcept
+{
+	return queueId != MFASYNC_CALLBACK_QUEUE_UNDEFINED;
+}
+
 std::shared_ptr<WorkerThread> MFWorkerQueueProviderRef::CreateWorkerThread(std::function<void()> callback)
 {
+	if (!IsValid())
+		ThrowIfFailed(E_NOT_VALID_STATE, L"无效的工作队列。");
+
 	return std::make_shared<MFWorkerThread>(std::move(callback), queueId);
 }

@@ -58,7 +58,7 @@ HRESULT MediaRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
 	try
 	{
 		std::for_each(streamSinks.begin(), streamSinks.end(), [=](auto sink) {
-			sink->NotifyPreroll(hnsUpcomingStartTime); });
+			if(sink) sink->NotifyPreroll(hnsUpcomingStartTime); });
 	}
 	CATCH_ALL();
 	return S_OK;
