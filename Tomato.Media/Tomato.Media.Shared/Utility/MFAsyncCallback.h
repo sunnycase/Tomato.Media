@@ -21,8 +21,8 @@ class MFAsyncCallback : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::Runt
 {
 public:
 	typedef HRESULT(T::*Callback)(IMFAsyncResult *pAsyncResult);
-	MFAsyncCallback(std::weak_ptr<T> pParent, Callback callback, DWORD queueId = 0)
-		:parent(std::move(pParent)), callback(callback), queueId(queueId)
+	MFAsyncCallback(const std::shared_ptr<T>& pParent, Callback callback, DWORD queueId = 0)
+		:parent(pParent), callback(callback), queueId(queueId)
 	{
 	}
 

@@ -19,12 +19,9 @@ namespace
 	{
 	public:
 		MFWorkerThread(std::function<void()> callback, DWORD queueId)
-			:queueId(queueId)
+			:callback(std::move(callback)), queueId(queueId)
 		{
-			assert(callback);
-			auto asyncCallback = Make<MFAsyncCallback<MFWorkerThread>>(shared_from_this(),
-				&MFWorkerThread::Invoke, queueId);
-			ThrowIfFailed(MFCreateAsyncResult(nullptr, asyncCallback.Get(), nullptr, &invokerResult));
+			assert(this->callback);
 		}
 
 		~MFWorkerThread()
@@ -34,6 +31,8 @@ namespace
 
 		virtual void Execute() override
 		{
+			Initialize();
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) && !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 			ThrowIfFailed(MFPutWorkItemEx2(queueId, 0, invokerResult.Get()));
 #endif
@@ -44,6 +43,8 @@ namespace
 
 		virtual void Execute(const Wrappers::Event& event) override
 		{
+			Initialize();
+
 #if (WINVER >= _WIN32_WINNT_WIN7)
 			ThrowIfFailed(MFPutWaitingWorkItem(event.Get(), 0, invokerResult.Get(), &itemKey));
 #endif
@@ -67,10 +68,22 @@ namespace
 			CATCH_ALL();
 			return S_OK;
 		}
+
+		void Initialize()
+		{
+			auto expect = false;
+			if (inited.compare_exchange_strong(expect, true))
+			{
+				auto asyncCallback = Make<MFAsyncCallback<MFWorkerThread>>(shared_from_this(),
+					&MFWorkerThread::Invoke, queueId);
+				ThrowIfFailed(MFCreateAsyncResult(nullptr, asyncCallback.Get(), nullptr, &invokerResult));
+			}
+		}
 	private:
 		ComPtr<IMFAsyncResult> invokerResult;
 		const DWORD queueId;
 		std::function<void()> callback;
+		std::atomic<bool> inited = false;
 		MFWORKITEM_KEY itemKey = 0;
 	};
 

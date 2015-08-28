@@ -9,6 +9,7 @@
 #include "StreamRenderSinkBase.h"
 #include "Utility/MFWorkerQueueProvider.h"
 #include <atomic>
+#include <chrono>
 
 DEFINE_NS_MEDIA
 
@@ -27,6 +28,8 @@ class VideoStreamRenderSink : public StreamRenderSinkBase
 		// 准备完毕（缓冲完毕）
 		Ready,
 	};
+
+	const MFTIME FrameCacheDuration = MFCLOCK_FREQUENCY_HNS * 3;
 public:
 	VideoStreamRenderSink(DWORD identifier, MediaRenderSink* mediaSink, IVideoRender* videoRender);
 
@@ -64,15 +67,22 @@ private:
 	///<remarks>调用前需对状态加锁</remarks>
 	void PostSampleRequestIfNeeded();
 
-	///<remarks>调用前不能对状态加锁</remarks>
+	///<remarks>调用前无需对状态加锁</remarks>
 	void OnProcessIncomingSamples(IMFSample* sample);
 
 	///<remarks>调用前需对状态加锁</remarks>
 	void RegisterWorkThreadIfNeeded();
 
+	///<remarks>调用前无需对状态加锁</remarks>
+	void RequestDecodeFrame();
+
 	///<summary>将缓存的采样解码为帧</summary>
-	///<remarks>调用前不能对状态加锁</remarks>
+	///<remarks>调用前不能对状态加锁，保证同时只有一个线程调用</remarks>
 	void OnDecodeFrame();
+
+	///<summary>将帧渲染出来</summary>
+	///<remarks>调用前不能对状态加锁，保证同时只有一个线程调用</remarks>
+	void OnRenderFrame();
 private:
 	UINT32 frameWidth, frameHeight;
 	WRL::ComPtr<IVideoRender> videoRender;
@@ -87,6 +97,11 @@ private:
 	bool workThreadRegistered = false;
 
 	std::shared_ptr<WorkerThread> decodeFrameWorker;
+	std::atomic<bool> decodeFrameWorkerActived = false;
+	std::atomic<MFTIME> cachedFrameDuration = 0;
+	std::atomic<bool> streamEnded = false;
+
+	std::shared_ptr<WorkerThread> renderFrameWorker;
 };
 
 END_NS_MEDIA

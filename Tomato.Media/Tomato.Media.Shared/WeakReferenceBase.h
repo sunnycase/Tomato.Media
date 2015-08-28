@@ -2,7 +2,7 @@
 // Tomato Media
 // 弱引用基类
 // 作者：SunnyCase
-// 创建时间：2015-08-027
+// 创建时间：2015-08-27
 //
 #pragma once
 #include "common.h"
