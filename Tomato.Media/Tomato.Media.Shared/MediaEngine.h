@@ -10,10 +10,10 @@
 
 DEFINE_NS_MEDIA
 
-class MediaEngine
+class MediaEngine : public std::enable_shared_from_this<MediaEngine>
 {
 public:
-	MediaEngine();
+	static std::shared_ptr<MediaEngine> MakeMediaEngine();
 
 	DEFINE_PROPERTY_GET(FrameSize, USIZE);
 	USIZE get_FrameSize() const { return sourceReader->FrameSize; }
@@ -23,13 +23,21 @@ public:
 	void SetMediaSource(IMFMediaSource* mediaSource);
 	void Play();
 private:
+	MediaEngine();
+
 	void ConfigureSourceReader(IMFMediaSource* mediaSource);
 	void ConfigureMediaSink();
+
+	HRESULT OnVideoSinkEvent(IMFAsyncResult *pAsyncResult);
+	void OnVideoStreamSinkRequestSample();
+	void OnVideoStreamSinkPrerolled();
 private:
 	WRL::ComPtr<VideoSourceReader> sourceReader;
 	WRL::ComPtr<IMFMediaSink> mediaSink;
 	WRL::ComPtr<IMFStreamSink> videoSink;
 	WRL::ComPtr<IMFPresentationClock> presentationClock;
+
+	WRL::ComPtr<IMFAsyncCallback> videoSinkEventCallback;
 };
 
 END_NS_MEDIA

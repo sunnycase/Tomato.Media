@@ -35,8 +35,12 @@ public:
 	STDMETHODIMP GetMediaSink(IMFMediaSink ** ppMediaSink) override;
 	STDMETHODIMP GetIdentifier(DWORD * pdwIdentifier) override;
 
+	// 设置呈现时钟
+	virtual void SetPresentationClock(IMFPresentationClock* presentationClock) = 0;
 	// 提示开始缓冲
 	virtual void NotifyPreroll(MFTIME hnsUpcomingStartTime) = 0;
+	// 开始播放
+	virtual void Play(MFTIME startTime) = 0;
 protected:
 	const DWORD identifier;
 	WRL::ComPtr<MediaRenderSink> mediaSink;

@@ -9,6 +9,7 @@
 #include <mfreadwrite.h>
 #include <d3d11.h>
 #include <queue>
+#include <concurrent_queue.h>
 
 DEFINE_NS_MEDIA
 
@@ -54,6 +55,7 @@ public:
 	VideoSourceReader();
 
 	bool TryReadVideoSample(WRL::ComPtr<IMFSample>& sample);
+	concurrency::task<WRL::ComPtr<IMFSample>> ReadVideoSampleAsync();
 
 	DEFINE_PROPERTY_GET(OutputMediaType, IMFMediaType*);
 	IMFMediaType* get_OutputMediaType() const noexcept { return outputMT.Get(); }
@@ -72,6 +74,7 @@ private:
 	void PostSampleRequestIfNeed();
 private:
 	std::queue<WRL::ComPtr<IMFSample>> videoCache;
+	concurrency::concurrent_queue<concurrency::task_completion_event<WRL::ComPtr<IMFSample>>> sampleRequest;
 	USIZE frameSize = { 0 };
 	size_t videoCacheSize;
 	WRL::ComPtr<IMFMediaType> outputMT;

@@ -32,7 +32,7 @@ private:
 private:
 	Windows::UI::Xaml::Media::Imaging::SurfaceImageSource^ imageSource;
 	WRL::ComPtr<ISurfaceImageSourceNative> sisNative;
-	MediaEngine mediaEngine;
+	std::shared_ptr<MediaEngine> mediaEngine;
 };
 
 END_NS_MEDIA

@@ -159,6 +159,11 @@ HRESULT VideoStreamRenderSink::GetMajorType(GUID * pguidMajorType)
 	return S_OK;
 }
 
+void VideoStreamRenderSink::SetPresentationClock(IMFPresentationClock * presentationClock)
+{
+	this->presentationClock = presentationClock;
+}
+
 void VideoStreamRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
 {
 	LOCK_STATE();
@@ -169,6 +174,17 @@ void VideoStreamRenderSink::NotifyPreroll(MFTIME hnsUpcomingStartTime)
 		ThrowIfFailed(E_NOT_VALID_STATE);
 	sinkState = Prerolling;
 	PostSampleRequest();
+}
+
+void VideoStreamRenderSink::Play(MFTIME startTime)
+{
+	LOCK_STATE();
+	CHECK_INITED_THROW();
+
+	if (sinkState != Ready)
+		ThrowIfFailed(E_NOT_VALID_STATE);
+	sinkState = Playing;
+	RequestRenderFrame();
 }
 
 void VideoStreamRenderSink::OnSetMediaType()
@@ -235,55 +251,69 @@ void VideoStreamRenderSink::RequestDecodeFrame()
 		decodeFrameWorker->Execute();
 }
 
+void VideoStreamRenderSink::RequestRenderFrame()
+{
+	bool expected = false;
+	if (renderFrameWorkerActived.compare_exchange_strong(expected, true))
+		renderFrameWorker->Execute();
+}
+
 void VideoStreamRenderSink::OnDecodeFrame()
 {
 	try
 	{
 		{
 			LOCK_STATE();
-			if(sinkState != Prerolling)
-				return decodeFrameWorkerActived.store(false, std::memory_order_release);
 			// 如果状态为正在缓冲且缓冲完毕则发送事件
-			else if (sinkState == Prerolling && cachedFrameDuration >= FrameCacheDuration)
+			if (sinkState == Prerolling && cachedFrameDuration >= FrameCacheDuration)
 			{
+				decodeFrameWorkerActived.store(false, std::memory_order_release);
+
 				ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamSinkPrerolled, GUID_NULL, S_OK, nullptr));
 				sinkState = Ready;
-				return decodeFrameWorkerActived.store(false, std::memory_order_release);
+				return;
 			}
 		}
 
 		// 取出采样
-		ComPtr<IMFSample> sample;
+		ComPtr<IMFSample> sample = TryPopSample();
 		{
-			{
-				std::lock_guard<decltype(sampleCacheMutex)> locker(sampleCacheMutex);
-				if (!sampleCache.empty())
-				{
-					sample = std::move(sampleCache.front());
-					sampleCache.pop();
-				}
-			}
 			LOCK_STATE();
 			PostSampleRequestIfNeeded();
 		}
 		if (sample)
 		{
-			MFTIME duration;
+			MFTIME sampleTime, duration;
+			ThrowIfFailed(sample->GetSampleTime(&sampleTime));
 			ThrowIfFailed(sample->GetSampleDuration(&duration));
 
 			auto frame = videoRender->CreateFrame(sample.Get(), frameWidth, frameHeight);
 			{
 				std::lock_guard<decltype(frameCacheMutex)> locker(frameCacheMutex);
-				frameCache.emplace(std::move(frame));
+				frameCache.emplace(std::move(frame), sampleTime, duration);
 			}
 			cachedFrameDuration += duration;
+
+			LOCK_STATE();
+			if (sinkState == Playing)
+				RequestRenderFrame();
 		}
 
-		// 没读到 sample 则暂时退出线程
-		if (cachedFrameDuration < FrameCacheDuration && !streamEnded && sample)
+		// 没读到 sample 或缓冲已满则暂时退出线程
+		if (!streamEnded && sample && cachedFrameDuration <= FrameCacheDuration)
 			decodeFrameWorker->Execute();
 		else
+		{
 			decodeFrameWorkerActived.store(false, std::memory_order_release);
+
+			LOCK_STATE();
+			// 如果状态为正在缓冲且缓冲完毕则发送事件
+			if (sinkState == Prerolling && cachedFrameDuration >= FrameCacheDuration)
+			{
+				ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamSinkPrerolled, GUID_NULL, S_OK, nullptr));
+				sinkState = Ready;
+			}
+		}
 	}
 	catch (...)
 	{
@@ -294,51 +324,99 @@ void VideoStreamRenderSink::OnDecodeFrame()
 
 void VideoStreamRenderSink::OnRenderFrame()
 {
-	Frame frame;
+	try
 	{
+		LOCK_STATE();
+		if (sinkState != Playing) ThrowIfFailed(E_NOT_VALID_STATE);
+
+		FrameInfo frame;
 		{
-			std::lock_guard<decltype(frameCacheMutex)> locker(frameCacheMutex);
-			if (!frameCache.empty())
 			{
-				frame = std::move(frameCache.front());
-				frameCache.pop();
+				std::lock_guard<decltype(frameCacheMutex)> locker(frameCacheMutex);
+				if (!frameCache.empty())
+				{
+					auto sampleTime = frameCache.front().SampleTime;
+					auto clock = presentationClock;
+					if (!clock) ThrowIfFailed(MF_E_NO_CLOCK);
+
+					MFTIME presentationTime;
+					ThrowIfFailed(clock->GetTime(&presentationTime));
+					// 当前呈现时间大于等于采样时间则渲染
+					if (presentationTime >= sampleTime)
+					{
+						frame = std::move(frameCache.front());
+						frameCache.pop();
+						cachedFrameDuration -= frame.Duration;
+					}
+					// 否则安排下一次渲染
+					else
+					{
+						Sleep(1);
+						renderFrameWorker->Execute();
+						return;
+					}
+				}
 			}
+			RequestDecodeFrame();
 		}
-		RequestDecodeFrame();
+		if (frame.Luminance && frame.Chrominance)
+		{
+			videoRender->RenderFrame(frame);
+			renderFrameWorker->Execute();
+		}
+		// 没有足够的采样则暂时退出渲染
+		else
+		{
+			renderFrameWorkerActived.store(false, std::memory_order_release);
+			RequestDecodeFrame();
+		}
 	}
-	if (frame.Luminance && frame.Chrominance)
+	catch (...)
 	{
-		videoRender->RenderFrame(frame);
+		renderFrameWorkerActived.store(false, std::memory_order_release);
+		throw;
 	}
+}
+
+ComPtr<IMFSample> VideoStreamRenderSink::TryPopSample()
+{
+	ComPtr<IMFSample> sample;
+	std::lock_guard<decltype(sampleCacheMutex)> locker(sampleCacheMutex);
+	if (!sampleCache.empty())
+	{
+		sample = std::move(sampleCache.front());
+		sampleCache.pop();
+	}
+	return sample;
 }
 
 #if (WINVER >= _WIN32_WINNT_WIN8)
 
 HRESULT VideoStreamRenderSink::RegisterThreadsEx(DWORD * pdwTaskIndex, LPCWSTR wszClassName, LONG lBasePriority)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT VideoStreamRenderSink::SetWorkQueueEx(DWORD dwMultithreadedWorkQueueId, LONG lWorkItemBasePriority)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 #elif (WINVER >= _WIN32_WINNT_VISTA) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 HRESULT VideoStreamRenderSink::RegisterThreads(DWORD dwTaskIndex, LPCWSTR wszClass)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT VideoStreamRenderSink::SetWorkQueue(DWORD dwWorkQueueId)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 #endif
 
 HRESULT VideoStreamRenderSink::UnregisterThreads(void)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }

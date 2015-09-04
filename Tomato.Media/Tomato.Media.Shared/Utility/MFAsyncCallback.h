@@ -36,8 +36,14 @@ public:
 
 	STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult) override
 	{
-		if(auto validPtr = parent.lock())
-			return (validPtr.get()->*callback)(pAsyncResult);
+		if (auto validPtr = parent.lock())
+		{
+			try
+			{
+				return (validPtr.get()->*callback)(pAsyncResult);
+			}
+			CATCH_ALL();
+		}
 		return MF_E_SHUTDOWN;
 	}
 

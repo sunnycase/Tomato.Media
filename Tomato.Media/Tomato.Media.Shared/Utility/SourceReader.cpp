@@ -13,7 +13,7 @@ using namespace WRL;
 
 SourceReader::SourceReader()
 {
-	
+
 }
 
 void SourceReader::InitializeSourceReader(IMFMediaSource* mediaSource)
@@ -156,9 +156,15 @@ HRESULT VideoSourceReader::OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, D
 void VideoSourceReader::DispatchIncomingSample(IMFSample* pSample)
 {
 	{
-		std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
-
-		videoCache.emplace(pSample);
+		// 优先处理请求队列
+		task_completion_event<ComPtr<IMFSample>> event;
+		if (sampleRequest.try_pop(event))
+			event.set(pSample);
+		else
+		{
+			std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
+			videoCache.emplace(pSample);
+		}
 	}
 	PostSampleRequestIfNeed();
 }
@@ -192,6 +198,23 @@ bool VideoSourceReader::TryReadVideoSample(ComPtr<IMFSample>& sample)
 	if (isActive && videoCache.size() < videoCacheSize)
 		videoCacheStarveCond.notify_one();
 	return false;
+}
+
+task<ComPtr<IMFSample>> VideoSourceReader::ReadVideoSampleAsync()
+{
+	{
+		std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
+
+		if (!videoCache.empty())
+		{
+			auto sample = std::move(videoCache.front());
+			videoCache.pop();
+			return task_from_result(std::move(sample));
+		}
+	}
+	auto event = task_completion_event<ComPtr<IMFSample>>();
+	sampleRequest.push(event);
+	return create_task(event);
 }
 
 #endif

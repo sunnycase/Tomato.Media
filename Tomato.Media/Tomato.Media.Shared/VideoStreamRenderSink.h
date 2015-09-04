@@ -27,6 +27,22 @@ class VideoStreamRenderSink : public StreamRenderSinkBase
 		Prerolling,
 		// 准备完毕（缓冲完毕）
 		Ready,
+		// 播放中
+		Playing
+	};
+
+	struct FrameInfo : public Frame
+	{
+		MFTIME SampleTime;
+		MFTIME Duration;
+
+		FrameInfo() : SampleTime(0), Duration(0) {}
+
+		FrameInfo(Frame frame, MFTIME sampleTime, MFTIME duration)
+			:Frame(std::move(frame)), SampleTime(sampleTime), Duration(duration)
+		{
+
+		}
 	};
 
 	const MFTIME FrameCacheDuration = MFCLOCK_FREQUENCY_HNS * 3;
@@ -54,7 +70,9 @@ public:
 #endif
 	STDMETHODIMP UnregisterThreads(void) override;
 
+	virtual void SetPresentationClock(IMFPresentationClock* presentationClock) override;
 	virtual void NotifyPreroll(MFTIME hnsUpcomingStartTime) override;
+	virtual void Play(MFTIME startTime) override;
 private:
 	void OnSetMediaType();
 	///<param name="setInited">是否设置状态为 Initialized。</param>
@@ -76,13 +94,21 @@ private:
 	///<remarks>调用前无需对状态加锁</remarks>
 	void RequestDecodeFrame();
 
+	///<remarks>调用前无需对状态加锁</remarks>
+	void RequestRenderFrame();
+
 	///<summary>将缓存的采样解码为帧</summary>
-	///<remarks>调用前不能对状态加锁，保证同时只有一个线程调用</remarks>
+	///<remarks>
+	/// 调用前不能对状态加锁，保证同时只有一个线程调用。
+	/// 若发生异常，保证 cachedFrameDuration 有效，无法解码的采样将被丢弃。
+	///</remarks>
 	void OnDecodeFrame();
 
 	///<summary>将帧渲染出来</summary>
 	///<remarks>调用前不能对状态加锁，保证同时只有一个线程调用</remarks>
 	void OnRenderFrame();
+
+	WRL::ComPtr<IMFSample> TryPopSample();
 private:
 	UINT32 frameWidth, frameHeight;
 	WRL::ComPtr<IVideoRender> videoRender;
@@ -90,7 +116,7 @@ private:
 	std::mutex stateMutex;
 	VideoStreamRenderSinkState sinkState = NotInitialized;
 	std::queue<WRL::ComPtr<IMFSample>> sampleCache;
-	std::queue<Frame> frameCache;
+	std::queue<FrameInfo> frameCache;
 	std::mutex sampleCacheMutex;
 	std::mutex frameCacheMutex;
 	MFWorkerQueueProviderRef workerQueue;
@@ -102,6 +128,9 @@ private:
 	std::atomic<bool> streamEnded = false;
 
 	std::shared_ptr<WorkerThread> renderFrameWorker;
+	std::atomic<bool> renderFrameWorkerActived = false;
+
+	WRL::ComPtr<IMFPresentationClock> presentationClock;
 };
 
 END_NS_MEDIA

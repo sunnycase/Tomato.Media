@@ -17,26 +17,27 @@ using namespace concurrency;
 using namespace WRL;
 
 VideoPresenter::VideoPresenter()
+	:mediaEngine(MediaEngine::MakeMediaEngine())
 {
 }
 
 void VideoPresenter::SetMediaSource(MediaSource^ mediaSource)
 {
-	mediaEngine.SetMediaSource(mediaSource->MFMediaSource);
+	mediaEngine->SetMediaSource(mediaSource->MFMediaSource);
 	InitializeSurfaceImageSource();
 }
 
 void VideoPresenter::InitializeSurfaceImageSource()
 {
-	const auto frameSize(mediaEngine.FrameSize);
+	const auto frameSize(mediaEngine->FrameSize);
 
 	imageSource = ref new SurfaceImageSource(static_cast<int>(frameSize.Width), static_cast<int>(frameSize.Height), true);
 
-	auto videoRender(mediaEngine.VideoRender);
+	auto videoRender(mediaEngine->VideoRender);
 	videoRender->SetSurfaceImageSource(imageSource, frameSize.Width, frameSize.Height);
 }
 
 void VideoPresenter::Play()
 {
-	mediaEngine.Play();
+	mediaEngine->Play();
 }

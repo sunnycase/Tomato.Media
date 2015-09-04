@@ -15,6 +15,15 @@ struct Frame
 {
 	WRL::ComPtr<ID3D11ShaderResourceView> Luminance;
 	WRL::ComPtr<ID3D11ShaderResourceView> Chrominance;
+
+	Frame() {}
+
+	Frame(WRL::ComPtr<ID3D11ShaderResourceView> luminance,
+		WRL::ComPtr<ID3D11ShaderResourceView> chrominance)
+		:Luminance(std::move(luminance)), Chrominance(std::move(chrominance))
+	{
+
+	}
 };
 
 ///<summary>ÊÓÆµäÖÈ¾Æ÷½Ó¿Ú</summary>

@@ -74,7 +74,10 @@ HRESULT MediaRenderSink::GetStreamSinkByIndex(DWORD dwIndex, IMFStreamSink ** pp
 		if (dwIndex == 0 && !audioSink)
 			audioSink = nullptr;//Make<VideoStreamRenderSink>(0, this, std::make_shared<D3D11VideoRender>());
 		else if (dwIndex == 1 && !videoSink)
+		{
 			videoSink = Make<VideoStreamRenderSink>(1, this, GetVideoRender().Get());
+			videoSink->SetPresentationClock(presentationClock.Get());
+		}
 
 		return streamSinks[dwIndex].CopyTo(ppStreamSink);
 	}
@@ -98,6 +101,12 @@ HRESULT MediaRenderSink::SetPresentationClock(IMFPresentationClock * pPresentati
 				ThrowIfFailed(presentationClock->RemoveClockStateSink(this));
 			presentationClock = pPresentationClock;
 			ThrowIfFailed(pPresentationClock->AddClockStateSink(this));
+
+			for (auto&& streamSink : streamSinks)
+			{
+				if (streamSink)
+					streamSink->SetPresentationClock(pPresentationClock);
+			}
 		}
 	}
 	CATCH_ALL();
@@ -120,6 +129,11 @@ HRESULT MediaRenderSink::Shutdown(void)
 
 HRESULT MediaRenderSink::OnClockStart(MFTIME hnsSystemTime, LONGLONG llClockStartOffset)
 {
+	for (auto&& streamSink : streamSinks)
+	{
+		if (streamSink)
+			streamSink->Play(llClockStartOffset);
+	}
 	return E_NOTIMPL;
 }
 
