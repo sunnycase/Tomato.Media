@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6D37168D-BDA2-460E-986F-5639EEE1F8DC}</ProjectGuid>
+    <ProjectGuid>{44032B80-0784-40DB-B129-EC3DF0856D8C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TomatoMediaDesktop</RootNamespace>
+    <RootNamespace>TomatoMediaGamingDesktop</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -55,7 +55,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
-    <Import Project="..\Tomato.Media.Shared\Tomato.Media.Shared.vcxitems" Label="Shared" />
+    <Import Project="..\Tomato.Media.Gaming.Shared\Tomato.Media.Gaming.Shared.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -73,90 +73,52 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
-    <TargetName>Tomato.Media</TargetName>
-    <EmbedManifest>false</EmbedManifest>
+    <TargetName>Tomato.Media.Gaming</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
-    <TargetName>Tomato.Media</TargetName>
-    <EmbedManifest>false</EmbedManifest>
+    <TargetName>Tomato.Media.Gaming</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
-    <TargetName>Tomato.Media</TargetName>
-    <EmbedManifest>false</EmbedManifest>
+    <TargetName>Tomato.Media.Gaming</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
-    <TargetName>Tomato.Media</TargetName>
-    <EmbedManifest>false</EmbedManifest>
+    <TargetName>Tomato.Media.Gaming</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;WIN32;_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIAGAMINGDESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Manifest>
-      <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
-      <ComponentFileName>$(TargetPath)</ComponentFileName>
-    </Manifest>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(IntDir)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Midl>
-      <HeaderFileName>%(Filename)_i.h</HeaderFileName>
-    </Midl>
-    <FxCompile>
-      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIAGAMINGDESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Manifest>
-      <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
-      <ComponentFileName>$(TargetPath)</ComponentFileName>
-    </Manifest>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(IntDir)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Midl>
-      <HeaderFileName>%(Filename)_i.h</HeaderFileName>
-    </Midl>
-    <FxCompile>
-      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -165,7 +127,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;WIN32;NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIAGAMINGDESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -174,25 +136,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Manifest>
-      <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
-      <ComponentFileName>$(TargetPath)</ComponentFileName>
-    </Manifest>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(IntDir)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Midl>
-      <HeaderFileName>%(Filename)_i.h</HeaderFileName>
-    </Midl>
-    <FxCompile>
-      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -201,7 +146,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIAGAMINGDESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -210,33 +155,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>Tomato.Media.def</ModuleDefinitionFile>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;d2d1.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Manifest>
-      <AssemblyIdentity>Tomato.Media, type=win32, version=1.0.0.0</AssemblyIdentity>
-      <TypeLibraryFile>$(IntDir)$(TargetName).tlb</TypeLibraryFile>
-      <RegistrarScriptFile>$(TargetName).rgs</RegistrarScriptFile>
-      <ComponentFileName>$(TargetPath)</ComponentFileName>
-    </Manifest>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(IntDir)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Midl>
-      <HeaderFileName>%(Filename)_i.h</HeaderFileName>
-    </Midl>
-    <FxCompile>
-      <ObjectFileOutput>$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="MediaSource.h" />
-    <ClInclude Include="ResourceHelper.h" />
-    <ClInclude Include="resource.h" />
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Tomato.Media_i.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -253,35 +180,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="MediaSource.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ResourceHelper.cpp" />
-    <ClCompile Include="Tomato.Media_i.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Tomato.Media.def" />
-    <None Include="Tomato.Media.rgs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="Tomato.Media.idl">
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName).tlb</TypeLibraryName>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName).tlb</TypeLibraryName>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).tlb</TypeLibraryName>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName).tlb</TypeLibraryName>
-    </Midl>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Tomato.Media.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

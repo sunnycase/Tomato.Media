@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IAudioRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +56,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">

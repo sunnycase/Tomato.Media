@@ -5,7 +5,7 @@
 // 创建时间：2015-08-04
 //
 #include "pch.h"
-#include "platform.h"
+#include "common.h"
 
 HMODULE ModuleHandle;
 

@@ -19,6 +19,12 @@ inline void ThrowIfFailed(HRESULT hr, const wchar_t* message)
 }
 
 template<typename T>
+void ThrowWin32IfNot(T value)
+{
+	if (!value) throw Platform::Exception::CreateException(HRESULT_FROM_WIN32(GetLastError()));
+}
+
+template<typename T>
 inline Windows::Foundation::TimeSpan MSToTimeSpan(T ms)
 {
 	return Windows::Foundation::TimeSpan{ static_cast<long long>(ms * 10000) };

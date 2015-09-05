@@ -27,9 +27,6 @@
     <ClInclude Include="Tomato.Media_i.h">
       <Filter>生成的文件</Filter>
     </ClInclude>
-    <ClInclude Include="platform.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MediaSource.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -41,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Tomato.Media.Desktop.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

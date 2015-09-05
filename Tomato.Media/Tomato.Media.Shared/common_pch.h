@@ -18,3 +18,6 @@
 #include <wrl.h>
 #include <DirectXMath.h>
 #include <wincodec.h>
+// WASAPI
+#include <Audioclient.h>
+#include <mmdeviceapi.h>
