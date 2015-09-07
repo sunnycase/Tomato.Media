@@ -6,7 +6,7 @@
 // 创建日期 2015-08-16
 #pragma once
 
-struct NonCopyable
+struct TOMATO_CORE_API NonCopyable
 {
 	NonCopyable(){}
 	NonCopyable(NonCopyable&) = delete;

@@ -6,8 +6,9 @@
 //
 #include "pch.h"
 #include "MFMediaSourceWrapper.h"
-#include "Utility/MFAsyncCallback.h"
+#include "../../include/MFAsyncCallback.h"
 
+using namespace NS_CORE;
 using namespace NS_MEDIA;
 using namespace WRL;
 using namespace concurrency;

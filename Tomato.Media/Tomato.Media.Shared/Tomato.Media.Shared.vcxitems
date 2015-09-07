@@ -51,7 +51,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />

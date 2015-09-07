@@ -43,8 +43,9 @@ String^ MediaSource::Title::get()
 
 String^ MediaSource::AlbumArtist::get()
 {
-	auto album(mediaSource.Album);
-	return ref new String(album.c_str(), album.length());
+	return nullptr;
+	//auto album(mediaSource.Album);
+	//return ref new String(album.c_str(), album.length());
 }
 
 String^ MediaSource::Artist::get()
@@ -56,9 +57,8 @@ String^ MediaSource::Artist::get()
 
 String^ MediaSource::Album::get()
 {
-	return nullptr;
-	//return ws2RTString(nativeSource->GetMetadatas()
-	//	.GetOrDefault<DefaultMediaMetadatas::Album>());
+	auto album(mediaSource.Album);
+	return ref new String(album.c_str(), album.length());
 }
 
 TimeSpan MediaSource::Duration::get()

@@ -272,6 +272,11 @@
     <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="VideoPresenter.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tomato.Core\Tomato.Core.WinRT\Tomato.Core.WinRT.vcxproj">
+      <Project>{e0bf017e-cca1-4f42-9104-dbd6b96477b2}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

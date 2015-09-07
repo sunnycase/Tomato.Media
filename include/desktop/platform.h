@@ -11,7 +11,12 @@
 
 inline void ThrowIfFailed(HRESULT hr)
 {
-	if (FAILED(hr)) _com_raise_error(hr);
+	if (FAILED(hr))
+#if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+		_com_raise_error(hr, nullptr);
+#else
+		_com_raise_error(hr);
+#endif
 }
 
 struct tomato_error
@@ -28,10 +33,17 @@ inline void ThrowIfFailed(HRESULT hr, const wchar_t* message)
 template<typename T>
 void ThrowWin32IfNot(T value)
 {
-	if(!value) _com_raise_error(HRESULT_FROM_WIN32(GetLastError()));
+	if(!value) ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
+}
+
+template<typename T>
+void ThrowIfNot(T value, const wchar_t* message)
+{
+	if (!value) ThrowIfFailed(E_FAIL, message);
 }
 
 #define CATCH_ALL() catch(tomato_error& ex){ return ex.hr;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
+#define CATCH_ALL_WITHEVENT(event) catch(tomato_error& ex){ event.set_exception(ex); }catch(_com_error& ex){event.set_exception(ex);}catch(...){event.set_exception(E_FAIL);}
 
 namespace WRL = Microsoft::WRL;
 

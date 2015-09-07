@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "VideoStreamRenderSink.h"
 
+using namespace NS_CORE;
 using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
@@ -239,8 +240,16 @@ void VideoStreamRenderSink::RegisterWorkThreadIfNeeded()
 		workerQueue = MFWorkerQueueProvider::GetAudio();
 
 	auto weak(AsWeak());
-	decodeFrameWorker = workerQueue.CreateWorkerThread([weak] { if (auto me = weak.Resolve()) ((VideoStreamRenderSink*)me.Get())->OnDecodeFrame(); });
-	renderFrameWorker = workerQueue.CreateWorkerThread([weak] { if (auto me = weak.Resolve()) ((VideoStreamRenderSink*)me.Get())->OnRenderFrame(); });
+	decodeFrameWorker = workerQueue.CreateWorkerThread([weak] 
+	{ 
+		if (auto me = weak.Resolve<VideoStreamRenderSink>())
+			me->OnDecodeFrame();
+	});
+	renderFrameWorker = workerQueue.CreateWorkerThread([weak] 
+	{
+		if (auto me = weak.Resolve<VideoStreamRenderSink>())
+			me->OnRenderFrame();
+	});
 	workThreadRegistered = true;
 }
 

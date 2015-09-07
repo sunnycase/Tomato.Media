@@ -1,0 +1,37 @@
+#include <sdkddkver.h>
+#define DEFINE_NS_ONLY
+#include "../Tomato.Media.Codec.Shared/common.h"
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "inspectable.idl";
+import "Windows.Media.idl";
+
+DEFINE_NS_MEDIA_CODEC
+
+[
+	version(NTDDI_WIN8), 
+	uuid(371C4192-F121-4A3A-8123-ADCDAE21430E)
+]
+interface ICodecManager : IInspectable
+{
+	HRESULT RegisterDefaultCodecs();
+}
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass CodecManager
+{
+	[default] interface ICodecManager;
+}
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass OggByteStreamHandler
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
+END_NS_MEDIA_CODEC

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Tomato.Media.Codec;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +24,25 @@ namespace PinkAlert.Views
     /// </summary>
     public sealed partial class SplashPage : Page
     {
+        private static CodecManager codecManager;
+
         public SplashPage()
         {
             this.InitializeComponent();
+            Loaded += SplashPage_Loaded;
+        }
+
+        private void SplashPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadResource();
+        }
+
+        async void LoadResource()
+        {
+            codecManager = new CodecManager();
+            codecManager.RegisterDefaultCodecs();
+            await Task.Delay(1000);
+            Frame.Navigate(typeof(MainMenuPage));
         }
     }
 }

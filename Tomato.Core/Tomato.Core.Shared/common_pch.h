@@ -1,6 +1,23 @@
 #pragma once
 
 #include <vector>
-#include <chrono>
 #include <sstream>
 #include <ctime>
+#include <array>
+#include <map>
+#include <queue>
+#include <functional>
+#include <mutex>
+#include <atomic>
+#include <chrono>
+#include <ppltasks.h>
+#include <ppl.h>
+#include <mfidl.h>
+#include <mfapi.h>
+#include <Mferror.h>
+#include <mfreadwrite.h>
+#include <d3d11.h>
+#include <Mfmediaengine.h>
+#include <wrl.h>
+#include <DirectXMath.h>
+#include <wincodec.h>

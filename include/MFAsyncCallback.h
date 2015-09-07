@@ -11,8 +11,9 @@
 #include <mfidl.h>
 #include <ppltasks.h>
 #include <memory>
+#include "WeakReferenceBase.h"
 
-DEFINE_NS_MEDIA
+DEFINE_NS_CORE
 
 template<class T>
 // Media Foundation 回调
@@ -53,6 +54,50 @@ public:
 	}
 private:
 	std::weak_ptr<T> parent;
+	Callback callback;
+	const DWORD queueId;
+};
+
+template<class T, class Base = T>
+// Media Foundation 回调
+class MFAsyncCallbackWithWeakRef : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::RuntimeClassType::ClassicCom>,
+	IMFAsyncCallback>
+{
+public:
+	typedef void(T::*Callback)(IMFAsyncResult *pAsyncResult);
+	MFAsyncCallbackWithWeakRef(WeakRef<Base> pParent, Callback callback, DWORD queueId = 0)
+		:parent(std::move(pParent)), callback(callback), queueId(queueId)
+	{
+	}
+
+	// IMFAsyncCallback methods 
+	STDMETHODIMP GetParameters(DWORD *pdwFlags, DWORD *pdwQueue) override
+	{
+		*pdwQueue = queueId;
+		*pdwFlags = 0;
+		return S_OK;
+	}
+
+	STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult) override
+	{
+		if (auto validPtr = parent.Resolve<T>())
+		{
+			try
+			{
+				(validPtr.Get()->*callback)(pAsyncResult);
+				return S_OK;
+			}
+			CATCH_ALL();
+		}
+		return MF_E_SHUTDOWN;
+	}
+
+	DWORD GetQueueId() const noexcept
+	{
+		return queueId;
+	}
+private:
+	WeakRef<Base> parent;
 	Callback callback;
 	const DWORD queueId;
 };
@@ -100,4 +145,4 @@ private:
 	DWORD queueId;
 };
 
-END_NS_MEDIA
+END_NS_CORE

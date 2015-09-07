@@ -6,7 +6,7 @@
 // 创建日期 2015-08-16
 #pragma once
 #include "common.h"
-#include "WeakReferenceBase.h"
+#include "../../include/WeakReferenceBase.h"
 #include <mfidl.h>
 #include <mutex>
 
@@ -15,7 +15,7 @@ DEFINE_NS_MEDIA
 class MediaRenderSink;
 
 ///<summary>流渲染 Sink 基类</summary>
-class __declspec(novtable) StreamRenderSinkBase : public WeakReferenceBase<StreamRenderSinkBase, WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFStreamSink, IMFMediaTypeHandler,
+class __declspec(novtable) StreamRenderSinkBase : public Core::WeakReferenceBase<StreamRenderSinkBase, WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFStreamSink, IMFMediaTypeHandler,
 #if (WINVER >= _WIN32_WINNT_WIN8)
 	IMFRealTimeClientEx
 #elif (WINVER >= _WIN32_WINNT_VISTA) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)

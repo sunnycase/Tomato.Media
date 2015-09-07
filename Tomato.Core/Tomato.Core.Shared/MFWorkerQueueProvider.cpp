@@ -5,10 +5,10 @@
 // 作者：SunnyCase
 // 创建日期 2015-03-15
 #include "pch.h"
-#include "MFWorkerQueueProvider.h"
-#include "MFAsyncCallback.h"
+#include "../../include/MFWorkerQueueProvider.h"
+#include "../../include/MFAsyncCallback.h"
 
-using namespace NS_MEDIA;
+using namespace NS_CORE;
 using namespace WRL;
 using namespace concurrency;
 

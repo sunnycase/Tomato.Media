@@ -8,8 +8,9 @@
 #include "MediaEngine.h"
 #include "MediaRenderSink.h"
 #include "PresentationClock.h"
-#include "Utility/MFAsyncCallback.h"
+#include "../../include/MFAsyncCallback.h"
 
+using namespace NS_CORE;
 using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;

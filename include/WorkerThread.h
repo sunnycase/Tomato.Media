@@ -7,10 +7,10 @@
 #pragma once
 #include "common.h"
 
-DEFINE_NS_MEDIA
+DEFINE_NS_CORE
 
 // 工作线程
-struct __declspec(novtable) WorkerThread
+struct TOMATO_CORE_API __declspec(novtable) WorkerThread
 {
 	// 执行一次
 	virtual void Execute() = 0;
@@ -20,4 +20,4 @@ struct __declspec(novtable) WorkerThread
 	virtual void Cancel() = 0;
 };
 
-END_NS_MEDIA
+END_NS_CORE

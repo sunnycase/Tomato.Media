@@ -7,7 +7,7 @@
 #pragma once
 #include "IVideoRender.h"
 #include "StreamRenderSinkBase.h"
-#include "Utility/MFWorkerQueueProvider.h"
+#include "../../include/MFWorkerQueueProvider.h"
 #include <atomic>
 #include <chrono>
 
@@ -119,15 +119,15 @@ private:
 	std::queue<FrameInfo> frameCache;
 	std::mutex sampleCacheMutex;
 	std::mutex frameCacheMutex;
-	MFWorkerQueueProviderRef workerQueue;
+	Core::MFWorkerQueueProviderRef workerQueue;
 	bool workThreadRegistered = false;
 
-	std::shared_ptr<WorkerThread> decodeFrameWorker;
+	std::shared_ptr<Core::WorkerThread> decodeFrameWorker;
 	std::atomic<bool> decodeFrameWorkerActived = false;
 	std::atomic<MFTIME> cachedFrameDuration = 0;
 	std::atomic<bool> streamEnded = false;
 
-	std::shared_ptr<WorkerThread> renderFrameWorker;
+	std::shared_ptr<Core::WorkerThread> renderFrameWorker;
 	std::atomic<bool> renderFrameWorkerActived = false;
 
 	WRL::ComPtr<IMFPresentationClock> presentationClock;

@@ -8,9 +8,9 @@
 #include "WorkerQueueProvider.h"
 #include "NonCopyable.h"
 
-DEFINE_NS_MEDIA
+DEFINE_NS_CORE
 
-class MFWorkerQueueProviderRef : public WorkerQueueProvider
+class TOMATO_CORE_API MFWorkerQueueProviderRef : public WorkerQueueProvider
 {
 public:
 	explicit MFWorkerQueueProviderRef(DWORD queueId) noexcept;
@@ -23,7 +23,7 @@ private:
 	DWORD queueId;
 };
 
-class MFWorkerQueueProvider : public WorkerQueueProvider, NonCopyable
+class TOMATO_CORE_API MFWorkerQueueProvider : public WorkerQueueProvider, NonCopyable
 {
 public:
 	// 获取 Pro Audio 工作队列
@@ -43,4 +43,4 @@ private:
 	DWORD taskId, queueId;
 };
 
-END_NS_MEDIA
+END_NS_CORE

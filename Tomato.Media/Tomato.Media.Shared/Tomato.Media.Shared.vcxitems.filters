@@ -131,9 +131,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>

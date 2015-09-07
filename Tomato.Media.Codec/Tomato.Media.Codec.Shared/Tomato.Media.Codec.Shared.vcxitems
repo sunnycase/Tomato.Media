@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{61589C00-EFB7-4009-9A8B-36AD39B74A06}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)constants.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libogg\ogg.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libogg\os_types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\bitpack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\codec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\dct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\decint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\dequant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\huffdec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\huffman.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\internal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\ocintrin.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\quant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theoradec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\backends.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\bitrate.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codebook.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codec_internal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\envelope.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\highlevel.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lookup.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lookup_data.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lpc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lsp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\masking.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\mdct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\misc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\os.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\psy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\registry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\scales.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\smallft.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\window.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TheoraDecoderTransform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)libogg\bitwise.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libogg\framing.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\bitpack.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\decinfo.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\decode.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\dequant.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\fragment.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\huffdec.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\idct.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\state.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\theora.info.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\internal.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\quant.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\bitrate.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\block.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\codebook.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\envelope.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\floor0.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\floor1.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\info.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lookup.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lpc.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lsp.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\mapping0.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\mdct.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\psy.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\registry.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\res0.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\sharedbook.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\smallft.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\window.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.cpp" />
+  </ItemGroup>
+</Project>

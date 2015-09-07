@@ -1,5 +1,5 @@
 //
-// Tomato Media
+// Tomato Core
 // 弱引用基类
 // 作者：SunnyCase
 // 创建时间：2015-08-27
@@ -9,7 +9,7 @@
 #include <memory>
 #include <atomic>
 
-DEFINE_NS_MEDIA
+DEFINE_NS_CORE
 
 namespace Details
 {
@@ -36,12 +36,13 @@ public:
 
 	}
 
-	WRL::ComPtr<T> Resolve() const noexcept
+	template<class TTarget = T>
+	WRL::ComPtr<TTarget> Resolve() const noexcept
 	{
 		try
 		{
 			if (auto context = weakContext.lock())
-				return context->ptr.load(std::memory_order_consume);
+				return static_cast<TTarget*>(context->ptr.load(std::memory_order_consume));
 		}
 		catch (...) {}
 		return nullptr;
@@ -94,4 +95,4 @@ protected:
 	std::shared_ptr<Details::WeakReferenceContext<T>> weakContext;
 };
 
-END_NS_MEDIA
+END_NS_CORE

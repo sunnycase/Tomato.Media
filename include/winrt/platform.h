@@ -25,11 +25,18 @@ void ThrowWin32IfNot(T value)
 }
 
 template<typename T>
+void ThrowIfNot(T value, const wchar_t* message)
+{
+	if (!value) ThrowIfFailed(E_FAIL, message);
+}
+
+template<typename T>
 inline Windows::Foundation::TimeSpan MSToTimeSpan(T ms)
 {
 	return Windows::Foundation::TimeSpan{ static_cast<long long>(ms * 10000) };
 }
 
 #define CATCH_ALL() catch(Platform::Exception^ ex){ return ex->HResult;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
+#define CATCH_ALL_WITHEVENT(event) catch(Platform::Exception^ ex){ event.set_exception(ex); }catch(_com_error& ex){event.set_exception(ex);}catch(...){event.set_exception(E_FAIL);}
 
 namespace WRL = Microsoft::WRL;
