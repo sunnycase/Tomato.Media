@@ -11,7 +11,7 @@
 
 DEFINE_NS_MEDIA_CODEC
 
-struct ByteStreamHandlerRegisterItem
+struct ByteStreamHandlerRegisterInfo
 {
 	LPCTSTR FileExtension;
 	LPCTSTR MimeType;

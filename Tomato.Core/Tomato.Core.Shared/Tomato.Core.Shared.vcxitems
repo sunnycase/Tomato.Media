@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFOperationQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFRAII.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFWorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\NonCopyable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h" />

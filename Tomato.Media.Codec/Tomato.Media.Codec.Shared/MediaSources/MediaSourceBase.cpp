@@ -6,6 +6,7 @@
 // 创建时间：2015-03-17
 #include "pch.h"
 #include "MediaSourceBase.h"
+#include "../../include/MFWorkerQueueProvider.h"
 
 using namespace NS_MEDIA;
 using namespace NS_MEDIA_CODEC;
@@ -15,12 +16,13 @@ using namespace concurrency;
 #define LOCK_STATE() std::lock_guard<decltype(stateMutex)> locker(stateMutex)
 
 MediaSourceBase::MediaSourceBase()
-	:operationQueue([weak = AsWeak()](TOperation& op) 
-	{ 
-		if(auto me = weak.Resolve()) me->OnDispatchOperation(op);
-	})
+	:operationQueue(std::make_shared<Core::MFOperationQueue<TOperation>>(
+		[weak = AsWeak()](TOperation& op)
 {
-
+	if (auto me = weak.Resolve<MediaSourceBase>()) me->OnDispatchOperation(op);
+}))
+{
+	operationQueue->SetWorkerQueue(Core::MFWorkerQueueProvider::GetAudio());
 }
 
 MediaSourceBase::~MediaSourceBase()
@@ -275,40 +277,40 @@ void MediaSourceBase::OnDispatchOperation(TOperation& op)
 {
 	if (!op) ThrowIfFailed(MF_E_NOTACCEPTING);
 
-	auto hr = [&]() -> HRESULT {
-		try
+	HRESULT hr = S_OK;
+	try
+	{
+		switch (op->GetKind())
 		{
-			switch (op->GetKind())
-			{
-				// IMFMediaSource methods:
-			case MediaSourceOperationKind::Start:
-				DoStart(static_cast<MediaSourceStartOperation*>(op.get()));
-				break;
+			// IMFMediaSource methods:
+		case MediaSourceOperationKind::Start:
+			DoStart(static_cast<MediaSourceStartOperation*>(op.get()));
+			break;
 
-			case MediaSourceOperationKind::Pause:
-				DoPause();
-				break;
+		case MediaSourceOperationKind::Pause:
+			DoPause();
+			break;
 
-			case MediaSourceOperationKind::Stop:
-				DoStop();
-				break;
+		case MediaSourceOperationKind::Stop:
+			DoStop();
+			break;
 
-				// Operations requested by the streams:
-			case MediaSourceOperationKind::RequestData:
-				OnStreamsRequestData(op).wait();
-				break;
+			// Operations requested by the streams:
+		case MediaSourceOperationKind::RequestData:
+			OnStreamsRequestData(static_cast<MediaStreamRequestDataOperation*>(
+				op.get())->GetMediaStream()).wait();
+			break;
 
-			case MediaSourceOperationKind::EndOfStream:
-				OnEndOfStream();
-				break;
+		case MediaSourceOperationKind::EndOfStream:
+			OnEndOfStream();
+			break;
 
-			default:
-				ThrowIfFailed(E_UNEXPECTED);
-			}
-			return S_OK;
+		default:
+			ThrowIfFailed(E_UNEXPECTED);
 		}
-		CATCH_ALL();
-	}();
+	}
+	CATCH_ALL_WITHHR(hr);
+
 	if (FAILED(hr))
 		QueueEvent(MEError, GUID_NULL, hr, nullptr);
 }
@@ -368,7 +370,7 @@ task<void> MediaSourceBase::CreatePresentationDescriptor(IMFByteStream* stream)
 
 void MediaSourceBase::QueueAsyncOperation(TOperation&& operation)
 {
-	operationQueue.Enqueue(std::move(operation));
+	operationQueue->Enqueue(std::move(operation));
 }
 
 void MediaSourceBase::QueueAsyncOperation(MediaSourceOperationKind operation)
@@ -386,32 +388,33 @@ void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)
 	auto pd = operation->GetPresentationDescriptor();
 	auto position = operation->GetPosition();
 
-	// 启动流
-	StartStreams(pd, position);
+	OnSeekSource(position);
 
+	PROPVARIANT positionVar;
+	PropVariantInit(&positionVar);
+	finalizer fin([&] {PropVariantClear(&positionVar);});
+
+	if (position == -1)
+		positionVar.vt = VT_EMPTY;
+	else
 	{
-		PROPVARIANT positionVar;
-		PropVariantInit(&positionVar);
-		if (position == -1)
-			positionVar.vt = VT_EMPTY;
-		else
-		{
-			positionVar.vt = VT_I8;
-			positionVar.hVal.QuadPart = position;
-		}
+		positionVar.vt = VT_I8;
+		positionVar.hVal.QuadPart = position;
+	}
+	// 启动流
+	StartStreams(pd, positionVar);
 
-		LOCK_STATE();
-		if (state == MFMediaSourceState::Starting)
-		{
-			state = MFMediaSourceState::Started;
-			// Queue the "started" event. The event data is the start position.
-			ThrowIfFailed(QueueEvent(MESourceStarted, GUID_NULL, S_OK, &positionVar));
-		}
-		else
-		{
-			state = MFMediaSourceState::Started;
-			ThrowIfFailed(QueueEvent(MESourceSeeked, GUID_NULL, S_OK, &positionVar));
-		}
+	LOCK_STATE();
+	if (state == MFMediaSourceState::Starting)
+	{
+		state = MFMediaSourceState::Started;
+		// Queue the "started" event. The event data is the start position.
+		ThrowIfFailed(eventQueue->QueueEventParamVar(MESourceStarted, GUID_NULL, S_OK, &positionVar));
+	}
+	else
+	{
+		state = MFMediaSourceState::Started;
+		ThrowIfFailed(eventQueue->QueueEventParamVar(MESourceSeeked, GUID_NULL, S_OK, &positionVar));
 	}
 }
 
@@ -497,7 +500,7 @@ void MediaSourceBase::OnEndOfStream()
 	}
 }
 
-void MediaSourceBase::StartStreams(IMFPresentationDescriptor* pd, REFERENCE_TIME position)
+void MediaSourceBase::StartStreams(IMFPresentationDescriptor* pd, const PROPVARIANT& position)
 {
 	BOOL selected = FALSE;
 	DWORD streamId = 0;

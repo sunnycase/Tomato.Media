@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\quant.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theoradec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora_raii.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\backends.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\bitrate.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codebook.h" />
@@ -56,7 +57,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TheoraDecoderTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp" />
@@ -157,5 +161,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.cpp" />
   </ItemGroup>
 </Project>

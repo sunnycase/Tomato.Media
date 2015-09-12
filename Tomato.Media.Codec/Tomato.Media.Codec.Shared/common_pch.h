@@ -9,3 +9,6 @@
 #include <atomic>
 #include <concurrent_queue.h>
 #include <map>
+#include <windows.media.h>
+#include <queue>
+#include <condition_variable>

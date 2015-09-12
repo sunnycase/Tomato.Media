@@ -19,7 +19,7 @@ ActivatableClass(OggByteStreamHandler);
 CoCreatableClass(OggByteStreamHandler);
 #endif
 
-const ByteStreamHandlerRegisterItem OggByteStreamHandler::RegisterItems[5] =
+const ByteStreamHandlerRegisterInfo OggByteStreamHandler::RegisterInfos[5] =
 {
 	{ L".ogx", L"application/ogg" },
 	{ L".ogv", L"video/ogg" },

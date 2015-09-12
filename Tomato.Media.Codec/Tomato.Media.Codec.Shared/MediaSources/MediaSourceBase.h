@@ -26,7 +26,7 @@ enum class MFMediaSourceState
 	Stopped
 };
 
-class __declspec(novtable) MediaSourceBase : public Core::WeakReferenceBase<MediaSourceBase,
+class MediaSourceBase : public Core::WeakReferenceBase<MediaSourceBase,
 	WRL::RuntimeClassFlags<WRL::ClassicCom>,
 	IMFMediaEventGenerator,
 	IMFMediaSource,
@@ -81,9 +81,10 @@ protected:
 	virtual concurrency::task<WRL::ComPtr<IMFPresentationDescriptor>>
 		OnCreatePresentationDescriptor(IMFByteStream* stream) = 0;
 	// 流请求数据
-	virtual concurrency::task<void> OnStreamsRequestData(TOperation& op) = 0;
+	virtual concurrency::task<void> OnStreamsRequestData(IMFMediaStream* mediaStream) = 0;
+	virtual void OnSeekSource(MFTIME position) = 0;
 	// 开始流
-	virtual void OnStartStream(DWORD streamId, bool selected, MFTIME position) = 0;
+	virtual void OnStartStream(DWORD streamId, bool selected, const PROPVARIANT& position) = 0;
 	virtual void OnPauseStream(DWORD streamId) = 0;
 	virtual void OnStopStream(DWORD streamId) = 0;
 private:
@@ -98,7 +99,7 @@ private:
 
 	// 开始
 	void DoStart(MediaSourceStartOperation* operation);
-	void StartStreams(IMFPresentationDescriptor* pd, REFERENCE_TIME position);
+	void StartStreams(IMFPresentationDescriptor* pd, const PROPVARIANT& position);
 
 	void DoPause();
 	void PauseStreams();
@@ -110,10 +111,10 @@ private:
 	void OnEndOfStream();
 protected:
 	MFMediaSourceState state = MFMediaSourceState::NotInitialized;	// 状态
+	WRL::ComPtr<IMFMediaEventQueue> eventQueue;					// 事件队列
 	std::mutex stateMutex;
 private:
-	Core::MFOperationQueue<TOperation> operationQueue;
-	WRL::ComPtr<IMFMediaEventQueue> eventQueue;					// 事件队列
+	std::shared_ptr<Core::MFOperationQueue<TOperation>> operationQueue;
 	WRL::ComPtr<IMFPresentationDescriptor> presentDescriptor;	// PresentationDescriptor
 	std::atomic<uint32_t> pendingEOSCount = 0;					// 需要结束的流数量
 };

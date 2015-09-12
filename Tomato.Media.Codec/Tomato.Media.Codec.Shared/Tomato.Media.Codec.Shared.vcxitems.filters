@@ -177,8 +177,20 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)constants.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TheoraDecoderTransform.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h">
       <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.h">
+      <Filter>头文件\MediaStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h">
+      <Filter>头文件\MediaStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora_raii.h">
+      <Filter>头文件\libtheora</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +301,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp">
+      <Filter>源文件\MediaStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp">
+      <Filter>源文件\MediaStreams</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

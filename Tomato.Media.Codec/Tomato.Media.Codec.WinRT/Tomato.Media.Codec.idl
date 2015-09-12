@@ -34,4 +34,12 @@ runtimeclass OggByteStreamHandler
 	[default] interface Windows.Media.IMediaExtension;
 }
 
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass TheoraDecoderTransform
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
 END_NS_MEDIA_CODEC

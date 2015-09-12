@@ -74,4 +74,21 @@ private:
 	MFTIME position;
 };
 
+class MediaStreamRequestDataOperation : public MediaSourceOperation
+{
+public:
+	MediaStreamRequestDataOperation(IMFMediaStream* mediaStream)
+		:MediaSourceOperation(MediaSourceOperationKind::RequestData), mediaStream(mediaStream)
+	{
+
+	}
+
+	IMFMediaStream* GetMediaStream() const noexcept
+	{
+		return mediaStream.Get();
+	}
+private:
+	WRL::ComPtr<IMFMediaStream> mediaStream;
+};
+
 END_NS_MEDIA_CODEC

@@ -183,17 +183,15 @@ void VideoSourceReader::PostSampleRequestIfNeed()
 
 bool VideoSourceReader::TryReadVideoSample(ComPtr<IMFSample>& sample)
 {
+	std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
+
 	if (!videoCache.empty())
 	{
-		std::lock_guard<decltype(videoCacheMutex)> locker(videoCacheMutex);
-
-		if (!videoCache.empty())
-		{
-			sample = std::move(videoCache.front());
-			videoCache.pop();
-			return true;
-		}
+		sample = std::move(videoCache.front());
+		videoCache.pop();
+		return true;
 	}
+
 	// 如果缓冲不足且未停止读取则发出提示
 	if (isActive && videoCache.size() < videoCacheSize)
 		videoCacheStarveCond.notify_one();

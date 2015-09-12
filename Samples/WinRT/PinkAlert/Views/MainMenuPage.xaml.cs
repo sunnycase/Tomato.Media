@@ -25,6 +25,23 @@ namespace PinkAlert.Views
         public MainMenuPage()
         {
             this.InitializeComponent();
+            Loaded += MainMenuPage_Loaded;
+        }
+
+        private void MainMenuPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            me_logo.MediaFailed += Me_logo_MediaFailed;
+            me_logo.MediaOpened += Me_logo_MediaOpened;
+        }
+
+        private void Me_logo_MediaOpened(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Me_logo_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+
         }
     }
 }

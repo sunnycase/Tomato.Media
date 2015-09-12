@@ -37,6 +37,7 @@ inline Windows::Foundation::TimeSpan MSToTimeSpan(T ms)
 }
 
 #define CATCH_ALL() catch(Platform::Exception^ ex){ return ex->HResult;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
+#define CATCH_ALL_WITHHR(hr) catch(Platform::Exception^ ex){ hr = ex->HResult; }catch(_com_error& ex){ hr = ex.Error(); }catch(...){ hr = E_FAIL; }
 #define CATCH_ALL_WITHEVENT(event) catch(Platform::Exception^ ex){ event.set_exception(ex); }catch(_com_error& ex){event.set_exception(ex);}catch(...){event.set_exception(E_FAIL);}
 
 namespace WRL = Microsoft::WRL;

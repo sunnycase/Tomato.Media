@@ -43,6 +43,7 @@ task<void> MFMediaSourceWrapper::OpenAsync(IRandomAccessStream ^ stream)
 
 	ComPtr<IMFByteStream> byteStream;
 	ThrowIfFailed(MFCreateMFByteStreamOnStreamEx(reinterpret_cast<IUnknown*>(stream), &byteStream));
+	
 	return OpenAsync(byteStream.Get());
 }
 
@@ -55,10 +56,11 @@ void MFMediaSourceWrapper::Open(IMFByteStream* byteStream)
 
 	ComPtr<IMFSourceResolver> sourceResolver;
 	ThrowIfFailed(MFCreateSourceResolver(&sourceResolver));
-
+	
 	MF_OBJECT_TYPE objType;
 	ComPtr<IUnknown> unkMediaSource;
-	ThrowIfFailed(sourceResolver->CreateObjectFromByteStream(byteStream, nullptr, MF_RESOLUTION_MEDIASOURCE, nullptr, &objType, &unkMediaSource));
+	ThrowIfFailed(sourceResolver->CreateObjectFromByteStream(byteStream, nullptr, 
+		MF_RESOLUTION_MEDIASOURCE | MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE, nullptr, &objType, &unkMediaSource));
 	if (objType != MF_OBJECT_MEDIASOURCE)
 		ThrowIfFailed(E_FAIL, L"Cannot create media source.");
 	ThrowIfFailed(unkMediaSource.As(this));
@@ -73,7 +75,8 @@ task<void> MFMediaSourceWrapper::OpenAsync(IMFByteStream* byteStream)
 
 	auto callback = Make<MFAsyncTaskCallback>();
 	ComPtr<IUnknown> cancelCookie;
-	ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, nullptr, MF_RESOLUTION_MEDIASOURCE, nullptr, &cancelCookie, callback.Get(), nullptr));
+	ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, nullptr,
+		MF_RESOLUTION_MEDIASOURCE | MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE, nullptr, &cancelCookie, callback.Get(), nullptr));
 
 	return create_task(callback->GetEvent()).then([=](ComPtr<IMFAsyncResult> result)
 	{

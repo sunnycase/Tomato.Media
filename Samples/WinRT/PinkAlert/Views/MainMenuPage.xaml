@@ -8,6 +8,10 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <MediaElement Source="ms-appx:///Assets/Art/ra2ts_l.ogv" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <MediaElement x:Name="me_logo" Source="ms-appx:///Assets/Art/ra2ts_l.ogv" HorizontalAlignment="Left" IsLooping="True"/>
     </Grid>
 </Page>

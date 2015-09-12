@@ -9,6 +9,7 @@
 #include "WorkerQueueProvider.h"
 #include <concurrent_queue.h>
 #include <functional>
+#include <atomic>
 
 DEFINE_NS_CORE
 
@@ -31,7 +32,7 @@ public:
 		invoker = provider.CreateWorkerThread([weak]
 		{
 			if (auto me = weak.lock())
-				me.OnProcessOperation();
+				me->OnProcessOperation();
 		});
 	}
 
@@ -41,28 +42,36 @@ public:
 	{
 		if (!invoker) ThrowIfFailed(E_NOT_VALID_STATE);
 		operations.push(std::forward<T>(operation));
-		invoker->Execute();
-	}
-
-	// ²Ù×÷Èë¶Ó
-	template<class T>
-	void EnqueueWaiting(T&& operation, const WRL::Wrappers::Event& event)
-	{
-		if (!invoker) ThrowIfFailed(E_NOT_VALID_STATE);
-		operations.push(std::forward<T>(operation));
-		invoker->Execute(event);
+		ActiveInvoker();
 	}
 private:
 	void OnProcessOperation()
 	{
-		TOperation operation;
-		if (operations.try_pop(operation))
-			dispatcher(operation);
+		try
+		{
+			TOperation operation;
+			while (operations.try_pop(operation))
+				dispatcher(operation);
+			invokerActive.store(false, std::memory_order_release);
+		}
+		catch (...)
+		{
+			invokerActive.store(false, std::memory_order_release);
+			throw;
+		}
+	}
+
+	void ActiveInvoker()
+	{
+		bool expect = false;
+		if (invokerActive.compare_exchange_strong(expect, true))
+			invoker->Execute();
 	}
 private:
 	std::shared_ptr<WorkerThread> invoker;
 	std::function<void(TOperation&)> dispatcher;
 	concurrency::concurrent_queue<TOperation> operations;
+	std::atomic<bool> invokerActive = false;
 };
 
 END_NS_CORE
