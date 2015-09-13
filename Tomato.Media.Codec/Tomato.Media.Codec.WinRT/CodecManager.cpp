@@ -8,6 +8,7 @@
 #include "CodecManager.h"
 #include "ByteStreamHandlers/OggByteStreamHandler.h"
 #include "Transforms/TheoraDecoderTransform.h"
+#include "Transforms/VorbisDecoderTransform.h"
 
 using namespace NS_MEDIA_CODEC;
 using namespace WRL;
@@ -51,12 +52,24 @@ void RegisterVideoDecoderTransform(ABI::Windows::Media::IMediaExtensionManager* 
 	}
 }
 
+template<class T>
+void RegisterAudioDecoderTransform(ABI::Windows::Media::IMediaExtensionManager* mediaExtensionManager)
+{
+	Wrappers::HStringReference className(T::InternalGetRuntimeClassName());
+	for (auto&& item : T::RegisterInfos)
+	{
+		ThrowIfFailed(mediaExtensionManager->RegisterAudioDecoder(className.Get(),
+			item.InputSubType, item.OutputSubType));
+	}
+}
+
 HRESULT CodecManager::RegisterDefaultCodecs(void)
 {
 	try
 	{
 		RegisterByteStreamHandler<OggByteStreamHandler>(mediaExtensionManager.Get());
 		RegisterVideoDecoderTransform<TheoraDecoderTransform>(mediaExtensionManager.Get());
+		RegisterAudioDecoderTransform<VorbisDecoderTransform>(mediaExtensionManager.Get());
 	}
 	CATCH_ALL();
 	return S_OK;

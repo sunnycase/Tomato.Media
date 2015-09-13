@@ -8,6 +8,8 @@
 #include "OggMediaSource.h"
 #include "libvorbis/codec.h"
 #include "libtheora/theoradec.h"
+#include "libvorbis/codec.h"
+#include "libvorbis/vorbis_raii.h"
 #include "constants.h"
 
 using namespace NS_CORE;
@@ -47,6 +49,14 @@ namespace
 		}
 	};
 
+	MFOffset MakeOffset(float v)
+	{
+		MFOffset offset;
+		offset.value = short(v);
+		offset.fract = WORD(65536 * (v - offset.value));
+		return offset;
+	}
+
 	struct TheoraStreamDetector
 	{
 		static const char magic[7];
@@ -68,6 +78,12 @@ namespace
 			if (ogg_stream_packetout(&myStreamState, &packet) != 1) ThrowIfFailed(MF_E_INVALID_STREAM_DATA);
 			if (th_decode_headerin(&info, nullptr, nullptr, &packet) < 0) ThrowIfFailed(MF_E_INVALID_STREAM_DATA);
 
+			MFVideoArea area;
+			area.OffsetX = MakeOffset(info.pic_x);
+			area.OffsetY = MakeOffset(info.pic_y);
+			area.Area.cx = info.pic_width;
+			area.Area.cy = info.pic_height;
+
 			ComPtr<IMFMediaType> mediaType;
 			ThrowIfFailed(MFCreateMediaType(&mediaType));
 			ThrowIfFailed(mediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
@@ -75,15 +91,73 @@ namespace
 			ThrowIfFailed(MFSetAttributeSize(mediaType.Get(), MF_MT_FRAME_SIZE, info.frame_width, info.frame_height));
 			ThrowIfFailed(MFSetAttributeRatio(mediaType.Get(), MF_MT_FRAME_RATE, info.fps_numerator, info.fps_denominator));
 			ThrowIfFailed(mediaType->SetUINT32(MF_MT_THEORA_PIXEL_FORMAT, info.pixel_fmt));
+			ThrowIfFailed(mediaType->SetUINT32(MF_MT_PAN_SCAN_ENABLED, TRUE));
+			ThrowIfFailed(MFSetAttributeRatio(mediaType.Get(), MF_MT_PIXEL_ASPECT_RATIO, info.aspect_numerator, info.aspect_denominator));
+			ThrowIfFailed(mediaType->SetBlob(MF_MT_PAN_SCAN_APERTURE, reinterpret_cast<
+				const UINT8*>(&area), sizeof(area)));
 
 			ComPtr<IMFStreamDescriptor> desc;
 			ThrowIfFailed(MFCreateStreamDescriptor(DWORD(streamState.serialno), 1,
 				mediaType.GetAddressOf(), &desc));
+			ComPtr<IMFMediaTypeHandler> mediaTypeHandler;
+			ThrowIfFailed(desc->GetMediaTypeHandler(&mediaTypeHandler));
+			ThrowIfFailed(mediaTypeHandler->SetCurrentMediaType(mediaType.Get()));
 
 			return desc;
 		}
 	};
 	const char TheoraStreamDetector::magic[7] = { '\x80', 't', 'h', 'e', 'o', 'r', 'a' };
+
+	struct VorbisStreamDetector
+	{
+		static const char magic[7];
+
+		static bool IsMyHeader(const ogg_stream_state& streamState)
+		{
+			if (streamState.body_fill - streamState.body_returned < sizeof(magic)) return false;
+			return memcmp(streamState.body_data + streamState.body_returned, magic, sizeof(magic)) == 0;
+		}
+
+		static ComPtr<IMFStreamDescriptor> BuildStreamDescriptor(const ogg_stream_state& streamState)
+		{
+			auto myStreamState = streamState;
+
+			vorbis_info_raii info;
+
+			ogg_packet packet;
+			if (ogg_stream_packetout(&myStreamState, &packet) != 1) ThrowIfFailed(MF_E_INVALID_STREAM_DATA);
+			if (vorbis_synthesis_idheader(&packet) != 1) ThrowIfFailed(MF_E_INVALID_STREAM_DATA);
+			if (vorbis_synthesis_headerin(&info, nullptr, &packet) != 0) ThrowIfFailed(MF_E_INVALID_STREAM_DATA);
+
+			ComPtr<IMFMediaType> mediaType;
+			ThrowIfFailed(MFCreateMediaType(&mediaType));
+			ThrowIfFailed(mediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio));
+			ThrowIfFailed(mediaType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_Vorbis));
+			ThrowIfFailed(mediaType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, info.channels));
+			ThrowIfFailed(mediaType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, info.rate));
+			if (info.bitrate_nominal)
+			{
+				ThrowIfFailed(mediaType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, info.bitrate_nominal));
+				// 固定码率
+				if (info.bitrate_lower == info.bitrate_upper)
+				{
+					auto bitsPerSample = info.bitrate_nominal / info.rate / info.channels * 8;
+					ThrowIfFailed(mediaType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, bitsPerSample));
+					ThrowIfFailed(mediaType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, bitsPerSample / 8 * info.channels));
+				}
+			}
+
+			ComPtr<IMFStreamDescriptor> desc;
+			ThrowIfFailed(MFCreateStreamDescriptor(DWORD(streamState.serialno), 1,
+				mediaType.GetAddressOf(), &desc));
+			ComPtr<IMFMediaTypeHandler> mediaTypeHandler;
+			ThrowIfFailed(desc->GetMediaTypeHandler(&mediaTypeHandler));
+			ThrowIfFailed(mediaTypeHandler->SetCurrentMediaType(mediaType.Get()));
+
+			return desc;
+		}
+	};
+	const char VorbisStreamDetector::magic[7] = { '\x01', 'v', 'o', 'r', 'b', 'i', 's' };
 
 	class MetadataProvider : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IMFMetadataProvider>
 	{
@@ -136,6 +210,8 @@ namespace
 
 			if (TheoraStreamDetector::IsMyHeader(streamState))
 				streamDescriptor = TheoraStreamDetector::BuildStreamDescriptor(streamState);
+			else if (VorbisStreamDetector::IsMyHeader(streamState))
+				streamDescriptor = VorbisStreamDetector::BuildStreamDescriptor(streamState);
 
 			// 识别出流，则加入 Descriptor
 			if (streamDescriptor)
@@ -177,19 +253,16 @@ HRESULT OggMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID * pp
 	if (!ppvObject)
 		return E_POINTER;
 
-	if (guidService == MF_METADATA_PROVIDER_SERVICE)
+	auto hr = MediaSourceBase::GetService(guidService, riid, ppvObject);
+	if (FAILED(hr))
 	{
-		auto provider = Make<MetadataProvider>();
-		return provider.CopyTo(riid, ppvObject);
+		if (guidService == MF_METADATA_PROVIDER_SERVICE)
+		{
+			auto provider = Make<MetadataProvider>();
+			return provider.CopyTo(riid, ppvObject);
+		}
 	}
-	else if (guidService == MF_RATE_CONTROL_SERVICE)
-	{
-		auto control = Make<RateControl>();
-		return control.CopyTo(riid, ppvObject);
-	}
-
-	// 不支持的服务
-	return MF_E_UNSUPPORTED_SERVICE;
+	return hr;
 }
 
 DWORD OggMediaSource::OnGetCharacteristics()
@@ -277,6 +350,8 @@ concurrency::task<void> OggMediaSource::OnStreamsRequestData(IMFMediaStream* med
 
 void OggMediaSource::OnSeekSource(MFTIME position)
 {
+	QWORD offset;
+	ThrowIfFailed(byteStream->Seek(msoBegin, 0, MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &offset));
 }
 
 void OggMediaSource::OnStartStream(DWORD streamId, bool selected, const PROPVARIANT& position)
@@ -288,6 +363,7 @@ void OggMediaSource::OnStartStream(DWORD streamId, bool selected, const PROPVARI
 
 	// 判断流是不是已经启动了
 	auto wasSelected = stream->IsActive();
+	stream->SetIsActive(selected);
 	if (selected)
 		stream->Start(position);
 	else if (wasSelected)
@@ -300,11 +376,18 @@ void OggMediaSource::OnStartStream(DWORD streamId, bool selected, const PROPVARI
 
 void OggMediaSource::OnPauseStream(DWORD streamId)
 {
-
+	auto streamIt = mediaStreams.find(int(streamId));
+	if (streamIt == mediaStreams.end())
+		ThrowIfFailed(E_INVALIDARG);
+	streamIt->second->Pause();
 }
 
 void OggMediaSource::OnStopStream(DWORD streamId)
 {
+	auto streamIt = mediaStreams.find(int(streamId));
+	if (streamIt == mediaStreams.end())
+		ThrowIfFailed(E_INVALIDARG);
+	streamIt->second->Stop();
 }
 
 void OggMediaSource::OnByteStreamReadCompleted(IMFAsyncResult* asyncResult)

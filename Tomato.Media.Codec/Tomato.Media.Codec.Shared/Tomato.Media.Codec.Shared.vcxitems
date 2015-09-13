@@ -53,6 +53,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\registry.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\scales.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\smallft.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\vorbis_raii.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\window.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h" />
@@ -61,6 +62,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp" />
@@ -156,6 +158,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\smallft.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\synthesis.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\window.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -165,5 +170,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.cpp" />
   </ItemGroup>
 </Project>

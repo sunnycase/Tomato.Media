@@ -8,6 +8,7 @@
 #include "common.h"
 #include <ppltasks.h>
 #include <mfidl.h>
+#include <d3d11.h>
 
 DEFINE_NS_MEDIA
 

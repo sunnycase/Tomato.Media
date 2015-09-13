@@ -10,6 +10,7 @@
 #include "../../include/MFWorkerQueueProvider.h"
 #include <atomic>
 #include <chrono>
+#include <queue>
 
 DEFINE_NS_MEDIA
 

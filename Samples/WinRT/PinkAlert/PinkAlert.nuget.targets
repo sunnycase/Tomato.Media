@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(NuGetPackageRoot)' == ''">
+    <NuGetPackageRoot>C:\Users\晖\.nuget\packages\</NuGetPackageRoot>
+  </PropertyGroup>
+  <ImportGroup>
+    <Import Project="$(NuGetPackageRoot)\Fody\1.29.3\build\dotnet\Fody.targets" Condition="Exists('$(NuGetPackageRoot)\Fody\1.29.3\build\dotnet\Fody.targets')" />
+    <Import Project="$(NuGetPackageRoot)\ModuleInit.Fody\1.5.8\build\dotnet\ModuleInit.Fody.targets" Condition="Exists('$(NuGetPackageRoot)\ModuleInit.Fody\1.5.8\build\dotnet\ModuleInit.Fody.targets')" />
+  </ImportGroup>
+</Project>

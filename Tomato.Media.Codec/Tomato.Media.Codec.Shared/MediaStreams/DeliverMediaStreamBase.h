@@ -48,11 +48,14 @@ public:
 
 	bool DoesNeedMoreData();
 	bool IsActive() const noexcept { return isActive.load(std::memory_order_acquire); }
+	void SetIsActive(bool active) noexcept { isActive.store(active, std::memory_order_release); }
 	void Start(const PROPVARIANT& position);
 	void Pause();
 	void Stop();
+	void EndOfDeliver();
 protected:
 	void EnqueueSample(IMFSample* sample);
+	void RequestData();
 private:
 	void DispatchSampleRequests();
 	void OnEndOfStream();

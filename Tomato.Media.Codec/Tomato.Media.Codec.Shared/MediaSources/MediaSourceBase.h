@@ -30,7 +30,9 @@ class MediaSourceBase : public Core::WeakReferenceBase<MediaSourceBase,
 	WRL::RuntimeClassFlags<WRL::ClassicCom>,
 	IMFMediaEventGenerator,
 	IMFMediaSource,
-	IMFGetService>
+	IMFGetService,
+	IMFRateSupport,
+	IMFRateControl>
 {
 public:
 	using TOperation = std::shared_ptr<MediaSourceOperation>;
@@ -57,6 +59,13 @@ public:
 
 	// IMFGetService
 	IFACEMETHOD(GetService) (_In_ REFGUID guidService, _In_ REFIID riid, _Out_opt_ LPVOID *ppvObject);
+
+	STDMETHODIMP GetSlowestRate(MFRATE_DIRECTION eDirection, BOOL fThin, __RPC__out float *pflRate) override;
+	STDMETHODIMP GetFastestRate(MFRATE_DIRECTION eDirection, BOOL fThin, __RPC__out float *pflRate) override;
+	STDMETHODIMP IsRateSupported(BOOL fThin, float flRate, __RPC__inout_opt float *pflNearestSupportedRate) override;
+
+	STDMETHODIMP SetRate(BOOL fThin, float flRate) override;
+	STDMETHODIMP GetRate(BOOL * pfThin, float * pflRate) override;
 
 	// 打开字节流
 	concurrency::task<void> OpenAsync(IMFByteStream* byteStream);
@@ -113,6 +122,9 @@ protected:
 	MFMediaSourceState state = MFMediaSourceState::NotInitialized;	// 状态
 	WRL::ComPtr<IMFMediaEventQueue> eventQueue;					// 事件队列
 	std::mutex stateMutex;
+
+	bool thin;
+	float rate = 1.f;
 private:
 	std::shared_ptr<Core::MFOperationQueue<TOperation>> operationQueue;
 	WRL::ComPtr<IMFPresentationDescriptor> presentDescriptor;	// PresentationDescriptor

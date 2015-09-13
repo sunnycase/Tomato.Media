@@ -22,7 +22,7 @@
     <ProjectGuid>{BF81D298-1345-45DE-B04E-FD7BA1445731}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TomatoCoreDesktop</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -15,6 +15,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IAudioRender.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />

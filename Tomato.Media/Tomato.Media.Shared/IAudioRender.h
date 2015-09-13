@@ -7,12 +7,20 @@
 #pragma once
 #include "common.h"
 #include <ppltasks.h>
+#include "../../include/MFWorkerQueueProvider.h"
+#include <functional>
 
 DEFINE_NS_MEDIA
 ///<summary>音频渲染器接口</summary>
 struct DECLSPEC_UUID("9DB108BD-070C-4D5D-8C46-25C3CD782488") IAudioRender : public IUnknown
 {
 	virtual concurrency::task<void> Initialize() = 0;
+	virtual void SetWorkerQueueProvider(Core::MFWorkerQueueProviderRef workerQueue) = 0;
+	virtual void SetIsActive(bool value) = 0;
+	// 设置提供采样的回调
+	// 回调类型：size_t(byte* buffer, size_t bytesToRead) 返回实际读取的字节数
+	// 要求：非阻塞
+	virtual void SetProvideSampleCallback(std::function<size_t(byte*, size_t)>&& callback) = 0;
 };
 
 END_NS_MEDIA

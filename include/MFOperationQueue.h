@@ -10,13 +10,19 @@
 #include <concurrent_queue.h>
 #include <functional>
 #include <atomic>
+#include <mutex>
+#include <algorithm>
 
 DEFINE_NS_CORE
+
+template<class TOperation, bool Waitable = false>
+// Media Foundation 操作队列
+class MFOperationQueue;
 
 // 操作类型
 template<class TOperation>
 // Media Foundation 操作队列
-class MFOperationQueue final : public std::enable_shared_from_this<MFOperationQueue<TOperation>>
+class MFOperationQueue<TOperation, false> : public std::enable_shared_from_this<MFOperationQueue<TOperation>>
 {
 public:
 	template<typename TDispatcher>
@@ -60,18 +66,104 @@ private:
 			throw;
 		}
 	}
-
+protected:
 	void ActiveInvoker()
 	{
 		bool expect = false;
 		if (invokerActive.compare_exchange_strong(expect, true))
 			invoker->Execute();
 	}
-private:
+protected:
 	std::shared_ptr<WorkerThread> invoker;
 	std::function<void(TOperation&)> dispatcher;
 	concurrency::concurrent_queue<TOperation> operations;
 	std::atomic<bool> invokerActive = false;
+};
+
+template<class TOperation>
+// Media Foundation 操作队列
+class MFOperationQueue<TOperation, true> : public MFOperationQueue<TOperation, false>, public std::enable_shared_from_this<MFOperationQueue<TOperation, true>>
+{
+	struct WaitableOperation
+	{
+		TOperation Operation;
+		HANDLE Event;
+
+		template<class T>
+		WaitableOperation(T&& operation, HANDLE event)
+			:Operation(std::forward<T>(operation)), Event(event)
+		{
+
+		}
+	};
+public:
+	using MFOperationQueue<TOperation, false>::MFOperationQueue;
+
+	void SetWorkerQueue(WorkerQueueProvider& provider)
+	{
+		std::weak_ptr<MFOperationQueue> weak(std::enable_shared_from_this<MFOperationQueue>::shared_from_this());
+		invoker = provider.CreateWorkerThread([weak]
+		{
+			if (auto me = weak.lock())
+				me->OnProcessOperation();
+		});
+	}
+
+	using MFOperationQueue<TOperation, false>::Enqueue;
+
+	// 操作入队
+	template<class T>
+	void Enqueue(T&& operation, const WRL::Wrappers::Event& event)
+	{
+		if (!invoker) ThrowIfFailed(E_NOT_VALID_STATE);
+		if (!event.IsValid()) ThrowIfFailed(E_HANDLE);
+		{
+			std::lock_guard<decltype(waitableOperationsMutex)> locker(waitableOperationsMutex);
+			waitableOperations.emplace_back(std::forward<T>(operation), event.Get());
+		}
+		ActiveInvoker();
+	}
+private:
+	void OnProcessOperation()
+	{
+		try
+		{
+			while (true)
+			{
+				TOperation operation;
+				if (operations.try_pop(operation))
+					dispatcher(operation);
+
+				bool execute = false;
+				{
+					std::lock_guard<decltype(waitableOperationsMutex)> locker(waitableOperationsMutex);
+					if (waitableOperations.empty()) break;
+					auto it = std::find_if(waitableOperations.begin(), waitableOperations.end(), [](WaitableOperation& waitable)
+					{
+						return WaitForSingleObject(waitable.Event, 0) == WAIT_OBJECT_0;
+					});
+					if (it != waitableOperations.end())
+					{
+						operation = std::move(it->Operation);
+						execute = true;
+						waitableOperations.erase(it);
+					}
+				}
+				if (execute)
+					dispatcher(operation);
+			}
+
+			invokerActive.store(false, std::memory_order_release);
+		}
+		catch (...)
+		{
+			invokerActive.store(false, std::memory_order_release);
+			throw;
+		}
+	}
+protected:
+	std::vector<WaitableOperation> waitableOperations;
+	std::mutex waitableOperationsMutex;
 };
 
 END_NS_CORE

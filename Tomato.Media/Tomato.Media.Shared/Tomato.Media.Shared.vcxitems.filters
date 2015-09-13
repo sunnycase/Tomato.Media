@@ -90,6 +90,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -135,6 +138,9 @@
       <Filter>源文件\Utility</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

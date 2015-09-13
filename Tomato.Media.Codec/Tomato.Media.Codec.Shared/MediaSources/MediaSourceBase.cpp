@@ -214,6 +214,7 @@ HRESULT MediaSourceBase::Start(
 	{
 		LOCK_STATE();
 		ValidateStartOperation(state, position);
+		state = MFMediaSourceState::Starting;
 		// Perform a sanity check on the caller's presentation descriptor.
 		ValidatePresentationDescriptor(pPresentationDescriptor);
 
@@ -256,8 +257,49 @@ HRESULT MediaSourceBase::GetService(_In_ REFGUID guidService, _In_ REFIID riid, 
 	if (!ppvObject)
 		return E_POINTER;
 
+	if (guidService == MF_RATE_CONTROL_SERVICE)
+		return this->QueryInterface(riid, ppvObject);
+
 	// 不支持的服务
 	return MF_E_UNSUPPORTED_SERVICE;
+}
+
+STDMETHODIMP MediaSourceBase::GetSlowestRate(MFRATE_DIRECTION eDirection, BOOL fThin, float * pflRate)
+{
+	if (eDirection != MFRATE_FORWARD) return MF_E_UNSUPPORTED_RATE;
+	if (fThin) return MF_E_THINNING_UNSUPPORTED;
+	*pflRate = 1.0f;
+	return S_OK;
+}
+
+STDMETHODIMP MediaSourceBase::GetFastestRate(MFRATE_DIRECTION eDirection, BOOL fThin, float * pflRate)
+{
+	if (eDirection != MFRATE_FORWARD) return MF_E_UNSUPPORTED_RATE;
+	if (fThin) return MF_E_THINNING_UNSUPPORTED;
+	*pflRate = 1.0f;
+	return S_OK;
+}
+
+STDMETHODIMP MediaSourceBase::IsRateSupported(BOOL fThin, float flRate, float * pflNearestSupportedRate)
+{
+	if (fThin) return MF_E_THINNING_UNSUPPORTED;
+	if(flRate != 1.0f)return MF_E_UNSUPPORTED_RATE;
+	return S_OK;
+}
+
+STDMETHODIMP MediaSourceBase::SetRate(BOOL fThin, float flRate)
+{
+	if (fThin) return MF_E_THINNING_UNSUPPORTED;
+	thin = fThin;
+	rate = flRate;
+	return S_OK;
+}
+
+STDMETHODIMP MediaSourceBase::GetRate(BOOL * pfThin, float * pflRate)
+{
+	*pfThin = thin;
+	*pflRate = rate;
+	return S_OK;
 }
 
 //-------------------------------------------------------------------
@@ -364,7 +406,7 @@ task<void> MediaSourceBase::CreatePresentationDescriptor(IMFByteStream* stream)
 	{
 		LOCK_STATE();
 		this->presentDescriptor = pd;
-		state = MFMediaSourceState::Starting;
+		state = MFMediaSourceState::Stopped;
 	});
 }
 
@@ -426,7 +468,7 @@ void MediaSourceBase::DoPause()
 		PauseStreams();
 
 		state = MFMediaSourceState::Paused;
-		ThrowIfFailed(QueueEvent(MESourcePaused, GUID_NULL, S_OK, nullptr));
+		ThrowIfFailed(eventQueue->QueueEventParamVar(MESourcePaused, GUID_NULL, S_OK, nullptr));
 	}
 }
 
@@ -446,7 +488,11 @@ void MediaSourceBase::PauseStreams()
 
 		ThrowIfFailed(presentDescriptor->GetStreamDescriptorByIndex(0, &selected, &streamDesc));
 		if (selected)
-			OnPauseStream(i);
+		{
+			DWORD streamId;
+			ThrowIfFailed(streamDesc->GetStreamIdentifier(&streamId));
+			OnPauseStream(streamId);
+		}
 	}
 }
 
@@ -458,7 +504,7 @@ void MediaSourceBase::DoStop()
 		StopStreams();
 
 		state = MFMediaSourceState::Stopped;
-		ThrowIfFailed(QueueEvent(MESourceStopped, GUID_NULL, S_OK, nullptr));
+		ThrowIfFailed(eventQueue->QueueEventParamVar(MESourceStopped, GUID_NULL, S_OK, nullptr));
 	}
 }
 
@@ -478,7 +524,11 @@ void MediaSourceBase::StopStreams()
 
 		ThrowIfFailed(presentDescriptor->GetStreamDescriptorByIndex(0, &selected, &streamDesc));
 		if (selected)
-			OnStopStream(i);
+		{
+			DWORD streamId;
+			ThrowIfFailed(streamDesc->GetStreamIdentifier(&streamId));
+			OnStopStream(streamId);
+		}
 	}
 }
 

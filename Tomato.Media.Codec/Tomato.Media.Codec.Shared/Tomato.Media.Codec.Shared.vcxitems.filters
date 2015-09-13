@@ -192,6 +192,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora_raii.h">
       <Filter>头文件\libtheora</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\vorbis_raii.h">
+      <Filter>头文件\libvorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp">
@@ -313,6 +319,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp">
       <Filter>源文件\MediaStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\synthesis.c">
+      <Filter>源文件\libvorbis</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

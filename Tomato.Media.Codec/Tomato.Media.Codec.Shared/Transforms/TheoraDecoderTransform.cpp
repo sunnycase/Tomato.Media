@@ -131,9 +131,7 @@ bool TheoraDecoderTransform::OnReceiveInput(IMFSample * sample)
 			theoraState = TheoraState::Body;
 			return FeedBodyPacket(packet);
 		}
-		// ´íÎó
-		else if (ret < 0)
-			ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
+		// ºöÂÔ´íÎó
 		return false;
 	}
 	// Body
@@ -183,11 +181,22 @@ void TheoraDecoderTransform::InitializeAvailableOutputTypes(IMFMediaType* inputT
 	ComPtr<IMFMediaType> outputMediaType;
 	ThrowIfFailed(MFCreateMediaType(&outputMediaType));
 	ThrowIfFailed(outputMediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
-	UINT64 frameSize, frameRate;
+	UINT64 frameSize, frameRate, pixelAspect;
 	if (SUCCEEDED(inputType->GetUINT64(MF_MT_FRAME_SIZE, &frameSize)))
 		ThrowIfFailed(outputMediaType->SetUINT64(MF_MT_FRAME_SIZE, frameSize));
 	if (SUCCEEDED(inputType->GetUINT64(MF_MT_FRAME_RATE, &frameRate)))
 		ThrowIfFailed(outputMediaType->SetUINT64(MF_MT_FRAME_RATE, frameRate));
+	if(SUCCEEDED(inputType->GetUINT64(MF_MT_PIXEL_ASPECT_RATIO, &pixelAspect)))
+		ThrowIfFailed(outputMediaType->SetUINT64(MF_MT_PIXEL_ASPECT_RATIO, pixelAspect));
+	if (MFGetAttributeUINT32(inputType, MF_MT_PAN_SCAN_ENABLED, FALSE))
+	{
+		ThrowIfFailed(outputMediaType->SetUINT32(MF_MT_PAN_SCAN_ENABLED, TRUE));
+		UINT32 blobSize;
+		ThrowIfFailed(inputType->GetBlobSize(MF_MT_PAN_SCAN_APERTURE, &blobSize));
+		auto aspectBuffer = std::make_unique<UINT8[]>(blobSize);
+		ThrowIfFailed(inputType->GetBlob(MF_MT_PAN_SCAN_APERTURE, aspectBuffer.get(), blobSize, &blobSize));
+		ThrowIfFailed(outputMediaType->SetBlob(MF_MT_PAN_SCAN_APERTURE, aspectBuffer.get(), blobSize));
+	}
 	UINT32 pixelFormatU32;
 	ThrowIfFailed(inputType->GetUINT32(MF_MT_THEORA_PIXEL_FORMAT, &pixelFormatU32));
 	auto pixelFormat = static_cast<th_pixel_fmt>(pixelFormatU32);
@@ -244,7 +253,7 @@ DWORD TheoraDecoderTransform::FillYV12Frame(IMFMediaBuffer* buffer, BYTE * data,
 		decodedBuffer[2].stride, decodedBuffer[2].width, decodedBuffer[2].height));
 	cntData += planeSize;
 	maxLength -= planeSize;
-	//// Cb' -> U
+	// Cb' -> U
 	planeSize = decodedBuffer[1].width * decodedBuffer[1].height;
 	if (maxLength < planeSize) ThrowIfFailed(E_INVALIDARG);
 	ThrowIfFailed(MFCopyImage(cntData, decodedBuffer[1].width, decodedBuffer[1].data,

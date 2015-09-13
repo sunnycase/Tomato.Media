@@ -81,6 +81,8 @@ HRESULT DeliverMediaStreamBase::RequestSample(IUnknown * pToken)
 
 bool DeliverMediaStreamBase::DoesNeedMoreData()
 {
+	if (!IsActive())
+		return false;
 	if (cachedDuration != 0)
 		return !endOfDeliver && cachedDuration < DesiredCacheDuration;
 	else
@@ -107,7 +109,7 @@ void DeliverMediaStreamBase::Start(const PROPVARIANT & position)
 
 		auto met = IsActive() ? MEStreamSeeked : MEStreamStarted;
 		streamState = Started;
-		isActive.store(true, std::memory_order_release);
+		endOfDeliver.store(false, std::memory_order_release);
 		ThrowIfFailed(eventQueue->QueueEventParamVar(met, GUID_NULL, S_OK, &position));
 	}
 	DispatchSampleRequests();
@@ -119,7 +121,6 @@ void DeliverMediaStreamBase::Pause()
 	if (streamState == Started)
 	{
 		streamState = Paused;
-		isActive.store(false, std::memory_order_release);
 		ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamPaused, GUID_NULL, S_OK, nullptr));
 	}
 }
@@ -133,10 +134,17 @@ void DeliverMediaStreamBase::Stop()
 		std::lock_guard<decltype(sampleRequestsMutex)> locker(sampleRequestsMutex, std::adopt_lock);
 		std::lock_guard<decltype(samplesCacheMutex)> locker2(samplesCacheMutex, std::adopt_lock);
 
+		samplesCache.swap(decltype(samplesCache)());
+		sampleRequests.swap(decltype(sampleRequests)());
+
 		streamState = Stopped;
-		isActive.store(false, std::memory_order_release);
 		ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamStopped, GUID_NULL, S_OK, nullptr));
 	}
+}
+
+void DeliverMediaStreamBase::EndOfDeliver()
+{
+	endOfDeliver.store(true, std::memory_order_release);
 }
 
 void DeliverMediaStreamBase::EnqueueSample(IMFSample* sample)
@@ -150,6 +158,7 @@ void DeliverMediaStreamBase::EnqueueSample(IMFSample* sample)
 	}
 	if (SUCCEEDED(sample->GetSampleDuration(&duration)))
 		cachedDuration += duration;
+	DispatchSampleRequests();
 }
 
 void DeliverMediaStreamBase::DispatchSampleRequests()
@@ -174,8 +183,7 @@ void DeliverMediaStreamBase::DispatchSampleRequests()
 
 			auto sample = std::move(samplesCache.front());
 			samplesCache.pop();
-			if (token)
-				ThrowIfFailed(sample->SetUnknown(MFSampleExtension_Token, token.Get()));
+			ThrowIfFailed(sample->SetUnknown(MFSampleExtension_Token, token.Get()));
 			ThrowIfFailed(eventQueue->QueueEventParamUnk(MEMediaSample, GUID_NULL, S_OK, sample.Get()));
 			MFTIME duration;
 			if (SUCCEEDED(sample->GetSampleDuration(&duration)))
@@ -200,11 +208,15 @@ void DeliverMediaStreamBase::OnEndOfStream()
 		mediaSource->QueueAsyncOperation(MediaSourceOperationKind::EndOfStream);
 }
 
+void DeliverMediaStreamBase::RequestData()
+{
+	if (auto mediaSource = this->mediaSource.Resolve())
+		mediaSource->QueueAsyncOperation(std::make_shared<MediaStreamRequestDataOperation>(this));
+}
+
+
 void DeliverMediaStreamBase::RequestDataIfNeeded()
 {
 	if (DoesNeedMoreData())
-	{
-		if (auto mediaSource = this->mediaSource.Resolve())
-			mediaSource->QueueAsyncOperation(std::make_shared<MediaStreamRequestDataOperation>(this));
-	}
+		RequestData();
 }

@@ -27,19 +27,22 @@ struct tomato_error
 
 inline void ThrowIfFailed(HRESULT hr, const wchar_t* message)
 {
-	throw tomato_error{ hr,message };
+	if (FAILED(hr))
+		throw tomato_error{ hr,message };
 }
 
 template<typename T>
 void ThrowWin32IfNot(T value)
 {
-	if(!value) ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
+	if (!value)
+		ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
 }
 
 template<typename T>
 void ThrowIfNot(T value, const wchar_t* message)
 {
-	if (!value) ThrowIfFailed(E_FAIL, message);
+	if (!value)
+		ThrowIfFailed(E_FAIL, message);
 }
 
 #define CATCH_ALL() catch(tomato_error& ex){ return ex.hr;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
