@@ -96,6 +96,9 @@ void DeliverMediaStreamBase::Start(const PROPVARIANT & position)
 {
 	{
 		LOCK_STATE();
+		if(streamState == Stopped || streamState == EndOfStream)
+			OnResetStream();
+
 		if ((streamState == Started ||
 			streamState == Paused) && position.vt != VT_EMPTY)
 		{
@@ -105,6 +108,7 @@ void DeliverMediaStreamBase::Start(const PROPVARIANT & position)
 
 			samplesCache.swap(decltype(samplesCache)());
 			sampleRequests.swap(decltype(sampleRequests)());
+			OnResetStream();
 		}
 
 		auto met = IsActive() ? MEStreamSeeked : MEStreamStarted;

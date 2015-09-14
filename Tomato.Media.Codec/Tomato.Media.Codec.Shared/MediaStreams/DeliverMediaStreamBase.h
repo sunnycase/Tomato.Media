@@ -25,7 +25,7 @@ class DeliverMediaStreamBase : public WRL::RuntimeClass<WRL::RuntimeClassFlags<W
 		DesiredCacheDuration = 3 * size_t(1e7),
 		DesiredCacheSamples = 3 * 24
 	};
-
+public:
 	enum StreamState
 	{
 		Stopped,
@@ -33,7 +33,7 @@ class DeliverMediaStreamBase : public WRL::RuntimeClass<WRL::RuntimeClassFlags<W
 		Paused,
 		EndOfStream
 	};
-public:
+
 	DeliverMediaStreamBase(Core::WeakRef<MediaSourceBase> mediaSource, IMFStreamDescriptor* streamDescriptor);
 	virtual ~DeliverMediaStreamBase();
 
@@ -56,10 +56,14 @@ public:
 protected:
 	void EnqueueSample(IMFSample* sample);
 	void RequestData();
+	virtual void OnResetStream() {}
 private:
 	void DispatchSampleRequests();
 	void OnEndOfStream();
 	void RequestDataIfNeeded();
+protected:
+	StreamState streamState = Stopped;
+	std::mutex stateMutex;
 private:
 	Core::WeakRef<MediaSourceBase> mediaSource;
 	WRL::ComPtr<IMFStreamDescriptor> streamDescriptor;
@@ -71,8 +75,6 @@ private:
 	std::atomic<bool> endOfDeliver = false;
 	std::atomic<MFTIME> cachedDuration = 0;
 	std::atomic<bool> isActive = false;
-	StreamState streamState = Stopped;
-	std::mutex stateMutex;
 };
 
 END_NS_MEDIA_CODEC

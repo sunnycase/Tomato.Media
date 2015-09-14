@@ -196,9 +196,9 @@ private:
 protected:
 	TransformState state = Ready;						// 状态
 	std::mutex stateMutex;
-private:
 	WRL::ComPtr<IMFMediaType> inputMediaType;	// 输入媒体类型
 	WRL::ComPtr<IMFMediaType> outputMediaType;	// 输出媒体类型
+private:
 };
 
 END_NS_MEDIA_CODEC

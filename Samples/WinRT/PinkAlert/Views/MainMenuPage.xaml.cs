@@ -37,7 +37,7 @@ namespace PinkAlert.Views
             me_logo.MediaEnded += Me_logo_MediaEnded;
 
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
-            //themeService.Start();
+            themeService.Start();
         }
 
         private void Me_logo_MediaEnded(object sender, RoutedEventArgs e)

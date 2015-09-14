@@ -92,15 +92,16 @@ namespace
 	{
 		ogg_packet packet;
 		UINT32 bos, eos;
-		UINT64 packetno;
+		UINT64 packetno, granulepos;
 		ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_BOS, &bos));
 		ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_EOS, &eos));
 		ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_NO, &packetno));
+		ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_GRANULEPOS, &granulepos));
 
 		packet.bytes = long(length);
 		packet.b_o_s = long(bos);
 		packet.e_o_s = long(eos);
-		ThrowIfFailed(sample->GetSampleTime(&packet.granulepos));
+		packet.granulepos = ogg_int64_t(granulepos);
 		packet.packet = data;
 		packet.packetno = ogg_int64_t(packetno);
 		return packet;

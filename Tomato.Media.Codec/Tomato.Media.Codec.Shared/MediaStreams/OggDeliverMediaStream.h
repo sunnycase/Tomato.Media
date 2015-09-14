@@ -19,6 +19,7 @@ public:
 	long GetSerialNo() const noexcept { return streamState.serialno; }
 private:
 	void QueuePackets();
+	virtual void OnResetStream() override;
 private:
 	ogg_stream_state streamState;
 	std::mutex streamStateMutex;

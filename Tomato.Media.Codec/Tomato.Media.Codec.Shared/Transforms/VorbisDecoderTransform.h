@@ -60,7 +60,6 @@ private:
 	ogg_int64_t granpos = 0;
 	size_t bytesPerDecodecSample = 0;
 	size_t decodedSamples = 0;
-	std::atomic<MFTIME> position = 0;
 };
 
 END_NS_MEDIA_CODEC

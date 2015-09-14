@@ -15,6 +15,7 @@ using namespace WRL;
 using namespace concurrency;
 
 #define LOCK_STREAM() std::lock_guard<decltype(streamStateMutex)> locker(streamStateMutex)
+#define LOCK_STATE() std::lock_guard<decltype(stateMutex)> stateLocker(stateMutex)
 
 OggDeliverMediaStream::OggDeliverMediaStream(ogg_stream_state && streamState, NS_CORE::WeakRef<MediaSourceBase> mediaSource, IMFStreamDescriptor * streamDescriptor)
 	:DeliverMediaStreamBase(std::move(mediaSource), streamDescriptor), streamState(std::move(streamState))
@@ -23,6 +24,12 @@ OggDeliverMediaStream::OggDeliverMediaStream(ogg_stream_state && streamState, NS
 
 void OggDeliverMediaStream::DeliverOggPage(ogg_page & page)
 {
+	{
+		LOCK_STATE();
+		if (DeliverMediaStreamBase::streamState != StreamState::Started &&
+			DeliverMediaStreamBase::streamState != StreamState::Paused)
+			return;
+	}
 	LOCK_STREAM();
 	if (ogg_stream_pagein(&streamState, &page) != 0)
 	{
@@ -41,7 +48,7 @@ void OggDeliverMediaStream::QueuePackets()
 		{
 			ComPtr<IMFSample> sample;
 			ThrowIfFailed(MFCreateSample(sample.GetAddressOf()));
-			ThrowIfFailed(sample->SetSampleTime(packet.granulepos));
+			ThrowIfFailed(sample->SetUINT64(MF_MT_OGG_PACKET_GRANULEPOS, UINT64(packet.granulepos)));
 			ThrowIfFailed(sample->SetUINT64(MF_MT_OGG_PACKET_NO, UINT64(packet.packetno)));
 			ThrowIfFailed(sample->SetUINT32(MF_MT_OGG_PACKET_BOS, UINT32(packet.b_o_s)));
 			ThrowIfFailed(sample->SetUINT32(MF_MT_OGG_PACKET_EOS, UINT32(packet.e_o_s)));
@@ -65,4 +72,9 @@ void OggDeliverMediaStream::QueuePackets()
 		if (packet.e_o_s)
 			EndOfDeliver();
 	}
+}
+
+void OggDeliverMediaStream::OnResetStream()
+{
+	ThrowIfNot(ogg_stream_reset(&streamState) == 0, L"Cannot reset stream.");
 }

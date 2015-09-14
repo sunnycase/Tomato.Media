@@ -12,7 +12,6 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!--<MediaElement x:Name="me_logo" Source="ms-appx:///Assets/Art/ra2ts_l.ogv" HorizontalAlignment="Left" IsLooping="True"/>-->
-        <MediaElement x:Name="me_logo" Source="ms-appx:///Assets/Theme/drok.ogg" HorizontalAlignment="Left" IsLooping="True"/>
+        <MediaElement x:Name="me_logo" Source="ms-appx:///Assets/Art/ra2ts_l.ogv" HorizontalAlignment="Left" IsLooping="True"/>
     </Grid>
 </Page>

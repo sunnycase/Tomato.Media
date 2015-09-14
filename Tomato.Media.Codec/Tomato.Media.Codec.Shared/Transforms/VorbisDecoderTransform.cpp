@@ -61,6 +61,14 @@ void VorbisDecoderTransform::OnValidateOutputType(IMFMediaType * type)
 		return mySubType == subType;
 	}) == availableOutputTypes.end())
 		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
+
+	UINT32 channels[2], sampleRate[2];
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, &channels[0]));
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, &sampleRate[0]));
+	ThrowIfFailed(inputMediaType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, &channels[1]));
+	ThrowIfFailed(inputMediaType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, &sampleRate[1]));
+	if(channels[0] != channels[1] || sampleRate[0] != sampleRate[1])
+		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
 }
 
 DWORD VorbisDecoderTransform::OnGetOutputFrameSize() const noexcept
@@ -85,15 +93,16 @@ namespace
 	{
 		ogg_packet packet;
 		UINT32 bos, eos;
-		UINT64 packetno;
+		UINT64 packetno, granulepos;
 		ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_BOS, &bos));
 		ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_EOS, &eos));
 		ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_NO, &packetno));
+		ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_GRANULEPOS, &granulepos));
 
 		packet.bytes = long(length);
 		packet.b_o_s = long(bos);
 		packet.e_o_s = long(eos);
-		ThrowIfFailed(sample->GetSampleTime(&packet.granulepos));
+		packet.granulepos = ogg_int64_t(granulepos);
 		packet.packet = data;
 		packet.packetno = ogg_int64_t(packetno);
 		return packet;
@@ -111,7 +120,8 @@ bool VorbisDecoderTransform::OnReceiveInput(IMFSample * sample)
 	auto packet = CreatePacket(sample, data, length);
 
 	if (packet.packetno == 0)
-		position = 0;
+		vorbis_synthesis_restart(&vorbisDspState);
+
 	// Header
 	if (vorbisState == VorbisState::Header)
 	{
@@ -150,9 +160,6 @@ void VorbisDecoderTransform::OnProduceOutput(MFT_OUTPUT_DATA_BUFFER & output)
 	}
 	ThrowIfFailed(buffer->SetCurrentLength(cntLength));
 	auto duration = MFTIME(decodedSamples * 1e7 / vorbisInfo.rate);
-	ThrowIfFailed(output.pSample->SetSampleDuration(duration));
-	ThrowIfFailed(output.pSample->SetSampleTime(position));
-	position += duration;
 	decodedSamples = 0;
 }
 

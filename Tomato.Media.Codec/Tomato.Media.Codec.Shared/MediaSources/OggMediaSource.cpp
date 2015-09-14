@@ -312,6 +312,12 @@ concurrency::task<WRL::ComPtr<IMFPresentationDescriptor>> OggMediaSource::OnCrea
 
 concurrency::task<void> OggMediaSource::OnStreamsRequestData(IMFMediaStream* mediaStream)
 {
+	{
+		LOCK_STATE();
+		if (state != MFMediaSourceState::Started)
+			return task_from_result();
+	}
+
 	auto deliverStream = static_cast<OggDeliverMediaStream*>(mediaStream);
 	if (deliverStream->DoesNeedMoreData())
 	{
@@ -352,6 +358,7 @@ void OggMediaSource::OnSeekSource(MFTIME position)
 {
 	QWORD offset;
 	ThrowIfFailed(byteStream->Seek(msoBegin, 0, MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &offset));
+	ThrowIfNot(ogg_sync_reset(&syncState) == 0, L"Cannot reset source.");
 }
 
 void OggMediaSource::OnStartStream(DWORD streamId, bool selected, const PROPVARIANT& position)
@@ -392,6 +399,11 @@ void OggMediaSource::OnStopStream(DWORD streamId)
 
 void OggMediaSource::OnByteStreamReadCompleted(IMFAsyncResult* asyncResult)
 {
+	{
+		LOCK_STATE();
+		if (state != MFMediaSourceState::Started)return;
+	}
+
 	auto context = static_cast<ReadPageContext*>(asyncResult->GetStateNoAddRef());
 	try
 	{
