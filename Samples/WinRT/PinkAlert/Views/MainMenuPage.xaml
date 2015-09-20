@@ -54,7 +54,7 @@
                                                     IsLooping="True" AutoPlay="False"/>
             </Grid>
             <!-- 菜单 -->
-            <local:MenuPresenterControl/>
+            <local:MenuPresenterControl Grid.Row="1"/>
         </Grid>
     </Grid>
 </catel:Page>

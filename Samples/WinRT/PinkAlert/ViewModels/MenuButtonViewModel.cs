@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catel.Data;
+using Catel.MVVM;
 
-namespace PinkAlert.Models
+namespace PinkAlert.ViewModels
 {
-    class MenuButtonModel : ModelBase
+    class MenuButtonViewModel : ViewModelBase
     {
+        public bool IsEnabled { get; set; }
     }
 }

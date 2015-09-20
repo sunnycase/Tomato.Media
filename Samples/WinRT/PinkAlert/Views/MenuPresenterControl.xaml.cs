@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using PinkAlert.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -19,15 +20,26 @@ namespace PinkAlert.Views
 {
     public sealed partial class MenuPresenterControl : Catel.Windows.Controls.UserControl
     {
+        new MenuPresenterViewModel ViewModel
+        {
+            get { return base.ViewModel as MenuPresenterViewModel; }
+        }
+
         public MenuPresenterControl()
         {
             this.InitializeComponent();
             SizeChanged += MenuPresenterControl_SizeChanged;
+            ViewModelChanged += MenuPresenterControl_ViewModelChanged;
+        }
+
+        private void MenuPresenterControl_ViewModelChanged(object sender, EventArgs e)
+        {
+            ViewModel?.OnSizeChanged(RenderSize);
         }
 
         private void MenuPresenterControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            
+            ViewModel?.OnSizeChanged(e.NewSize);
         }
     }
 }
