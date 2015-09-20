@@ -7,6 +7,9 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{beb1047c-3fa0-4184-b211-6f652f20e167}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Controls">
+      <UniqueIdentifier>{3312b54b-ad1b-4000-9b37-d9449bea2222}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h">

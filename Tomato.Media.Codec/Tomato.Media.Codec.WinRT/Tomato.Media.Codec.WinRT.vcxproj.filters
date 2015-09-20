@@ -38,13 +38,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="Tomato.Media.Codec.idl">
-      <Filter>源文件</Filter>
-    </Midl>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Tomato.Media.Codec.def">
       <Filter>源文件</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <MidlRT Include="Tomato.Media.Codec.idl">
+      <Filter>源文件</Filter>
+    </MidlRT>
   </ItemGroup>
 </Project>

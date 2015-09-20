@@ -143,6 +143,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -162,6 +163,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>
@@ -181,6 +183,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -200,6 +203,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>
@@ -219,6 +223,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -238,6 +243,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
       <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>

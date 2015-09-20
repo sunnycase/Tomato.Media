@@ -96,7 +96,13 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Art\lwscrnl.png" />
+    <Content Include="Assets\Art\mnscrnl.png" />
     <Content Include="Assets\Art\ra2ts_l.ogv" />
+    <Content Include="Assets\Art\sdbtnbkgd.png" />
+    <Content Include="Assets\Art\sdtp.png" />
+    <Content Include="Assets\Art\sdwrnanm.png" />
+    <Content Include="Assets\Art\sdwrntmp.png" />
     <Content Include="Assets\Theme\drok.ogg" />
     <None Include="project.json" />
   </ItemGroup>
@@ -109,10 +115,15 @@
     </Compile>
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IMainMenuViewService.cs" />
     <Compile Include="Services\IThemeService.cs" />
     <Compile Include="Services\ThemeService.cs" />
+    <Compile Include="ViewModels\MainMenuViewModel.cs" />
     <Compile Include="Views\MainMenuPage.xaml.cs">
       <DependentUpon>MainMenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MenuPresenterControl.xaml.cs">
+      <DependentUpon>MenuPresenterControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SplashPage.xaml.cs">
       <DependentUpon>SplashPage.xaml</DependentUpon>
@@ -149,6 +160,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MenuPresenterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SplashPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -164,7 +179,11 @@
       <Name>Tomato.Media.Gaming.WinRT</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
+      <Name>Behaviors SDK %28XAML%29</Name>
+    </SDKReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

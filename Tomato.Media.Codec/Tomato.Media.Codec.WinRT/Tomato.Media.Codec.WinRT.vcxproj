@@ -103,37 +103,43 @@
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Codec</TargetName>
-    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -151,13 +157,8 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
@@ -178,13 +179,8 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
@@ -205,13 +201,8 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
@@ -232,13 +223,8 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
@@ -259,13 +245,8 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
@@ -286,17 +267,30 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>Tomato.Media.Codec.def</ModuleDefinitionFile>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
-    <CustomBuildStep>
-      <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataPath)\..\unionmetadata" -o "$(IntDir)Output" -i "$(MSBuildProjectDirectory)" -v -partial
-copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
-      <Message>Merging Metadata...</Message>
-      <Outputs>$(OutDir)\$(TargetName).winmd;%(Outputs)</Outputs>
-    </CustomBuildStep>
     <Midl>
       <MetadataFileName />
     </Midl>
   </ItemDefinitionGroup>
+  <PropertyGroup Label="Configuration">
+    <UnmergedWinmdDirectory>$(IntDir)UnmergedWinMD</UnmergedWinmdDirectory>
+    <MergedWinmdDirectory>$(IntDir)MergedWinMD</MergedWinmdDirectory>
+    <IdlHeaderDirectory>$(MSBuildProjectDirectory)</IdlHeaderDirectory>
+  </PropertyGroup>
+  <Target Name="mdmerge" AfterTargets="Midl" Inputs="@(Midl -> '%(MetadataFileName)')" Outputs="$(OutDir)$(RootNamespace).winmd">
+    <PropertyGroup>
+      <MdMergeExe>"$(WindowsSdkDir)\bin\$(PreferredToolArchitecture)\mdmerge.exe"</MdMergeExe>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '8.1'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '10.0'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)\..\unionmetadata" />
+    </ItemGroup>
+    <Exec Command="$(MdMergeExe) -v @(MetaDataDir -> '-metadata_dir &quot;%(Identity)&quot;', ' ') -o &quot;$(MergedWinmdDirectory)&quot; -i &quot;$(UnmergedWinmdDirectory)&quot; -partial" />
+    <Exec Command="copy /y &quot;$(MergedWinmdDirectory)\*&quot; &quot;$(OutDir)&quot;" />
+  </Target>
   <ItemGroup>
     <ClInclude Include="CodecManager.h" />
     <ClInclude Include="pch.h" />
@@ -315,14 +309,9 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="Tomato.Media.Codec.idl">
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)_i.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename)_i.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">%(Filename)_i.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">%(Filename)_i.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)_i.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)_i.h</HeaderFileName>
-    </Midl>
+    <MidlRT Include="Tomato.Media.Codec.idl">
+      <RenameHeaderTo>Tomato.Media.Codec_i.h</RenameHeaderTo>
+    </MidlRT>
   </ItemGroup>
   <ItemGroup>
     <None Include="Tomato.Media.Codec.def" />
@@ -335,4 +324,5 @@ copy /y "$(IntDir)Output\*" "$(OutDir)"</Command>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Import Project="$(MSBuildThisFileDir)..\..\Build\midlrt.targets" />
 </Project>

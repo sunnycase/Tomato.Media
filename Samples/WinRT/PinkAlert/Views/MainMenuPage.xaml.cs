@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Catel.IoC;
 using PinkAlert.Services;
+using Windows.UI.Xaml.Media.Animation;
+using PinkAlert.ViewModels;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -22,37 +24,48 @@ namespace PinkAlert.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class MainMenuPage : Page
+    public sealed partial class MainMenuPage : Catel.Windows.Controls.Page, IMainMenuViewService
     {
+        new MainMenuViewModel ViewModel
+        {
+            get { return base.ViewModel as MainMenuViewModel; }
+        }
+
         public MainMenuPage()
         {
             this.InitializeComponent();
+            this.GetServiceLocator().RegisterInstance<IMainMenuViewService>(this);
             Loaded += MainMenuPage_Loaded;
+            Unloaded += MainMenuPage_Unloaded;
+        }
+
+        private void MainMenuPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.GetServiceLocator().RemoveType<IMainMenuViewService>();
         }
 
         private void MainMenuPage_Loaded(object sender, RoutedEventArgs e)
         {
-            me_logo.MediaFailed += Me_logo_MediaFailed;
             me_logo.MediaOpened += Me_logo_MediaOpened;
-            me_logo.MediaEnded += Me_logo_MediaEnded;
 
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
             themeService.Start();
         }
 
-        private void Me_logo_MediaEnded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Me_logo_MediaOpened(object sender, RoutedEventArgs e)
         {
-
+            me_logo.Visibility = Visibility.Visible;
         }
 
-        private void Me_logo_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void fa_AlterMeter_AnimationEnded(object sender, RoutedEventArgs e)
         {
+            ViewModel?.OnAlterMeterEnteringAnimationEnded();
+        }
 
+        public void PlayAlterMeterPointerAnimation()
+        {
+            fa_AlterMeterPointer.CurrentFrameIndex = 0;
+            fa_AlterMeterPointer.Play();
         }
     }
 }

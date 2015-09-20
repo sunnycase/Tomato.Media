@@ -4,6 +4,7 @@
     <NuGetPackageRoot>C:\Users\晖\.nuget\packages\</NuGetPackageRoot>
   </PropertyGroup>
   <ImportGroup>
+    <Import Project="$(NuGetPackageRoot)\Catel.Fody\2.10.0\build\dotnet\Catel.Fody.targets" Condition="Exists('$(NuGetPackageRoot)\Catel.Fody\2.10.0\build\dotnet\Catel.Fody.targets')" />
     <Import Project="$(NuGetPackageRoot)\Fody\1.29.3\build\dotnet\Fody.targets" Condition="Exists('$(NuGetPackageRoot)\Fody\1.29.3\build\dotnet\Fody.targets')" />
     <Import Project="$(NuGetPackageRoot)\ModuleInit.Fody\1.5.8\build\dotnet\ModuleInit.Fody.targets" Condition="Exists('$(NuGetPackageRoot)\ModuleInit.Fody\1.5.8\build\dotnet\ModuleInit.Fody.targets')" />
   </ImportGroup>

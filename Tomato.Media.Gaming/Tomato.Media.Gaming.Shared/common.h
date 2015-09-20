@@ -10,3 +10,7 @@
 #define DEFINE_NS_MEDIA_GAMING namespace Tomato { namespace Media { namespace Gaming {
 #define END_NS_MEDIA_GAMING }}}
 #define NS_MEDIA_GAMING Tomato::Media::Gaming
+
+#ifdef __cplusplus_winrt
+namespace Win2D = Microsoft::Graphics::Canvas;
+#endif

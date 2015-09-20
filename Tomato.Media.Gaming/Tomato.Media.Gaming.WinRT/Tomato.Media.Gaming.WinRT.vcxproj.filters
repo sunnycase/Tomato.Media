@@ -11,12 +11,26 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{1d571f3a-0455-49e5-86c3-6d38414ff3c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="生成的文件">
+      <UniqueIdentifier>{3258a62c-bba2-4954-b157-4b3de498edbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Controls">
+      <UniqueIdentifier>{b919c376-bc82-4954-b8f0-bb6bd25f287e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Controls">
+      <UniqueIdentifier>{6e6b0a9e-716f-49cb-a769-0bbffb9b69f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls\FrameAnimationImage.cpp">
+      <Filter>源文件\Controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -25,5 +39,11 @@
     <ClInclude Include="Game.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Controls\FrameAnimationImage.h">
+      <Filter>头文件\Controls</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
