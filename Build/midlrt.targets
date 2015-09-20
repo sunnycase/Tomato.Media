@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)MidlRT.xml"/>
+    <AvailableItemName Include="MidlRT"/>
+  </ItemGroup>
+
+  <Target Name="MidlRT"
+          BeforeTargets="MakeDirsForMidl"
+          Condition="'@(MidlRT)' != ''">
+    <Error Condition="'$(UnmergedWinmdDirectory)' == ''" Text="UnmergedWinmdDirectory property is not set."/>
+    <ItemGroup>
+      <Midl Include="%(MidlRT.Identity)">
+        <WarningLevel>1</WarningLevel>
+        <WarnAsError>true</WarnAsError>
+        <MetadataFileName>$(UnmergedWinmdDirectory)\%(Filename).winmd</MetadataFileName>
+        <DllDataFileName>$(IntDir)dlldata.c</DllDataFileName>
+        <GenerateTypeLibrary>false</GenerateTypeLibrary>
+        <HeaderFileName Condition="'%(MidlRT.RenameHeaderTo)' == ''">$(IdlHeaderDirectory)\%(Filename).h</HeaderFileName>
+        <HeaderFileName Condition="'%(MidlRT.RenameHeaderTo)' != ''">$(IdlHeaderDirectory)\%(MidlRT.RenameHeaderTo)</HeaderFileName>
+        <ProxyFileName>$(IntDir)%(Filename)_p.c</ProxyFileName>
+        <InterfaceIdentifierFileName>$(IntDir)%(Filename)_i.c</InterfaceIdentifierFileName>
+        <AdditionalOptions>/target NT62</AdditionalOptions>
+      </Midl>
+    </ItemGroup>
+  </Target>
+</Project>

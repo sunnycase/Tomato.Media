@@ -36,7 +36,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!-- 警报度量表 -->
             <Grid>
@@ -55,6 +54,7 @@
                                                     IsLooping="True" AutoPlay="False"/>
             </Grid>
             <!-- 菜单 -->
+            <local:MenuPresenterControl/>
         </Grid>
     </Grid>
 </catel:Page>
