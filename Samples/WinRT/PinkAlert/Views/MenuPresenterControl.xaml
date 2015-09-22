@@ -4,8 +4,12 @@
                    xmlns:local="using:PinkAlert.Views"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:ei="using:Microsoft.Xaml.Interactions.Core"
+                   xmlns:i="using:Microsoft.Xaml.Interactivity"
                    xmlns:catel="using:Catel.Windows.Controls"
+                   xmlns:mvvm="using:Catel.MVVM"
                    xmlns:controls="using:PinkAlert.Controls"
+                   xmlns:gamingControls="using:Tomato.Media.Gaming.Controls"
                    mc:Ignorable="d"
                    d:DesignHeight="300"
                    d:DesignWidth="400">
@@ -25,8 +29,10 @@
                     </Setter>
                     <Setter Property="TabNavigation" Value="Local"/>
                     <Setter Property="Padding" Value="0"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="UseSystemFocusVisuals" Value="True"/>
+                    <Setter Property="Foreground" Value="Yellow"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
@@ -59,9 +65,6 @@
                                             </VisualState>
                                             <VisualState x:Name="PointerOver">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListLowBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
@@ -69,9 +72,6 @@
                                             </VisualState>
                                             <VisualState x:Name="Pressed">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListMediumBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
@@ -79,9 +79,6 @@
                                             </VisualState>
                                             <VisualState x:Name="Selected">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentLowBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
@@ -89,9 +86,6 @@
                                             </VisualState>
                                             <VisualState x:Name="SelectedUnfocused">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentLowBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
@@ -99,9 +93,6 @@
                                             </VisualState>
                                             <VisualState x:Name="SelectedPointerOver">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentMediumBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
@@ -109,18 +100,124 @@
                                             </VisualState>
                                             <VisualState x:Name="SelectedPressed">
                                                 <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="PressedBackground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentHighBrush}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
                                                     </ObjectAnimationUsingKeyFrames>
                                                 </Storyboard>
                                             </VisualState>
                                         </VisualStateGroup>
+                                        <VisualStateGroup x:Name="MenuButtonStates">
+                                            <VisualState x:Name="Stable">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="16"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="StableNoContent">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="16"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Entering">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="IsPlaying">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="10"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="5"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="10"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="EnteringNoContent">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="IsPlaying">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="16"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="11"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="16"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Leaving">
+
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                        <VisualStateGroup x:Name="ContentStates">
+                                            <VisualState x:Name="NoContent">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" 
+                                                                                   Storyboard.TargetName="fa_Content">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="ShowContent">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" 
+                                                                                   Storyboard.TargetName="fa_Content">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                    <Rectangle x:Name="PressedBackground" Fill="Transparent" Control.IsTemplateFocusTarget="True"/>
-                                    <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    <gamingControls:FrameAnimationImage x:Name="fa_Surface" 
+                                                                        Source="{Binding MenuButtonAnimationSource}"
+                                                                        FrameSize="156,42" Margin="12,0,0,0"
+                                                                        Width="156" Height="42" IsLooping="False"
+                                                                        FramesCount="17" ColumnsCount="6" AutoPlay="False"
+                                                                        CurrentFrameIndex="10"
+                                                                        IsPlaying="{Binding IsAnimationPlaying, Mode=TwoWay}"/>
+                                    <Grid x:Name="fa_Content" Visibility="Collapsed">
+                                        <gamingControls:FrameAnimationImage Source="{Binding MenuButtonAnimationSource}"
+                                                                            FrameSize="156,42" Margin="12,0,0,0"
+                                                                            Width="156" Height="42" IsLooping="False"
+                                                                            FramesCount="17" ColumnsCount="6" AutoPlay="False"
+                                                                            CurrentFrameIndex="2"/>
+                                        <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                      Background="Transparent"/>
+                                    </Grid>
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -130,6 +227,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
+                        <TextBlock Text="主选单" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

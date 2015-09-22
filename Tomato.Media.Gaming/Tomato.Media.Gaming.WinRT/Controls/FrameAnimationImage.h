@@ -60,6 +60,21 @@ namespace Controls
 		{
 			Windows::UI::Xaml::DependencyProperty^ get() { return _frameRateProperty; }
 		}
+
+		static property Windows::UI::Xaml::DependencyProperty^ StartFrameProperty
+		{
+			Windows::UI::Xaml::DependencyProperty^ get() { return _startFrameProperty; }
+		}
+
+		static property Windows::UI::Xaml::DependencyProperty^ EndFrameProperty
+		{
+			Windows::UI::Xaml::DependencyProperty^ get() { return _endFrameProperty; }
+		}
+
+		static property Windows::UI::Xaml::DependencyProperty^ IsPlayingProperty
+		{
+			Windows::UI::Xaml::DependencyProperty^ get() { return _isPlayingProperty; }
+		}
 	public:
 		property Microsoft::Graphics::Canvas::CanvasBitmap^ Source
 		{
@@ -115,6 +130,24 @@ namespace Controls
 			void set(float value);
 		}
 
+		property int StartFrame
+		{
+			int get();
+			void set(int value);
+		}
+
+		property int EndFrame
+		{
+			int get();
+			void set(int value);
+		}
+
+		property bool IsPlaying
+		{
+			bool get();
+			void set(bool value);
+		}
+
 		FrameAnimationImage();
 
 		void Play();
@@ -134,9 +167,12 @@ namespace Controls
 		void OnLoaded(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e);
 		void OnAnimationEnded();
 		void SetFrameRate(float value);
+		void DrawNextFrame(bool advance = true);
 
 		static void OnSourcePropertyChanged(Windows::UI::Xaml::DependencyObject^ sender, Windows::UI::Xaml::DependencyPropertyChangedEventArgs^ e);
 		static void OnFrameRatePropertyChanged(Windows::UI::Xaml::DependencyObject^ sender, Windows::UI::Xaml::DependencyPropertyChangedEventArgs^ e);
+		static void OnCurrentFrameIndexPropertyChanged(Windows::UI::Xaml::DependencyObject^ sender, Windows::UI::Xaml::DependencyPropertyChangedEventArgs^ e);
+		static void OnIsPlayingPropertyChanged(Windows::UI::Xaml::DependencyObject^ sender, Windows::UI::Xaml::DependencyPropertyChangedEventArgs^ e);
 	private:
 		Windows::UI::Xaml::Controls::Image^ _framePresenter;
 		Windows::UI::Xaml::DispatcherTimer^ _animationTimer;
@@ -149,10 +185,16 @@ namespace Controls
 		static Windows::UI::Xaml::DependencyProperty^ _isLoopingProperty;
 		static Windows::UI::Xaml::DependencyProperty^ _currentFrameIndexProperty;
 		static Windows::UI::Xaml::DependencyProperty^ _frameRateProperty;
+		static Windows::UI::Xaml::DependencyProperty^ _startFrameProperty;
+		static Windows::UI::Xaml::DependencyProperty^ _endFrameProperty;
+		static Windows::UI::Xaml::DependencyProperty^ _isPlayingProperty;
 
 		bool _isLoaded = false;
 		bool _hasResource = false;
-	};
+		bool _isPlaying = false;
+		int _presentFrameIndex = -1;
+		int _nextFrameIndex = -1;
+};
 }
 
 END_NS_MEDIA_GAMING

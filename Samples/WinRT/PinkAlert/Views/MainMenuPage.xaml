@@ -51,7 +51,7 @@
                                                     Source="{Binding AlertMeterPointerAnimationSource}"
                                                     Margin="38,48,0,0" ColumnsCount="11" FramesCount="91"
                                                     VerticalAlignment="Top" HorizontalAlignment="Left"
-                                                    IsLooping="True" AutoPlay="False"/>
+                                                    IsLooping="True" AutoPlay="False" Visibility="Collapsed"/>
             </Grid>
             <!-- 菜单 -->
             <local:MenuPresenterControl Grid.Row="1"/>

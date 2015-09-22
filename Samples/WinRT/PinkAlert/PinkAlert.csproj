@@ -100,6 +100,7 @@
     <Content Include="Assets\Art\mnscrnl.png" />
     <Content Include="Assets\Art\ra2ts_l.ogv" />
     <Content Include="Assets\Art\sdbtm.png" />
+    <Content Include="Assets\Art\sdbtnanm.png" />
     <Content Include="Assets\Art\sdbtnbkgd.png" />
     <Content Include="Assets\Art\sdtp.png" />
     <Content Include="Assets\Art\sdwrnanm.png" />

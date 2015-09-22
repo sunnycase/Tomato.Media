@@ -64,6 +64,7 @@ namespace PinkAlert.Views
 
         public void PlayAlterMeterPointerAnimation()
         {
+            fa_AlterMeterPointer.Visibility = Visibility.Visible;
             fa_AlterMeterPointer.CurrentFrameIndex = 0;
             fa_AlterMeterPointer.Play();
         }

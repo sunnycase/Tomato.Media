@@ -41,16 +41,16 @@ DependencyProperty^ FrameAnimationImage::_sourceProperty = DependencyProperty::R
 	FrameAnimationImage::typeid, ref new PropertyMetadata(DependencyProperty::UnsetValue, ref new PropertyChangedCallback(FrameAnimationImage::OnSourcePropertyChanged)));
 
 DependencyProperty^ FrameAnimationImage::_currentFrameProperty = DependencyProperty::Register(L"CurrentFrame", ImageSource::typeid,
-		FrameAnimationImage::typeid, ref new PropertyMetadata(DependencyProperty::UnsetValue));
+	FrameAnimationImage::typeid, ref new PropertyMetadata(DependencyProperty::UnsetValue));
 
 DependencyProperty^ FrameAnimationImage::_frameSizeProperty = DependencyProperty::Register(L"FrameSize", Size::typeid,
-		FrameAnimationImage::typeid, ref new PropertyMetadata(Size()));
+	FrameAnimationImage::typeid, ref new PropertyMetadata(Size()));
 
 DependencyProperty^ FrameAnimationImage::_framesCountProperty = DependencyProperty::Register(L"FramesCount", int::typeid,
-		FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int())));
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int())));
 
 DependencyProperty^ FrameAnimationImage::_columnsCountProperty = DependencyProperty::Register(L"ColumnsCount", int::typeid,
-		FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int())));
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int())));
 
 DependencyProperty^ FrameAnimationImage::_autoPlayProperty = DependencyProperty::Register(L"AutoPlay", bool::typeid,
 	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(true)));
@@ -59,10 +59,19 @@ DependencyProperty^ FrameAnimationImage::_isLoopingProperty = DependencyProperty
 	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(false)));
 
 DependencyProperty^ FrameAnimationImage::_currentFrameIndexProperty = DependencyProperty::Register(L"CurrentFrameIndex", int::typeid,
-	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int())));
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int()), ref new PropertyChangedCallback(FrameAnimationImage::OnCurrentFrameIndexPropertyChanged)));
 
 DependencyProperty^ FrameAnimationImage::_frameRateProperty = DependencyProperty::Register(L"FrameRate", float::typeid,
 	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(25.f), ref new PropertyChangedCallback(FrameAnimationImage::OnFrameRatePropertyChanged)));
+
+DependencyProperty^ FrameAnimationImage::_startFrameProperty = DependencyProperty::Register(L"StartFrame", int::typeid,
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int(-1))));
+
+DependencyProperty^ FrameAnimationImage::_endFrameProperty = DependencyProperty::Register(L"EndFrame", int::typeid,
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int(-1))));
+
+DependencyProperty^ FrameAnimationImage::_isPlayingProperty = DependencyProperty::Register(L"IsPlaying", bool::typeid,
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(false), ref new PropertyChangedCallback(FrameAnimationImage::OnIsPlayingPropertyChanged)));
 
 CanvasBitmap^ FrameAnimationImage::Source::get()
 {
@@ -154,6 +163,36 @@ void FrameAnimationImage::FrameRate::set(float value)
 	SetValue(FrameRateProperty, value);
 }
 
+int FrameAnimationImage::StartFrame::get()
+{
+	return safe_cast<int>(GetValue(StartFrameProperty));
+}
+
+void FrameAnimationImage::StartFrame::set(int value)
+{
+	SetValue(StartFrameProperty, value);
+}
+
+int FrameAnimationImage::EndFrame::get()
+{
+	return safe_cast<int>(GetValue(EndFrameProperty));
+}
+
+void FrameAnimationImage::EndFrame::set(int value)
+{
+	SetValue(EndFrameProperty, value);
+}
+
+bool FrameAnimationImage::IsPlaying::get()
+{
+	return safe_cast<bool>(GetValue(IsPlayingProperty));
+}
+
+void FrameAnimationImage::IsPlaying::set(bool value)
+{
+	SetValue(IsPlayingProperty, value);
+}
+
 FrameAnimationImage::FrameAnimationImage()
 {
 	InitializeComponents();
@@ -163,13 +202,19 @@ FrameAnimationImage::FrameAnimationImage()
 void FrameAnimationImage::Play()
 {
 	if (_hasResource)
+	{
 		_animationTimer->Start();
+		_isPlaying = true;
+		IsPlaying = true;
+	}
 }
 
 void FrameAnimationImage::Stop()
 {
 	_animationTimer->Stop();
-	CurrentFrameIndex = 0;
+	CurrentFrameIndex = _nextFrameIndex = std::max(0, StartFrame);
+	_isPlaying = false;
+	IsPlaying = false;
 }
 
 CanvasImageSource^ FrameAnimationImage::RenderTarget::get()
@@ -191,7 +236,7 @@ void FrameAnimationImage::InitializeComponents()
 		sourceBinding->Source = this;
 		_framePresenter->SetBinding(Image::SourceProperty, sourceBinding);
 	}
-	
+
 	this->Content = _framePresenter;
 	_animationTimer = ref new DispatcherTimer();
 	SetFrameRate(FrameRate);
@@ -218,9 +263,11 @@ void FrameAnimationImage::ResetSource(CanvasBitmap^ source)
 			source->Dpi, CanvasAlphaMode::Premultiplied);
 		RenderTarget = renderTarget;
 		_hasResource = true;
+		_nextFrameIndex = std::max(CurrentFrameIndex, std::max(0, StartFrame));
 
+		DrawNextFrame(false);
 		if (AutoPlay)
-			_animationTimer->Start();
+			Play();
 	}
 }
 
@@ -236,38 +283,39 @@ void FrameAnimationImage::OnFrameRatePropertyChanged(DependencyObject ^ sender, 
 		image->SetFrameRate((float)e->NewValue);
 }
 
-void FrameAnimationImage::OnAnimationTick(Object ^sender, Object ^args)
+void FrameAnimationImage::OnCurrentFrameIndexPropertyChanged(DependencyObject ^ sender, DependencyPropertyChangedEventArgs ^ e)
 {
-	auto columnsCount = size_t(ColumnsCount);
-	const auto frameSize = FrameSize;
-	// 如果为 0 则从 source 读取
-	const auto maxColumns = columnsCount == 0 ? size_t(Source->Size.Width / frameSize.Width) : columnsCount;
-	if (maxColumns == 0)
-		throw ref new InvalidArgumentException("FrameSize or Source or ColumnsCount is invalid.");
-
-	auto cntFrameIdx = std::max(0u, size_t(CurrentFrameIndex));
-	if (cntFrameIdx + 1 > size_t(FramesCount))
+	if (auto image = dynamic_cast<FrameAnimationImage^>(sender))
 	{
-		CurrentFrameIndex = cntFrameIdx = 0;
-		if (!IsLooping)
+		auto newValue = static_cast<int>(e->NewValue);
+		if (newValue != image->_presentFrameIndex)
 		{
-			_animationTimer->Stop();
-			OnAnimationEnded();
-			return;
+			image->_nextFrameIndex = newValue;
+			image->DrawNextFrame(false);
 		}
 	}
-	else
-		CurrentFrameIndex = cntFrameIdx + 1;
-	if (Visibility == Xaml::Visibility::Visible)
-	{
-		const auto cntRowIdx = cntFrameIdx / maxColumns;
-		const auto cntColumnIdx = cntFrameIdx % maxColumns;
-		Point cntLeftTop(cntColumnIdx * frameSize.Width, cntRowIdx * frameSize.Height);
-		Rect src(cntLeftTop, frameSize);
+}
 
-		auto session = RenderTarget->CreateDrawingSession(Colors::Transparent);
-		session->DrawImage(Source, Rect(Point(), frameSize), src);
+void FrameAnimationImage::OnIsPlayingPropertyChanged(DependencyObject ^ sender, DependencyPropertyChangedEventArgs ^ e)
+{
+	auto newValue = (bool)e->NewValue;
+	if (auto image = dynamic_cast<FrameAnimationImage^>(sender))
+	{
+		if (newValue != image->_isPlaying)
+		{
+			if (newValue && !image->_isPlaying)
+				image->Play();
+			else if (!newValue && image->_isPlaying)
+				image->Stop();
+			else
+				image->IsPlaying = image->_isPlaying;
+		}
 	}
+}
+
+void FrameAnimationImage::OnAnimationTick(Object ^sender, Object ^args)
+{
+	DrawNextFrame();
 }
 
 void FrameAnimationImage::OnLoaded(Object ^sender, RoutedEventArgs ^e)
@@ -279,9 +327,59 @@ void FrameAnimationImage::OnLoaded(Object ^sender, RoutedEventArgs ^e)
 void FrameAnimationImage::OnAnimationEnded()
 {
 	AnimationEnded(this, ref new RoutedEventArgs());
+	_isPlaying = false;
+	IsPlaying = false;
 }
 
 void FrameAnimationImage::SetFrameRate(float value)
 {
 	_animationTimer->Interval = TimeSpan{ static_cast<long long>(1e7 / value) };
+}
+
+void FrameAnimationImage::DrawNextFrame(bool advance)
+{
+	if (!_hasResource)return;
+	auto columnsCount = size_t(ColumnsCount);
+	const auto frameSize = FrameSize;
+	// 如果为 0 则从 source 读取
+	const auto maxColumns = columnsCount == 0 ? size_t(Source->Size.Width / frameSize.Width) : columnsCount;
+	if (maxColumns == 0)
+		throw ref new InvalidArgumentException("FrameSize or Source or ColumnsCount is invalid.");
+
+	const size_t startFrame = std::max(0, StartFrame);
+	const size_t endFrame = EndFrame != -1 ? EndFrame : FramesCount - 1;
+	const auto lowerFrame = std::min(startFrame, endFrame);
+	const auto higherFrame = std::max(startFrame, endFrame);
+
+	auto cntFrameIdx = size_t(_nextFrameIndex);
+	if (cntFrameIdx > higherFrame || cntFrameIdx < lowerFrame)
+	{
+		if (!IsLooping)
+		{
+			_animationTimer->Stop();
+			OnAnimationEnded();
+			return;
+		}
+		else
+			cntFrameIdx = startFrame;
+	}
+	_presentFrameIndex = cntFrameIdx;
+	try
+	{
+		CurrentFrameIndex = cntFrameIdx;
+	}
+	catch(...){}
+	if (advance)
+		_nextFrameIndex = endFrame > startFrame ? cntFrameIdx + 1 : cntFrameIdx - 1;
+
+	if (Visibility == Xaml::Visibility::Visible)
+	{
+		const auto cntRowIdx = cntFrameIdx / maxColumns;
+		const auto cntColumnIdx = cntFrameIdx % maxColumns;
+		Point cntLeftTop(cntColumnIdx * frameSize.Width, cntRowIdx * frameSize.Height);
+		Rect src(cntLeftTop, frameSize);
+
+		auto session = RenderTarget->CreateDrawingSession(Colors::Transparent);
+		session->DrawImage(Source, Rect(Point(), frameSize), src);
+	}
 }
