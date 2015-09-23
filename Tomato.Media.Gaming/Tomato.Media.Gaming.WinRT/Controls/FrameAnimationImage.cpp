@@ -212,7 +212,7 @@ void FrameAnimationImage::Play()
 void FrameAnimationImage::Stop()
 {
 	_animationTimer->Stop();
-	CurrentFrameIndex = _nextFrameIndex = std::max(0, StartFrame);
+	_nextFrameIndex = std::max(0, StartFrame);
 	_isPlaying = false;
 	IsPlaying = false;
 }
@@ -363,12 +363,6 @@ void FrameAnimationImage::DrawNextFrame(bool advance)
 		else
 			cntFrameIdx = startFrame;
 	}
-	_presentFrameIndex = cntFrameIdx;
-	try
-	{
-		CurrentFrameIndex = cntFrameIdx;
-	}
-	catch(...){}
 	if (advance)
 		_nextFrameIndex = endFrame > startFrame ? cntFrameIdx + 1 : cntFrameIdx - 1;
 
@@ -382,4 +376,5 @@ void FrameAnimationImage::DrawNextFrame(bool advance)
 		auto session = RenderTarget->CreateDrawingSession(Colors::Transparent);
 		session->DrawImage(Source, Rect(Point(), frameSize), src);
 	}
+	_presentFrameIndex = cntFrameIdx;
 }

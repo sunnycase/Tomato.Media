@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Catel.Data;
 using Catel.MVVM;
 using Microsoft.Graphics.Canvas;
+using PinkAlert.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -13,15 +14,24 @@ namespace PinkAlert.ViewModels
 {
     class MenuButtonViewModel : ViewModelBase
     {
+        [Model]
+        public MenuButtonModel Model { get; private set; }
+
+        [ViewModelToModel("Model")]
         public bool IsEnabled { get; set; }
 
-        public bool HasContent { get; set; }
+        public bool HasContent { get { return Model != null; } }
+
+        [ViewModelToModel("Model")]
+        public string Text { get; set; }
 
         public bool IsAnimationPlaying { get; set; }
 
         public CanvasBitmap MenuButtonAnimationSource { get; set; }
 
         public ListBoxItem ButtonItem { get; set; }
+
+        public Command ClickCommand { get; private set; }
 
         private static readonly Uri MenuButtonAnimationSourceUri = new Uri("ms-appx:///Assets/Art/sdbtnanm.png");
 
@@ -35,11 +45,17 @@ namespace PinkAlert.ViewModels
         readonly MenuPresenterViewModel _parent;
         State _state = State.Stable;
 
-        public MenuButtonViewModel(MenuPresenterViewModel parent)
+        public MenuButtonViewModel(MenuPresenterViewModel parent, MenuButtonModel model)
         {
             _parent = parent;
-            IsEnabled = true;
+            Model = model;
+            ClickCommand = new Command(OnClickCommand);
             LoadResources();
+        }
+
+        private void OnClickCommand()
+        {
+            _parent.ReportNavigate(Model.NavigationType);
         }
 
         private async void LoadResources()
@@ -97,6 +113,21 @@ namespace PinkAlert.ViewModels
         {
             if (HasContent)
                 VisualStateManager.GoToState(ButtonItem, "ShowContent", true);
+        }
+
+        public void GoToNoContentState()
+        {
+            if (HasContent)
+                VisualStateManager.GoToState(ButtonItem, "NoContent", true);
+        }
+
+        public void GoToLeavingState()
+        {
+            GoToNoContentState();
+
+            _state = State.Leaving;
+            VisualStateManager.GoToState(ButtonItem, nameof(State.Leaving) +
+                (HasContent ? string.Empty : "NoContent"), true);
         }
     }
 }

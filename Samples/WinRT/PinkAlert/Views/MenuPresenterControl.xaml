@@ -32,7 +32,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="UseSystemFocusVisuals" Value="True"/>
-                    <Setter Property="Foreground" Value="Yellow"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
@@ -180,14 +179,51 @@
                                                 </Storyboard>
                                             </VisualState>
                                             <VisualState x:Name="Leaving">
-
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="IsPlaying">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="5"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="10"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="5"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="LeavingNoContent">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="IsPlaying">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="StartFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="11"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="EndFrame">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="16"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Surface"
+                                                                                   Storyboard.TargetProperty="CurrentFrameIndex">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="11"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
                                             </VisualState>
                                         </VisualStateGroup>
                                         <VisualStateGroup x:Name="ContentStates">
                                             <VisualState x:Name="NoContent">
                                                 <Storyboard>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" 
-                                                                                   Storyboard.TargetName="fa_Content">
+                                                                                   Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                                                     </ObjectAnimationUsingKeyFrames>
                                                 </Storyboard>
@@ -195,7 +231,7 @@
                                             <VisualState x:Name="ShowContent">
                                                 <Storyboard>
                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" 
-                                                                                   Storyboard.TargetName="fa_Content">
+                                                                                   Storyboard.TargetName="ContentPresenter">
                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                                                     </ObjectAnimationUsingKeyFrames>
                                                 </Storyboard>
@@ -209,15 +245,8 @@
                                                                         FramesCount="17" ColumnsCount="6" AutoPlay="False"
                                                                         CurrentFrameIndex="10"
                                                                         IsPlaying="{Binding IsAnimationPlaying, Mode=TwoWay}"/>
-                                    <Grid x:Name="fa_Content" Visibility="Collapsed">
-                                        <gamingControls:FrameAnimationImage Source="{Binding MenuButtonAnimationSource}"
-                                                                            FrameSize="156,42" Margin="12,0,0,0"
-                                                                            Width="156" Height="42" IsLooping="False"
-                                                                            FramesCount="17" ColumnsCount="6" AutoPlay="False"
-                                                                            CurrentFrameIndex="2"/>
-                                        <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                      Background="Transparent"/>
-                                    </Grid>
+                                    <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                      Background="Transparent" Visibility="Collapsed"/>
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -226,9 +255,65 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <TextBlock Text="主选单" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Grid>
+                    <Button Content="主选单" IsEnabled="{Binding IsEnabled}"
+                            Command="{Binding ClickCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Foreground" Value="Yellow"/>
+                                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
+                                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}"/>
+                                <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}"/>
+                                <Setter Property="Padding" Value="8,4,8,4"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+                                <Setter Property="FontWeight" Value="Normal"/>
+                                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+                                <Setter Property="UseSystemFocusVisuals" Value="True"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal"/>
+                                                        <VisualState x:Name="PointerOver">
+                                                            <Storyboard>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Pressed">
+                                                            <Storyboard>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="fa_Content"
+                                                                                               Storyboard.TargetProperty="CurrentFrameIndex">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="4"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Disabled">
+                                                            <Storyboard>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <gamingControls:FrameAnimationImage x:Name="fa_Content"
+                                                            Source="{Binding MenuButtonAnimationSource}"
+                                                            FrameSize="156,42" Margin="12,0,0,0"
+                                                            Width="156" Height="42" IsLooping="False"
+                                                            FramesCount="17" ColumnsCount="6" AutoPlay="False"
+                                                            CurrentFrameIndex="2"/>
+                                                <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </controls:MenuButtonListBox>

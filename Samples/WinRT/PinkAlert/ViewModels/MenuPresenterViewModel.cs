@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catel.MVVM;
 using Microsoft.Graphics.Canvas;
+using PinkAlert.Models;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -27,7 +28,8 @@ namespace PinkAlert.ViewModels
         public MenuPresenterViewModel()
         {
             Buttons = new ObservableCollection<MenuButtonViewModel>();
-            buttonsDelayTimer.Tick += ButtonsDelayTimer_Tick;
+            buttonsEnteringDelayTimer.Tick += ButtonsEnteringDelayTimer_Tick;
+            buttonsLeavingDelayTimer.Tick += ButtonsLeavingDelayTimer_Tick;
             LoadResources();
         }
 
@@ -46,19 +48,21 @@ namespace PinkAlert.ViewModels
                 var buttonsCount = (int)Math.Floor(size.Height / ButtonSize.Height);
                 for (int i = 0; i < buttonsCount; i++)
                 {
-                    Buttons.Add(new MenuButtonViewModel(this)
+                    Buttons.Add(new MenuButtonViewModel(this, new MenuButtonModel
                     {
-                        HasContent = i % 2 == 0
-                    });
+                        IsEnabled = true,
+                        Text = "主选单"
+                    }));
                 }
                 _oldSize = size;
             }
         }
 
-        private DispatcherTimer buttonsDelayTimer = new DispatcherTimer()
+        private DispatcherTimer buttonsEnteringDelayTimer = new DispatcherTimer()
         {
             Interval = TimeSpan.FromMilliseconds(20)
         };
+
         private int _loaded = 0;
         private IEnumerator buttonsEnteringEnum;
         public void ReportLoaded()
@@ -66,11 +70,11 @@ namespace PinkAlert.ViewModels
             if (++_loaded == Buttons.Count)
             {
                 buttonsEnteringEnum = EnteringButtons().GetEnumerator();
-                buttonsDelayTimer.Start();
+                buttonsEnteringDelayTimer.Start();
             }
         }
 
-        private void ButtonsDelayTimer_Tick(object sender, object e)
+        private void ButtonsEnteringDelayTimer_Tick(object sender, object e)
         {
             buttonsEnteringEnum.MoveNext();
         }
@@ -82,7 +86,7 @@ namespace PinkAlert.ViewModels
                 button.GoToEnteringState();
                 yield return null;
             }
-            buttonsDelayTimer.Stop();
+            buttonsEnteringDelayTimer.Stop();
         }
 
         private int _entered = 0;
@@ -98,6 +102,34 @@ namespace PinkAlert.ViewModels
         {
             foreach (var button in Buttons)
                 button.GoToShowContentState();
+        }
+
+        public void ReportNavigate(Type navigationType)
+        {
+            buttonsLeavingEnum = LeavingButtons().GetEnumerator();
+            buttonsLeavingDelayTimer.Start();
+        }
+
+
+        private DispatcherTimer buttonsLeavingDelayTimer = new DispatcherTimer()
+        {
+            Interval = TimeSpan.FromMilliseconds(20)
+        };
+
+        private IEnumerator buttonsLeavingEnum;
+        private void ButtonsLeavingDelayTimer_Tick(object sender, object e)
+        {
+            buttonsLeavingEnum.MoveNext();
+        }
+
+        private IEnumerable LeavingButtons()
+        {
+            foreach (var button in Buttons)
+            {
+                button.GoToLeavingState();
+                yield return null;
+            }
+            buttonsLeavingDelayTimer.Stop();
         }
     }
 }
