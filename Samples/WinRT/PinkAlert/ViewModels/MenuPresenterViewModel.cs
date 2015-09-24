@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.Fody;
 using Catel.MVVM;
 using Microsoft.Graphics.Canvas;
 using PinkAlert.Models;
@@ -23,10 +24,12 @@ namespace PinkAlert.ViewModels
         private static readonly Uri MenuButtonAnimationSourceUri = new Uri("ms-appx:///Assets/Art/sdbtnanm.png");
         public CanvasBitmap MenuButtonAnimationSource { get; set; }
 
-        private Size _oldSize;
+        private int _oldButtonsCount;
+        private readonly MenuConfig _config;
 
-        public MenuPresenterViewModel()
+        public MenuPresenterViewModel([NotNull] MenuConfig config)
         {
+            _config = config;
             Buttons = new ObservableCollection<MenuButtonViewModel>();
             buttonsEnteringDelayTimer.Tick += ButtonsEnteringDelayTimer_Tick;
             buttonsLeavingDelayTimer.Tick += ButtonsLeavingDelayTimer_Tick;
@@ -41,20 +44,24 @@ namespace PinkAlert.ViewModels
 
         public void OnSizeChanged(Size size)
         {
-            if (_oldSize != size)
+            // 测算需要容纳的 Button 数目，向下取证
+            var buttonsCount = (int)Math.Floor(size.Height / ButtonSize.Height);
+            if (_oldButtonsCount != buttonsCount)
             {
                 Buttons.Clear();
-                // 测算需要容纳的 Button 数目，向下取证
-                var buttonsCount = (int)Math.Floor(size.Height / ButtonSize.Height);
-                for (int i = 0; i < buttonsCount; i++)
-                {
-                    Buttons.Add(new MenuButtonViewModel(this, new MenuButtonModel
-                    {
-                        IsEnabled = true,
-                        Text = "主选单"
-                    }));
-                }
-                _oldSize = size;
+                // 顶部按钮
+                foreach (var button in _config.TopButtons)
+                    Buttons.Add(new MenuButtonViewModel(this, button));
+                // padding 按钮
+                var paddingCount = Math.Max(0, buttonsCount - _config.TopButtons.Count - _config.BottomButtons.Count);
+                for (int i = 0; i < paddingCount; i++)
+                    Buttons.Add(new MenuButtonViewModel(this, null));
+                // 底部按钮
+                foreach (var button in _config.BottomButtons)
+                    Buttons.Add(new MenuButtonViewModel(this, button));
+
+                _loaded = _entered = 0;
+                _oldButtonsCount = buttonsCount;
             }
         }
 

@@ -8,7 +8,7 @@
             xmlns:gamingControls="using:Tomato.Media.Gaming.Controls"
             mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
@@ -22,9 +22,7 @@
             <!-- 雷达动画、操作界面 -->
             <Grid>
                 <Image Stretch="UniformToFill" Source="ms-appx:///Assets/Art/mnscrnl.png"/>
-                <MediaElement x:Name="me_logo" Visibility="Collapsed"
-                              Source="ms-appx:///Assets/Art/ra2ts_l.ogv" Stretch="Fill"
-                              IsLooping="True"/>
+                <Frame x:Name="fr_Content"/>
             </Grid>
             <!-- 帮助信息 -->
             <Grid Grid.Row="1">
@@ -54,7 +52,7 @@
                                                     IsLooping="True" AutoPlay="False" Visibility="Collapsed"/>
             </Grid>
             <!-- 菜单 -->
-            <local:MenuPresenterControl Grid.Row="1"/>
+            <local:MenuPresenterControl Grid.Row="1" DataContext="{Binding MenuConfig}"/>
         </Grid>
     </Grid>
 </catel:Page>

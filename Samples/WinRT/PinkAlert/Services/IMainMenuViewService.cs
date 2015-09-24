@@ -9,5 +9,7 @@ namespace PinkAlert.Services
     interface IMainMenuViewService
     {
         void PlayAlterMeterPointerAnimation();
+
+        void Navigate(Type navigateType);
     }
 }

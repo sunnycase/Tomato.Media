@@ -12,13 +12,14 @@
                    xmlns:gamingControls="using:Tomato.Media.Gaming.Controls"
                    mc:Ignorable="d"
                    d:DesignHeight="300"
+                   Background="Transparent"
                    d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <controls:MenuButtonListBox ItemsSource="{Binding Buttons}"
+        <controls:MenuButtonListBox ItemsSource="{Binding Buttons}" Background="Transparent"
                  BorderThickness="0">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -255,7 +256,7 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="主选单" IsEnabled="{Binding IsEnabled}"
+                    <Button Content="{Binding Text}" IsEnabled="{Binding IsEnabled}"
                             Command="{Binding ClickCommand}">
                         <Button.Style>
                             <Style TargetType="Button">

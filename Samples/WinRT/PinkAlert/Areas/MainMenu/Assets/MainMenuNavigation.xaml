@@ -1,0 +1,18 @@
+﻿<models:MenuNavigationModel
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:PinkAlert.Models"
+    xmlns:localViews="using:PinkAlert.Areas.MainMenu.Views"
+    ViewType="localViews:MainMenuPage">
+    <models:MenuNavigationModel.MenuConfig>
+        <models:MenuConfig>
+            <models:MenuConfig.TopButtons>
+                <models:MenuButtonModel IsEnabled="True" Text="单人游戏"/>
+                <models:MenuButtonModel IsEnabled="True" Text="选项"/>
+            </models:MenuConfig.TopButtons>
+            <models:MenuConfig.BottomButtons>
+                <models:MenuButtonModel IsEnabled="True" Text="退出游戏"/>
+            </models:MenuConfig.BottomButtons>
+        </models:MenuConfig>
+    </models:MenuNavigationModel.MenuConfig>
+</models:MenuNavigationModel>

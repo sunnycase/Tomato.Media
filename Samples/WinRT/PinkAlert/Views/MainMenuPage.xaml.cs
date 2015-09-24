@@ -46,15 +46,8 @@ namespace PinkAlert.Views
 
         private void MainMenuPage_Loaded(object sender, RoutedEventArgs e)
         {
-            me_logo.MediaOpened += Me_logo_MediaOpened;
-
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
             themeService.Start();
-        }
-
-        private void Me_logo_MediaOpened(object sender, RoutedEventArgs e)
-        {
-            me_logo.Visibility = Visibility.Visible;
         }
 
         private void fa_AlterMeter_AnimationEnded(object sender, RoutedEventArgs e)
@@ -67,6 +60,11 @@ namespace PinkAlert.Views
             fa_AlterMeterPointer.Visibility = Visibility.Visible;
             fa_AlterMeterPointer.CurrentFrameIndex = 0;
             fa_AlterMeterPointer.Play();
+        }
+
+        public void Navigate(Type navigateType)
+        {
+            fr_Content.Navigate(navigateType);
         }
     }
 }

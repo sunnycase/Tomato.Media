@@ -7,6 +7,9 @@ using Catel.MVVM;
 using Catel.IoC;
 using Microsoft.Graphics.Canvas;
 using PinkAlert.Services;
+using PinkAlert.Models;
+using Windows.UI.Xaml.Controls;
+using Catel.Fody;
 
 namespace PinkAlert.ViewModels
 {
@@ -25,8 +28,13 @@ namespace PinkAlert.ViewModels
         /// </summary>
         public CanvasBitmap AlertMeterPointerAnimationSource { get; set; }
 
-        public MainMenuViewModel()
+        public MenuConfig MenuConfig { get; set; }
+
+        public readonly IMainMenuViewService _mainMenuService;
+
+        public MainMenuViewModel([NotNull] IMainMenuViewService mainMenuService)
         {
+            _mainMenuService = mainMenuService;
             LoadResources();
         }
 
@@ -35,11 +43,22 @@ namespace PinkAlert.ViewModels
             var sharedDevice = CanvasDevice.GetSharedDevice();
             AlertMeterEnteringAnimationSource = await CanvasBitmap.LoadAsync(sharedDevice, AlertMeterEnteringAnimationSourceUri);
             AlertMeterPointerAnimationSource = await CanvasBitmap.LoadAsync(sharedDevice, AlertMeterPointerAnimationSourceUri);
+
+            OnNavigateToMenu(MainMenuConstants.MainMenuUri);
         }
 
         public void OnAlterMeterEnteringAnimationEnded()
         {
             this.GetDependencyResolver().Resolve<IMainMenuViewService>()?.PlayAlterMeterPointerAnimation();
+        }
+
+        public void OnNavigateToMenu(Uri uri)
+        {
+            var navigation = new MenuNavigationModel();
+            App.LoadComponent(navigation, uri);
+
+            _mainMenuService.Navigate(navigation.ViewType);
+            MenuConfig = navigation.MenuConfig;
         }
     }
 }
