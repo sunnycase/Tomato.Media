@@ -1,4 +1,6 @@
 # Tomato.Media
-[![moeathome-public MyGet Build Status](https://www.myget.org/BuildSource/Badge/moeathome-public?identifier=6984ca0f-2bbc-4725-94bf-0daff46be27b)](https://www.myget.org/)
+AppVeyor: [![AppVeyor](https://ci.appveyor.com/api/projects/status/whbvbw4rhe8t9aus?svg=true)](https://ci.appveyor.com/project/sunnycase/tomato-media)
 
-Tomato Media Library
+基于 Media Foundation 和 Win2d 的媒体处理组件。
+
+支持 Windows 7 及以上版本
