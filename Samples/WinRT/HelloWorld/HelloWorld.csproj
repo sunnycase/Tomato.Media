@@ -116,7 +116,6 @@
     <None Include="HelloWorld_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Dango Daikazoku.mp3" />
     <Content Include="Assets\Dango Daikazoku.png" />
     <Content Include="Assets\Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi" />
     <Content Include="Properties\Default.rd.xml" />
