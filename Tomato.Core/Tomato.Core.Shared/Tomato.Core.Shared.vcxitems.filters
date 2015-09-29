@@ -51,7 +51,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFRAII.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\XAudio2RAII.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\riff.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,6 +66,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -38,7 +38,7 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
+            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
 
 
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi"));

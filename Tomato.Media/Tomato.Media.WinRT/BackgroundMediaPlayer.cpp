@@ -7,6 +7,9 @@
 #include "pch.h"
 #include "BackgroundMediaPlayer.h"
 #include "ApplicationDataHelper.h"
+
+#define INITGUID
+#include <guiddef.h>
 #include "IBackgroundMediaPlayerHandler.h"
 #include "CoreMediaSource.h"
 
@@ -15,7 +18,37 @@ using namespace NS_MEDIA;
 using namespace NS_MEDIA::details;
 using namespace Windows::Media;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace WRL;
+
+namespace
+{
+	class MediaPlayerHandlerGetterFactory : public ActivationFactory<>
+	{
+	public:
+		MediaPlayerHandlerGetterFactory(IInspectable* handler)
+			:_handler(handler)
+		{
+			
+		}
+		
+		STDMETHOD(ActivateInstance)(_Outptr_result_nullonfailure_ IInspectable **ppvObject)
+		{
+			return _handler.CopyTo(ppvObject);
+		}
+	private:
+		ComPtr<IInspectable> _handler;
+	};
+
+	HRESULT STDAPICALLTYPE GetFactories(HSTRING, IActivationFactory ** pFactory)
+	{
+		static Object^ obj = nullptr;
+		static auto factory = Make<MediaPlayerHandlerGetterFactory>(reinterpret_cast<IInspectable*>(obj));
+		return factory.CopyTo(pFactory);
+	}
+}
+
+String^ ::NS_MEDIA::BackgroundMediaPlayerActivatedMessageKey = L"Tomato.Media.BackgroundMediaPlayer.Activated";
 
 BackgroundMediaPlayer::BackgroundMediaPlayer()
 {
@@ -29,6 +62,9 @@ void BackgroundMediaPlayer::Run(Windows::ApplicationModel::Background::IBackgrou
 
 	deferral = taskInstance->GetDeferral();
 	ActivateHandler();
+	auto valueSet = ref new ValueSet();
+	valueSet->Insert(L"MessageId", BackgroundMediaPlayerActivatedMessageKey);
+	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
 }
 
 void BackgroundMediaPlayer::ActivateHandler()
@@ -38,6 +74,13 @@ void BackgroundMediaPlayer::ActivateHandler()
 	Object^ handlerObj;
 	ThrowIfFailed(RoActivateInstance(reinterpret_cast<HSTRING>(audioHandlerName),
 		reinterpret_cast<IInspectable**>(&handlerObj)));
+	auto factory = Make<MediaPlayerHandlerGetterFactory>(reinterpret_cast<IInspectable*>(handlerObj));
+
+	//RO_REGISTRATION_COOKIE revoke;
+	//auto classId = reinterpret_cast<HSTRING>(BackgroundMediaPlyaerHanderGetter::typeid->FullName);
+	//PFNGETACTIVATIONFACTORY fn = GetFactories;
+	//ThrowIfFailed(RoRegisterActivationFactories(&classId, &fn, 1, &revoke));
+
 	auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
 	audioHandler->OnActivated(this);
 }

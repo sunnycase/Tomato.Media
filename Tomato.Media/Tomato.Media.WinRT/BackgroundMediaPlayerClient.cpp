@@ -5,8 +5,10 @@
 // (c) SunnyCase 
 // 创建日期 2015-05-11
 #include "pch.h"
+#include "IBackgroundMediaPlayerHandler.h"
 #include "BackgroundMediaPlayerClient.h"
 #include "ApplicationDataHelper.h"
+#include "BackgroundMediaPlayer.h"
 
 using namespace Platform;
 using namespace NS_MEDIA;
@@ -34,5 +36,13 @@ void BackgroundMediaPlayerClient::DetachMessageListener()
 
 void BackgroundMediaPlayerClient::OnMessageReceivedFromBackground(Object ^ sender, Playback::MediaPlayerDataReceivedEventArgs ^ e)
 {
-	//MessageReceivedFromBackground(sender, e->Data);
+	auto valueSet = e->Data;
+	auto key = (String^)valueSet->Lookup(L"MessageId");
+	if (key == BackgroundMediaPlayerActivatedMessageKey)
+	{
+		//WRL::ComPtr<IInspectable> handlerUnk;
+		//auto classId = reinterpret_cast<HSTRING>(BackgroundMediaPlyaerHanderGetter::typeid->FullName);
+		//auto hr = RoActivateInstance(classId, &handlerUnk);
+		PlayerActivated(this, nullptr);
+	}
 }

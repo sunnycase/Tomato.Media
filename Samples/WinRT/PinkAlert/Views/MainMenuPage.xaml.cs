@@ -16,6 +16,8 @@ using Catel.IoC;
 using PinkAlert.Services;
 using Windows.UI.Xaml.Media.Animation;
 using PinkAlert.ViewModels;
+using Tomato.Media;
+using Windows.Storage;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -37,6 +39,22 @@ namespace PinkAlert.Views
             this.GetServiceLocator().RegisterInstance<IMainMenuViewService>(this);
             Loaded += MainMenuPage_Loaded;
             Unloaded += MainMenuPage_Unloaded;
+            LoadFile();
+        }
+
+        XAudioSession xaudio = new XAudioSession();
+        private async void LoadFile()
+        {
+            var stream = await (await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Audio/Sound/Yamaha-TG100-Whistle-C5.wav")))
+                .OpenStreamForReadAsync();
+            using (var reader = new BinaryReader(stream))
+            {
+                var data = new byte[stream.Length];
+                reader.Read(data, 0, data.Length);
+                var sound = xaudio.AddSound(data);
+                xaudio.PlaySound(sound);
+                xaudio.PlaySound(sound);
+            }
         }
 
         private void MainMenuPage_Unloaded(object sender, RoutedEventArgs e)

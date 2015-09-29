@@ -105,6 +105,7 @@
     <Content Include="Assets\Art\sdtp.png" />
     <Content Include="Assets\Art\sdwrnanm.png" />
     <Content Include="Assets\Art\sdwrntmp.png" />
+    <Content Include="Assets\Audio\Sound\Yamaha-TG100-Whistle-C5.wav" />
     <Content Include="Assets\Theme\drok.ogg" />
     <None Include="project.json" />
   </ItemGroup>
@@ -210,6 +211,10 @@
     <ProjectReference Include="..\..\..\Tomato.Media.Gaming\Tomato.Media.Gaming.WinRT\Tomato.Media.Gaming.WinRT.vcxproj">
       <Project>{7e0a32be-f057-4db9-a879-9b4f82c05e53}</Project>
       <Name>Tomato.Media.Gaming.WinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tomato.Media\Tomato.Media.WinRT\Tomato.Media.WinRT.vcxproj">
+      <Project>{f5a28f95-fc11-43ce-a2b6-9a8649ac606b}</Project>
+      <Name>Tomato.Media.WinRT</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

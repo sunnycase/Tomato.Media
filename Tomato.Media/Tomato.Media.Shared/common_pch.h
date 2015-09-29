@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 
 #include <array>
 #include <map>
@@ -7,6 +8,7 @@
 #include <mutex>
 #include <atomic>
 #include <chrono>
+#include <sstream>
 #include <ppltasks.h>
 #include <ppl.h>
 #include <mfidl.h>

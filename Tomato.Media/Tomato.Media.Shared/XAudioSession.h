@@ -9,7 +9,7 @@
 #include <xaudio2.h>
 #include "../../include/XAudio2RAII.h"
 
-DEFINE_NS_MEDIA
+DEFINE_NS_MEDIA_INTERN
 
 class XAudioSound;
 
@@ -29,4 +29,4 @@ private:
 	std::vector<std::shared_ptr<XAudioSound>> _sounds;
 };
 
-END_NS_MEDIA
+END_NS_MEDIA_INTERN

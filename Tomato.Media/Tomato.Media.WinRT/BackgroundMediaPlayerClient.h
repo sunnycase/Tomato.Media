@@ -16,6 +16,8 @@ public:
 	///<summary>创建 <see cref="BackgroundMediaPlayerClient"/> 的新实例。</summary>
 	///<param name="mediaPlayerHandlerTypeName">实现了 <see cref="IBackgroundMediaHandler"/> 的类型。</param>
 	BackgroundMediaPlayerClient(Platform::String^ mediaPlayerHandlerTypeName);
+
+	event Windows::Foundation::EventHandler<Platform::Object^>^ PlayerActivated;
 private:
 	void AttachMessageListener();
 	void DetachMessageListener();

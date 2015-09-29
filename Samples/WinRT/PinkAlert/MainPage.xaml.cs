@@ -28,6 +28,7 @@ namespace PinkAlert
         public MainPage()
         {
             this.InitializeComponent();
+
             scp_Game.SizeChanged += Scp_Game_SizeChanged;
         }
 

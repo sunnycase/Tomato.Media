@@ -47,4 +47,6 @@ private:
 	void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 };
 
+extern Platform::String^ BackgroundMediaPlayerActivatedMessageKey;
+
 END_NS_MEDIA

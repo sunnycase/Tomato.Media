@@ -18,7 +18,7 @@ namespace BackgroundMediaShared
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Dango Daikazoku.mp3"));
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/04 - irony -TV Mix-.mp3"));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream);
             Debug.WriteLine($"Title: {mediaSource.Title}");

@@ -260,6 +260,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="VideoPresenter.h" />
+    <ClInclude Include="XAudioSessionRT.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationDataHelper.cpp" />
@@ -277,6 +278,7 @@
     </ClCompile>
     <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="VideoPresenter.cpp" />
+    <ClCompile Include="XAudioSessionRT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tomato.Core\Tomato.Core.WinRT\Tomato.Core.WinRT.vcxproj">
