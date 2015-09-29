@@ -13,7 +13,7 @@ using Catel.Fody;
 
 namespace PinkAlert.ViewModels
 {
-    class MainMenuViewModel : ViewModelBase
+    class MainMenuViewModel : ViewModelBase, IMainMenuService
     {
         public string HelpDescription { get; set; }
 
@@ -36,6 +36,7 @@ namespace PinkAlert.ViewModels
         {
             _mainMenuService = mainMenuService;
             LoadResources();
+            this.GetServiceLocator().RegisterInstance<IMainMenuService>(this);
         }
 
         private async void LoadResources()
@@ -52,13 +53,24 @@ namespace PinkAlert.ViewModels
             this.GetDependencyResolver().Resolve<IMainMenuViewService>()?.PlayAlterMeterPointerAnimation();
         }
 
-        public void OnNavigateToMenu(Uri uri)
+        private void OnNavigateToMenu(Uri uri)
         {
             var navigation = new MenuNavigationModel();
             App.LoadComponent(navigation, uri);
 
             _mainMenuService.Navigate(navigation.ViewType);
             MenuConfig = navigation.MenuConfig;
+        }
+
+        public void Navigate(Uri uri)
+        {
+            OnNavigateToMenu(uri);
+        }
+
+        protected override Task OnClosingAsync()
+        {
+            this.GetServiceLocator().RemoveType<IMainMenuService>();
+            return base.OnClosingAsync();
         }
     }
 }

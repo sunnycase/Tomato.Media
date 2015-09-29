@@ -55,7 +55,7 @@ namespace PinkAlert.ViewModels
 
         private void OnClickCommand()
         {
-            _parent.ReportNavigate(Model.NavigationType);
+            _parent.RequestNavigation(new Uri(Model.NavigationUri));
         }
 
         private async void LoadResources()
@@ -102,6 +102,7 @@ namespace PinkAlert.ViewModels
                         _parent.ReportEntered();
                         break;
                     case State.Leaving:
+                        _parent.ReportLeaved();
                         break;
                     default:
                         break;

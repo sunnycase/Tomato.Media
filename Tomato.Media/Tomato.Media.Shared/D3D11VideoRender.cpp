@@ -36,7 +36,6 @@ namespace
 
 D3D11VideoRender::D3D11VideoRender()
 {
-
 }
 
 task<void> D3D11VideoRender::Initialize()

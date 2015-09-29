@@ -40,6 +40,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)XAudioSession.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)XAudioSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">

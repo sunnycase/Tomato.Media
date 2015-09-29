@@ -11,8 +11,8 @@ namespace PinkAlert.Models
     {
         public string Text { get; set; }
 
-        public Type NavigationType { get; set; }
-
         public bool IsEnabled { get; set; }
+
+        public string NavigationUri { get; set; }
     }
 }

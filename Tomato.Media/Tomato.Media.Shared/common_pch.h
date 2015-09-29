@@ -21,3 +21,5 @@
 // WASAPI
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
+// XAudio2
+#include <xaudio2.h>

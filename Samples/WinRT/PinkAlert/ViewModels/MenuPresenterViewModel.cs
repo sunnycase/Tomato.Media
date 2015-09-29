@@ -11,6 +11,8 @@ using Microsoft.Graphics.Canvas;
 using PinkAlert.Models;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using Catel.IoC;
+using PinkAlert.Services;
 
 namespace PinkAlert.ViewModels
 {
@@ -60,7 +62,7 @@ namespace PinkAlert.ViewModels
                 foreach (var button in _config.BottomButtons)
                     Buttons.Add(new MenuButtonViewModel(this, button));
 
-                _loaded = _entered = 0;
+                _loaded = _entered = _leaved = 0;
                 _oldButtonsCount = buttonsCount;
             }
         }
@@ -111,13 +113,6 @@ namespace PinkAlert.ViewModels
                 button.GoToShowContentState();
         }
 
-        public void ReportNavigate(Type navigationType)
-        {
-            buttonsLeavingEnum = LeavingButtons().GetEnumerator();
-            buttonsLeavingDelayTimer.Start();
-        }
-
-
         private DispatcherTimer buttonsLeavingDelayTimer = new DispatcherTimer()
         {
             Interval = TimeSpan.FromMilliseconds(20)
@@ -137,6 +132,27 @@ namespace PinkAlert.ViewModels
                 yield return null;
             }
             buttonsLeavingDelayTimer.Stop();
+        }
+
+        private int _leaved = 0;
+        public void ReportLeaved()
+        {
+            if (++_leaved == Buttons.Count)
+                DoNavigation();
+        }
+
+        private Uri _requestedNavigation;
+        public void RequestNavigation(Uri uri)
+        {
+            _requestedNavigation = uri;
+            buttonsLeavingEnum = LeavingButtons().GetEnumerator();
+            buttonsLeavingDelayTimer.Start();
+        }
+
+        private void DoNavigation()
+        {
+            var service = this.GetDependencyResolver().Resolve<IMainMenuService>();
+            service.Navigate(_requestedNavigation);
         }
     }
 }

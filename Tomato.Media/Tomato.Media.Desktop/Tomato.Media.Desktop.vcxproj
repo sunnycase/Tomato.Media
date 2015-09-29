@@ -75,24 +75,32 @@
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media</TargetName>
     <EmbedManifest>false</EmbedManifest>
+    <IncludePath>$(SolutionDir)vendors\DXSDK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media</TargetName>
     <EmbedManifest>false</EmbedManifest>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)vendors\DXSDK\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media</TargetName>
     <EmbedManifest>false</EmbedManifest>
+    <IncludePath>$(SolutionDir)vendors\DXSDK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media</TargetName>
     <EmbedManifest>false</EmbedManifest>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)vendors\DXSDK\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

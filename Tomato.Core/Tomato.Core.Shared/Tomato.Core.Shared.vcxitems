@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\XAudio2RAII.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebuggerAppender.h" />

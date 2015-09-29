@@ -112,6 +112,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Areas\MainMenu\Views\SingleGamePage.xaml.cs">
+      <DependentUpon>SingleGamePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Areas\MainMenu\Views\MainMenuPage.xaml.cs">
       <DependentUpon>MainMenuPage.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,7 @@
     </Compile>
     <Compile Include="Models\MenuButtonModel.cs" />
     <Compile Include="Models\MenuConfig.cs" />
+    <Compile Include="Services\IMainMenuService.cs" />
     <Compile Include="ViewModels\MenuButtonViewModel.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,10 +167,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Areas\MainMenu\Assets\SingleGameNavigation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="Areas\MainMenu\Assets\MainMenuNavigation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Areas\MainMenu\Views\SingleGamePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Areas\MainMenu\Views\MainMenuPage.xaml">
       <SubType>Designer</SubType>

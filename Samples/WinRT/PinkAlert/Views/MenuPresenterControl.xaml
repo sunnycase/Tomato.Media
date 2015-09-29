@@ -240,11 +240,11 @@
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
                                     <gamingControls:FrameAnimationImage x:Name="fa_Surface" 
-                                                                        Source="{Binding MenuButtonAnimationSource}"
                                                                         FrameSize="156,42" Margin="12,0,0,0"
                                                                         Width="156" Height="42" IsLooping="False"
                                                                         FramesCount="17" ColumnsCount="6" AutoPlay="False"
-                                                                        CurrentFrameIndex="10"
+                                                                        CurrentFrameIndex="10" FrameRate="30"
+                                                                        Source="{Binding MenuButtonAnimationSource}"
                                                                         IsPlaying="{Binding IsAnimationPlaying, Mode=TwoWay}"/>
                                     <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                       Background="Transparent" Visibility="Collapsed"/>

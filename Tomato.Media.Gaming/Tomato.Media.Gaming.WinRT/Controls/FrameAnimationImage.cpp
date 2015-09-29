@@ -61,8 +61,8 @@ DependencyProperty^ FrameAnimationImage::_isLoopingProperty = DependencyProperty
 DependencyProperty^ FrameAnimationImage::_currentFrameIndexProperty = DependencyProperty::Register(L"CurrentFrameIndex", int::typeid,
 	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int()), ref new PropertyChangedCallback(FrameAnimationImage::OnCurrentFrameIndexPropertyChanged)));
 
-DependencyProperty^ FrameAnimationImage::_frameRateProperty = DependencyProperty::Register(L"FrameRate", float::typeid,
-	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(25.f), ref new PropertyChangedCallback(FrameAnimationImage::OnFrameRatePropertyChanged)));
+DependencyProperty^ FrameAnimationImage::_frameRateProperty = DependencyProperty::Register(L"FrameRate", double::typeid,
+	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(25.0), ref new PropertyChangedCallback(FrameAnimationImage::OnFrameRatePropertyChanged)));
 
 DependencyProperty^ FrameAnimationImage::_startFrameProperty = DependencyProperty::Register(L"StartFrame", int::typeid,
 	FrameAnimationImage::typeid, ref new PropertyMetadata((Object^)(int(-1))));
@@ -153,12 +153,12 @@ void FrameAnimationImage::CurrentFrameIndex::set(int value)
 	SetValue(CurrentFrameIndexProperty, value);
 }
 
-float FrameAnimationImage::FrameRate::get()
+double FrameAnimationImage::FrameRate::get()
 {
-	return safe_cast<float>(GetValue(FrameRateProperty));
+	return safe_cast<double>(GetValue(FrameRateProperty));
 }
 
-void FrameAnimationImage::FrameRate::set(float value)
+void FrameAnimationImage::FrameRate::set(double value)
 {
 	SetValue(FrameRateProperty, value);
 }
@@ -280,7 +280,7 @@ void FrameAnimationImage::OnSourcePropertyChanged(DependencyObject ^ sender, Dep
 void FrameAnimationImage::OnFrameRatePropertyChanged(DependencyObject ^ sender, DependencyPropertyChangedEventArgs ^ e)
 {
 	if (auto image = dynamic_cast<FrameAnimationImage^>(sender))
-		image->SetFrameRate((float)e->NewValue);
+		image->SetFrameRate((double)e->NewValue);
 }
 
 void FrameAnimationImage::OnCurrentFrameIndexPropertyChanged(DependencyObject ^ sender, DependencyPropertyChangedEventArgs ^ e)
@@ -331,7 +331,7 @@ void FrameAnimationImage::OnAnimationEnded()
 	IsPlaying = false;
 }
 
-void FrameAnimationImage::SetFrameRate(float value)
+void FrameAnimationImage::SetFrameRate(double value)
 {
 	_animationTimer->Interval = TimeSpan{ static_cast<long long>(1e7 / value) };
 }

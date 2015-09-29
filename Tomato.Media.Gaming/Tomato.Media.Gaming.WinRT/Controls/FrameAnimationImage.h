@@ -124,10 +124,10 @@ namespace Controls
 			void set(int value);
 		}
 
-		property float FrameRate
+		property double FrameRate
 		{
-			float get();
-			void set(float value);
+			double get();
+			void set(double value);
 		}
 
 		property int StartFrame
@@ -166,7 +166,7 @@ namespace Controls
 		void OnAnimationTick(Platform::Object ^sender, Platform::Object ^args);
 		void OnLoaded(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e);
 		void OnAnimationEnded();
-		void SetFrameRate(float value);
+		void SetFrameRate(double value);
 		void DrawNextFrame(bool advance = true);
 
 		static void OnSourcePropertyChanged(Windows::UI::Xaml::DependencyObject^ sender, Windows::UI::Xaml::DependencyPropertyChangedEventArgs^ e);
