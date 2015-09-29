@@ -11,7 +11,18 @@
 
 DEFINE_NS_MEDIA_INTERN
 
-class XAudioSound;
+class XAudioChannel : public std::enable_shared_from_this<XAudioChannel>
+{
+public:
+	XAudioChannel(const WAVEFORMATEX* format, IXAudio2* xAudio);
+
+	// 播放完毕之前保证 data 有效
+	void Play(const byte* data, size_t size);
+	const WAVEFORMATEX& GetFormat() const noexcept { return _format; }
+private:
+	std::unique_ptr<IXAudio2SourceVoice, Core::xaudio2_voice_deleter> _sourceVoice;
+	WAVEFORMATEX _format;
+};
 
 // XAudio2 Audio Session
 class XAudioSession
@@ -19,14 +30,12 @@ class XAudioSession
 public:
 	XAudioSession();
 
-	XAudioSound* AddSound(const WAVEFORMATEX* format, std::vector<byte>&& data);
-	void PlaySound(XAudioSound* sound);
+	std::shared_ptr<XAudioChannel> AddChannel(const WAVEFORMATEX* format);
 private:
 	void InitializeDeviceResources();
 private:
 	WRL::ComPtr<IXAudio2> _xAudio;
 	std::unique_ptr<IXAudio2MasteringVoice, Core::xaudio2_voice_deleter> _masteringVoice;
-	std::vector<std::shared_ptr<XAudioSound>> _sounds;
 };
 
 END_NS_MEDIA_INTERN

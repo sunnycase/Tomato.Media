@@ -42,7 +42,9 @@ namespace PinkAlert.Views
             LoadFile();
         }
 
-        XAudioSession xaudio = new XAudioSession();
+        XAudioSession xaudio;
+        XAudioSound sound;
+        XAudioChannel channel;
         private async void LoadFile()
         {
             var stream = await (await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Audio/Sound/Yamaha-TG100-Whistle-C5.wav")))
@@ -51,10 +53,12 @@ namespace PinkAlert.Views
             {
                 var data = new byte[stream.Length];
                 reader.Read(data, 0, data.Length);
-                var sound = xaudio.AddSound(data);
-                xaudio.PlaySound(sound);
-                xaudio.PlaySound(sound);
+                xaudio = new XAudioSession();
+                sound = new XAudioSound(data);
+                channel = xaudio.AddChannel(sound.Format);
             }
+            channel.Play(sound);
+            channel.Play(sound);
         }
 
         private void MainMenuPage_Unloaded(object sender, RoutedEventArgs e)

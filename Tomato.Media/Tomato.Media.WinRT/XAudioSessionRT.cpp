@@ -13,50 +13,75 @@ using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
 using namespace Platform;
+using namespace Windows::Media::MediaProperties;
+
+XAudioChannel::XAudioChannel(std::shared_ptr<Internal::XAudioChannel>&& channel)
+	:_channel(std::move(channel))
+{
+	auto wavFormat = _channel->GetFormat();
+	_format = AudioEncodingProperties::CreatePcm(wavFormat.nSamplesPerSec, wavFormat.nChannels, wavFormat.wBitsPerSample);
+}
+
+void XAudioChannel::Play(XAudioSound ^ sound)
+{
+	_channel->Play(sound->Data, sound->DataSize);
+}
 
 XAudioSession::XAudioSession()
 {
 }
 
-XAudioSound^ XAudioSession::AddSound(const Platform::Array<byte>^ wavData)
+XAudioChannel^ XAudioSession::AddChannel(AudioEncodingProperties^ format)
+{
+	WAVEFORMATEX waveformat = { 0 };
+	waveformat.nChannels = format->ChannelCount;
+	waveformat.nSamplesPerSec = format->SampleRate;
+	waveformat.wBitsPerSample = format->BitsPerSample;
+	waveformat.wFormatTag = WAVE_FORMAT_PCM;
+	waveformat.nBlockAlign = waveformat.wBitsPerSample * waveformat.nChannels / 8;
+	waveformat.nAvgBytesPerSec = format->Bitrate / 8;
+	return ref new XAudioChannel(_audioSession.AddChannel(&waveformat));
+}
+
+XAudioSound::XAudioSound(const Platform::Array<byte>^ wavData)
+	:_wavData(wavData)
+{
+	InitializeSound();
+}
+
+void XAudioSound::InitializeSound()
 {
 	Riff::RiffReader reader;
-	reader.ProvideData(wavData->Data, wavData->Length);
+	reader.ProvideData(_wavData->Data, _wavData->Length);
 
 	Riff::RiffChunkHeader riffHeader;
 	reader.FindRiffChunk(riffHeader);
 	Riff::Chunk chunk;
 	WAVEFORMATEX* waveFormat = nullptr; WAVEFORMAT* oldWaveFormat = nullptr;
-	byte* data = nullptr; byte* dataEnd = nullptr;
 	while (reader.FindChunk(chunk))
 	{
-		if (data && (waveFormat || oldWaveFormat))break;
+		if (_data && (waveFormat || oldWaveFormat))break;
 		if (chunk.Header.Id == Riff::ChunkHeaders::Format)
 		{
-			if(chunk.Header.Size == 16)
-				oldWaveFormat = reinterpret_cast<WAVEFORMAT*>(wavData->Data + chunk.Position);
-			else if(chunk.Header.Size > 16)
-				waveFormat = reinterpret_cast<WAVEFORMATEX*>(wavData->Data + chunk.Position);
+			if (chunk.Header.Size == 16)
+				oldWaveFormat = reinterpret_cast<WAVEFORMAT*>(_wavData->Data + chunk.Position);
+			else if (chunk.Header.Size > 16)
+				waveFormat = reinterpret_cast<WAVEFORMATEX*>(_wavData->Data + chunk.Position);
 		}
 		else if (chunk.Header.Id == Riff::ChunkHeaders::Data)
 		{
-			data = wavData->Data + chunk.Position;
-			dataEnd = data + chunk.Header.Size;
+			_data = _wavData->Data + chunk.Position;
+			_dataSize = chunk.Header.Size;
 		}
 	}
-	ThrowIfNot(data && (waveFormat || oldWaveFormat), L"Invalid wave file.");
+	ThrowIfNot(_data && (waveFormat || oldWaveFormat), L"Invalid wave file.");
 	if (waveFormat)
-		return ref new XAudioSound(_audioSession.AddSound(waveFormat, { data, dataEnd }));
+		_format = AudioEncodingProperties::CreatePcm(waveFormat->nSamplesPerSec, waveFormat->nChannels, waveFormat->wBitsPerSample);
 	else
 	{
 		WAVEFORMATEX format = { 0 };
 		ThrowIfNot(memcpy_s(&format, sizeof(format), oldWaveFormat, sizeof(WAVEFORMAT)) == 0, L"Cannot copy memory.");
 		format.wBitsPerSample = format.nBlockAlign * 8 / format.nChannels;
-		return ref new XAudioSound(_audioSession.AddSound(&format, { data, dataEnd }));
+		_format = AudioEncodingProperties::CreatePcm(format.nSamplesPerSec, format.nChannels, format.wBitsPerSample);
 	}
-}
-
-void XAudioSession::PlaySound(XAudioSound ^ sound)
-{
-	_audioSession.PlaySound(sound->Sound);
 }

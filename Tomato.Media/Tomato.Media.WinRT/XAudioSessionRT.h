@@ -11,19 +11,51 @@ DEFINE_NS_MEDIA
 
 public ref class XAudioSound sealed
 {
-internal:
-	XAudioSound(Internal::XAudioSound* sound)
-		:_sound(sound)
-	{
+public:
+	XAudioSound(const Platform::Array<byte>^ wavData);
 
+	property Windows::Media::MediaProperties::AudioEncodingProperties^ Format
+	{
+		Windows::Media::MediaProperties::AudioEncodingProperties^ get() { return _format; }
+	}
+internal:
+	property const byte* Data
+	{
+		const byte* get() { return _data; }
 	}
 
-	property Internal::XAudioSound* Sound
+	property size_t DataSize
 	{
-		Internal::XAudioSound* get() { return _sound; }
+		size_t get() { return _dataSize; }
 	}
 private:
-	Internal::XAudioSound* _sound;
+	void InitializeSound();
+private:
+	const Platform::Array<byte>^ _wavData;
+	Windows::Media::MediaProperties::AudioEncodingProperties^ _format;
+	const byte* _data = nullptr;
+	size_t _dataSize = 0;
+};
+
+public ref class XAudioChannel sealed
+{
+internal:
+	XAudioChannel(std::shared_ptr<Internal::XAudioChannel>&& channel);
+
+	property const std::shared_ptr<Internal::XAudioChannel>& Channel
+	{
+		const std::shared_ptr<Internal::XAudioChannel>& get() { return _channel; }
+	}
+public:
+	property Windows::Media::MediaProperties::AudioEncodingProperties^ Format
+	{
+		Windows::Media::MediaProperties::AudioEncodingProperties^ get() { return _format; }
+	}
+
+	void Play(XAudioSound^ sound);
+private:
+	std::shared_ptr<Internal::XAudioChannel> _channel;
+	Windows::Media::MediaProperties::AudioEncodingProperties^ _format;
 };
 
 ///<summary>XAudio2 Audio Session</summary>
@@ -32,8 +64,7 @@ public ref class XAudioSession sealed
 public:
 	XAudioSession();
 
-	XAudioSound^ AddSound(const Platform::Array<byte>^ wavData);
-	void PlaySound(XAudioSound^ sound);
+	XAudioChannel^ AddChannel(Windows::Media::MediaProperties::AudioEncodingProperties^ format);
 private:
 	Internal::XAudioSession _audioSession;
 };
