@@ -53,3 +53,15 @@ namespace WRL = Microsoft::WRL;
 
 // ±¾Ä£¿é¾ä±ú
 extern HMODULE ModuleHandle;
+
+#include <string>
+#include <winstring.h>
+
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+inline std::wstring HStringToWString(HSTRING hStr)
+{
+	UINT32 length;
+	auto str = WindowsGetStringRawBuffer(hStr, &length);
+	return{ str, length };
+}
+#endif

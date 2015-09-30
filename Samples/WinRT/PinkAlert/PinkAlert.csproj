@@ -107,6 +107,7 @@
     <Content Include="Assets\Art\sdwrntmp.png" />
     <Content Include="Assets\Audio\Sound\Yamaha-TG100-Whistle-C5.wav" />
     <Content Include="Assets\Theme\drok.ogg" />
+    <Content Include="Assets\Audio\Sound\minizip.pkg" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,15 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{280afe29-44cd-4511-be00-8bef9bdd727b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="生成的文件">
+      <UniqueIdentifier>{95338867-fba2-4ec0-aad5-a997c27a72d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\minizip">
+      <UniqueIdentifier>{0e2de423-7f91-457b-9813-c55c4a4f1322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\minizip\aes">
+      <UniqueIdentifier>{de7320dd-99c9-4809-bbdd-33aef8090f63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -19,6 +28,13 @@
     <ClCompile Include="LoggerRT.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="entropy.winrt.cpp">
+      <Filter>源文件\minizip\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="PackageFileRT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -27,5 +43,21 @@
     <ClInclude Include="LoggerRT.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Tomato.Core_i.h">
+      <Filter>生成的文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PackageFileRT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tomato.Core.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <MidlRT Include="Tomato.Core.idl">
+      <Filter>源文件</Filter>
+    </MidlRT>
   </ItemGroup>
 </Project>

@@ -8,14 +8,32 @@
 #include "LoggerRT.h"
 
 using namespace NS_CORE;
-using namespace Platform;
+using namespace WRL;
+using namespace WRL::Wrappers;
 
-Logger::Logger(String^ typeName)
-	:logger(std::wstring(typeName->Begin(), typeName->End()))
+ActivatableClassWithFactory(Logger, LoggerFactory);
+
+Logger::Logger(HSTRING typeName)
+	:logger(HStringToWString(typeName))
 {
 }
 
-void Logger::Information(String ^ message)
+HRESULT Logger::Information(HSTRING message)
 {
-	logger.Information(std::wstring(message->Begin(), message->End()));
+	try
+	{
+		logger.Information(HStringToWString(message));
+	}
+	CATCH_ALL();
+	return S_OK;
+}
+
+HRESULT LoggerFactory::Create(HSTRING typeName, ABI::Tomato::Core::ILogger ** logger)
+{
+	try
+	{
+		auto myLogger = Make<Logger>(typeName);
+		return myLogger.CopyTo(logger);
+	}
+	CATCH_ALL();
 }
