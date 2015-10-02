@@ -72,9 +72,6 @@
     <ClInclude Include="VideoPresenter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="XAudioSessionRT.h">
       <Filter>头文件</Filter>
     </ClInclude>

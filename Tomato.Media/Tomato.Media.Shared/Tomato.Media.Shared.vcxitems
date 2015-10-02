@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />

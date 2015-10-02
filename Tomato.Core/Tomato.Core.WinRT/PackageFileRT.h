@@ -16,6 +16,11 @@ class PackageEntry : public WRL::RuntimeClass<ABI::NS_CORE::IPackageEntry>
 	InspectableClass(RuntimeClass_Tomato_Core_PackageEntry, BaseTrust);
 public:
 	PackageEntry(Internal::PackageEntry&& entry);
+
+	IFACEMETHODIMP get_UncompressedSize(UINT64 *value);
+
+	uint64_t GetUncompressedSize() const noexcept { return uint64_t(_entry.Info.uncompressed_size); }
+	Internal::PackageEntry& GetEntry() noexcept { return _entry; }
 private:
 	Internal::PackageEntry _entry;
 };
@@ -31,6 +36,13 @@ public:
 	IFACEMETHODIMP ExtractFile(ABI::Tomato::Core::IPackageEntry *entry, ABI::Windows::Storage::Streams::IBuffer *buffer);
 private:
 	Internal::PackageReader _reader;
+};
+
+class PackageReaderFactory : public WRL::ActivationFactory<ABI::NS_CORE::IPackageReaderFactory>
+{
+public:
+	// Í¨¹ý ActivationFactory ¼Ì³Ð
+	IFACEMETHODIMP Create(HSTRING path, ABI::Tomato::Core::IPackageReader **packageReader);
 };
 
 END_NS_CORE

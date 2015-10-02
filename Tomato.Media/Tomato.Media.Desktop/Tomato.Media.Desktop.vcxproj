@@ -244,7 +244,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MediaSource.h" />
-    <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />

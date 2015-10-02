@@ -258,7 +258,6 @@
     <ClInclude Include="IMediaPlayer.h" />
     <ClInclude Include="MediaSource.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="VideoPresenter.h" />
     <ClInclude Include="XAudioSessionRT.h" />
   </ItemGroup>

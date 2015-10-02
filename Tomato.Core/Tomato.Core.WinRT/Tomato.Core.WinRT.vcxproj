@@ -358,6 +358,7 @@
     <ClInclude Include="PackageFileRT.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="LoggerRT.h" />
+    <ClInclude Include="ResourceResolver.h" />
     <ClInclude Include="Tomato.Core_i.h" />
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +374,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="LoggerRT.cpp" />
+    <ClCompile Include="ResourceResolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tomato.Core.def" />

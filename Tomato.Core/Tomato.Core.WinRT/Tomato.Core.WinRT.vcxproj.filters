@@ -34,7 +34,12 @@
     <ClCompile Include="entropy.winrt.cpp">
       <Filter>源文件\minizip\aes</Filter>
     </ClCompile>
-    <ClCompile Include="PackageFileRT.cpp" />
+    <ClCompile Include="PackageFileRT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceResolver.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -47,6 +52,9 @@
       <Filter>生成的文件</Filter>
     </ClInclude>
     <ClInclude Include="PackageFileRT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceResolver.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
