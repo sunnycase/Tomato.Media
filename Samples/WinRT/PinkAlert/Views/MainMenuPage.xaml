@@ -52,7 +52,7 @@
                                                     IsLooping="True" AutoPlay="False" Visibility="Collapsed"/>
             </Grid>
             <!-- 菜单 -->
-            <local:MenuPresenterControl Grid.Row="1" DataContext="{Binding MenuConfig}"/>
+            <local:MenuPresenterControl x:Name="mpc_Menu" Grid.Row="1" DataContext="{Binding MenuConfig}"/>
         </Grid>
     </Grid>
 </catel:Page>

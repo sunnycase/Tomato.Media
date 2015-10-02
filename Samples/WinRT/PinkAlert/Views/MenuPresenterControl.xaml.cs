@@ -32,6 +32,11 @@ namespace PinkAlert.Views
             ViewModelChanged += MenuPresenterControl_ViewModelChanged;
         }
 
+        public void ExitMenu()
+        {
+            ViewModel?.RequestNavigation(null);
+        }
+
         private void MenuPresenterControl_ViewModelChanged(object sender, EventArgs e)
         {
             ViewModel?.OnSizeChanged(RenderSize);

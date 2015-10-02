@@ -14,5 +14,7 @@ namespace PinkAlert.Models
         public bool IsEnabled { get; set; }
 
         public string NavigationUri { get; set; }
+
+        public string NavigationSceneUri { get; set; }
     }
 }

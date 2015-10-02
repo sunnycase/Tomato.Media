@@ -1,0 +1,8 @@
+﻿{
+  "slideIn": [
+    "Assets/Audio/Sound/uslide1.wav"
+  ],
+  "slideOut": [
+    "Assets/Audio/Sound/uslide2.wav"
+  ]
+}

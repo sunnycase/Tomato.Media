@@ -19,26 +19,19 @@ namespace PinkAlert.Services
             mediaElement.AudioDeviceType = AudioDeviceType.Multimedia;
             mediaElement.IsLooping = true;
             mediaElement.AutoPlay = true;
-            mediaElement.MediaFailed += MediaElement_MediaFailed;
         }
 
-        private void MediaElement_MediaFailed(object sender, Windows.UI.Xaml.ExceptionRoutedEventArgs e)
-        {
 
-        }
-
-        bool mediaSet = false;
-        public async void Start()
+        public async void Start(Uri source)
         {
-            if (!mediaSet)
+            if (mediaElement.Source != source)
             {
-                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Theme/drok.ogg"));
+                mediaElement.Source = source;
+                var file = await StorageFile.GetFileFromApplicationUriAsync(source);
                 var stream = await file.OpenReadAsync();
                 mediaElement.SetSource(stream, stream.ContentType);
-                mediaSet = true;
             }
-            else
-                mediaElement.Play();
+            mediaElement.Play();
         }
     }
 }

@@ -28,10 +28,12 @@ namespace PinkAlert.ViewModels
 
         private int _oldButtonsCount;
         private readonly MenuConfig _config;
+        private readonly ISoundService _soundService;
 
-        public MenuPresenterViewModel([NotNull] MenuConfig config)
+        public MenuPresenterViewModel([NotNull] MenuConfig config, [NotNull]ISoundService soundService)
         {
             _config = config;
+            _soundService = soundService;
             Buttons = new ObservableCollection<MenuButtonViewModel>();
             buttonsEnteringDelayTimer.Tick += ButtonsEnteringDelayTimer_Tick;
             buttonsLeavingDelayTimer.Tick += ButtonsLeavingDelayTimer_Tick;
@@ -90,6 +92,7 @@ namespace PinkAlert.ViewModels
 
         private IEnumerable EnteringButtons()
         {
+            _soundService.PlaySound(SoundConstants.SlideIn);
             foreach (var button in Buttons)
             {
                 button.GoToEnteringState();
@@ -126,6 +129,7 @@ namespace PinkAlert.ViewModels
 
         private IEnumerable LeavingButtons()
         {
+            _soundService.PlaySound(SoundConstants.SlideOut);
             foreach (var button in Buttons)
             {
                 button.GoToLeavingState();
@@ -152,7 +156,7 @@ namespace PinkAlert.ViewModels
         private void DoNavigation()
         {
             var service = this.GetDependencyResolver().Resolve<IMainMenuService>();
-            service.Navigate(_requestedNavigation);
+            service.NavigateToMenu(_requestedNavigation);
         }
     }
 }

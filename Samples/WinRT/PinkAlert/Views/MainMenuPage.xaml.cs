@@ -39,26 +39,6 @@ namespace PinkAlert.Views
             this.GetServiceLocator().RegisterInstance<IMainMenuViewService>(this);
             Loaded += MainMenuPage_Loaded;
             Unloaded += MainMenuPage_Unloaded;
-            LoadFile();
-        }
-
-        XAudioSession xaudio;
-        XAudioSound sound;
-        XAudioChannel channel;
-        private async void LoadFile()
-        {
-            var stream = await (await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Audio/Sound/Yamaha-TG100-Whistle-C5.wav")))
-                .OpenStreamForReadAsync();
-            using (var reader = new BinaryReader(stream))
-            {
-                var data = new byte[stream.Length];
-                reader.Read(data, 0, data.Length);
-                xaudio = new XAudioSession();
-                sound = new XAudioSound(data);
-                channel = xaudio.AddChannel(sound.Format);
-            }
-            channel.Play(sound);
-            channel.Play(sound);
         }
 
         private void MainMenuPage_Unloaded(object sender, RoutedEventArgs e)
@@ -69,7 +49,7 @@ namespace PinkAlert.Views
         private void MainMenuPage_Loaded(object sender, RoutedEventArgs e)
         {
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
-            themeService.Start();
+            themeService.Start(new Uri("ms-appx:///Assets/Theme/drok.ogg"));
         }
 
         private void fa_AlterMeter_AnimationEnded(object sender, RoutedEventArgs e)
@@ -84,9 +64,19 @@ namespace PinkAlert.Views
             fa_AlterMeterPointer.Play();
         }
 
-        public void Navigate(Type navigateType)
+        public void NavigateContent(Type navigateType)
         {
             fr_Content.Navigate(navigateType);
+        }
+
+        public void ExitMenu()
+        {
+            mpc_Menu.ExitMenu();
+        }
+
+        public void NavigateScene(Type navigateType)
+        {
+            Frame.Navigate(navigateType);
         }
     }
 }

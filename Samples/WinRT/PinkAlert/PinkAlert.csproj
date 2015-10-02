@@ -96,6 +96,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Art\Campaign\ls800a01.png" />
+    <Content Include="Assets\Art\Campaign\spldbr.png" />
+    <Content Include="Assets\Art\Campaign\ttlbr.png" />
+    <Content Include="Assets\Art\fsalg.png" />
+    <Content Include="Assets\Art\fsbkgdlg.png" />
     <Content Include="Assets\Art\lwscrnl.png" />
     <Content Include="Assets\Art\mnscrnl.png" />
     <Content Include="Assets\Art\ra2ts_l.ogv" />
@@ -105,14 +110,30 @@
     <Content Include="Assets\Art\sdtp.png" />
     <Content Include="Assets\Art\sdwrnanm.png" />
     <Content Include="Assets\Art\sdwrntmp.png" />
+    <Content Include="Assets\Art\spldbrl.png" />
+    <Content Include="Assets\Audio\Sound\uslide1.wav" />
+    <Content Include="Assets\Audio\Sound\uslide2.wav" />
     <Content Include="Assets\Audio\Sound\Yamaha-TG100-Whistle-C5.wav" />
     <Content Include="Assets\Theme\drok.ogg" />
     <Content Include="Assets\Audio\Sound\minizip.pkg" />
+    <Content Include="Assets\Config\sounds.json" />
+    <Content Include="Assets\Theme\bully.ogg" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Campaign\ViewModels\LoadCampaignViewModel.cs" />
+    <Compile Include="Areas\Campaign\Views\LoadCampaignPage.xaml.cs">
+      <DependentUpon>LoadCampaignPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Game\BattleControlPage.xaml.cs">
+      <DependentUpon>BattleControlPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\MainMenu\ViewModels\NewCampaignViewModel.cs" />
+    <Compile Include="Areas\MainMenu\Views\NewCampaignPage.xaml.cs">
+      <DependentUpon>NewCampaignPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Areas\MainMenu\Views\SingleGamePage.xaml.cs">
       <DependentUpon>SingleGamePage.xaml</DependentUpon>
@@ -127,7 +148,12 @@
     </Compile>
     <Compile Include="Models\MenuButtonModel.cs" />
     <Compile Include="Models\MenuConfig.cs" />
+    <Compile Include="Models\SceneNavigationModel.cs" />
+    <Compile Include="Services\ILoadCampaignViewService.cs" />
     <Compile Include="Services\IMainMenuService.cs" />
+    <Compile Include="Services\ISoundService.cs" />
+    <Compile Include="Services\SoundService.cs" />
+    <Compile Include="SoundConstants.cs" />
     <Compile Include="ViewModels\MenuButtonViewModel.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -169,6 +195,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Areas\Campaign\Views\LoadCampaignPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Areas\Game\BattleControlPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Areas\MainMenu\Assets\LoadCampaignAtNewCampaignNavigation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Areas\MainMenu\Assets\NewCampaignNavigation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="Areas\MainMenu\Assets\SingleGameNavigation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -178,6 +222,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Areas\MainMenu\Views\NewCampaignPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Areas\MainMenu\Views\SingleGamePage.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -12,6 +12,8 @@ static class ModuleInitializer
 
     private static void RegisterServices()
     {
-        IoCConfiguration.DefaultServiceLocator.RegisterType<IThemeService, ThemeService>();
+        var serviceLocator = IoCConfiguration.DefaultServiceLocator;
+        serviceLocator.RegisterType<IThemeService, ThemeService>();
+        serviceLocator.RegisterType<ISoundService, SoundService>();
     }
 }

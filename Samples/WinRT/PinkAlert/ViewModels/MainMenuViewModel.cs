@@ -55,14 +55,21 @@ namespace PinkAlert.ViewModels
 
         private void OnNavigateToMenu(Uri uri)
         {
-            var navigation = new MenuNavigationModel();
-            App.LoadComponent(navigation, uri);
+            if (uri == null)
+            {
+                OnNavigateScene();
+            }
+            else
+            {
+                var navigation = new MenuNavigationModel();
+                App.LoadComponent(navigation, uri);
 
-            _mainMenuService.Navigate(navigation.ViewType);
-            MenuConfig = navigation.MenuConfig;
+                _mainMenuService.NavigateContent(navigation.ViewType);
+                MenuConfig = navigation.MenuConfig;
+            }
         }
 
-        public void Navigate(Uri uri)
+        public void NavigateToMenu(Uri uri)
         {
             OnNavigateToMenu(uri);
         }
@@ -71,6 +78,20 @@ namespace PinkAlert.ViewModels
         {
             this.GetServiceLocator().RemoveType<IMainMenuService>();
             return base.OnClosingAsync();
+        }
+
+        private Uri _requestedSceneNavigation;
+        public void NavigateScene(Uri uri)
+        {
+            _requestedSceneNavigation = uri;
+            _mainMenuService.ExitMenu();
+        }
+
+        private void OnNavigateScene()
+        {
+            var navigation = new SceneNavigationModel();
+            App.LoadComponent(navigation, _requestedSceneNavigation);
+            _mainMenuService.NavigateScene(navigation.ViewType);
         }
     }
 }

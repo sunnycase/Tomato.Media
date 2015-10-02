@@ -10,6 +10,8 @@ namespace PinkAlert.Services
     {
         void PlayAlterMeterPointerAnimation();
 
-        void Navigate(Type navigateType);
+        void NavigateContent(Type navigateType);
+        void ExitMenu();
+        void NavigateScene(Type navigateType);
     }
 }

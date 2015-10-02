@@ -8,6 +8,6 @@ namespace PinkAlert.Services
 {
     interface IThemeService
     {
-        void Start();
+        void Start(Uri source);
     }
 }

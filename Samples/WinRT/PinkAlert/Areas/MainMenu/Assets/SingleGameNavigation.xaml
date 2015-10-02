@@ -7,7 +7,7 @@
     <models:MenuNavigationModel.MenuConfig>
         <models:MenuConfig>
             <models:MenuConfig.TopButtons>
-                <models:MenuButtonModel IsEnabled="False" Text="战役"/>
+                <models:MenuButtonModel IsEnabled="True" Text="新战役" NavigationUri="ms-appx:///Areas/MainMenu/Assets/NewCampaignNavigation.xaml"/>
                 <models:MenuButtonModel IsEnabled="False" Text="遭遇战"/>
             </models:MenuConfig.TopButtons>
             <models:MenuConfig.BottomButtons>

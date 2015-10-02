@@ -8,6 +8,7 @@ namespace PinkAlert.Services
 {
     interface IMainMenuService
     {
-        void Navigate(Uri uri);
+        void NavigateToMenu(Uri uri);
+        void NavigateScene(Uri uri);
     }
 }
