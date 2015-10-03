@@ -114,10 +114,13 @@
     <Content Include="Assets\Audio\Sound\uslide1.wav" />
     <Content Include="Assets\Audio\Sound\uslide2.wav" />
     <Content Include="Assets\Audio\Sound\Yamaha-TG100-Whistle-C5.wav" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Theme\drok.ogg" />
     <Content Include="Assets\Audio\Sound\minizip.pkg" />
     <Content Include="Assets\Config\sounds.json" />
     <Content Include="Assets\Theme\bully.ogg" />
+    <Content Include="Assets\Map\isometric_grass_and_water.json" />
+    <Content Include="Assets\Map\isometric_grass_and_water0.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -182,7 +185,6 @@
     <Content Include="Assets\Art\Splash.png" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />

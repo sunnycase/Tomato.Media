@@ -6,3 +6,4 @@
 #include <windows.ui.xaml.media.dxinterop.h>
 #include <DirectXMath.h>
 #include <sstream>
+#include <rapidjson/document.h>

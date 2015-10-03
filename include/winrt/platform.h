@@ -30,6 +30,11 @@ void ThrowIfNot(T value, const wchar_t* message)
 	if (!value) ThrowIfFailed(E_FAIL, message);
 }
 
+inline void __declspec(noreturn) ThrowAlways(const wchar_t* message)
+{
+	ThrowIfFailed(E_FAIL, message);
+}
+
 template<typename T>
 inline Windows::Foundation::TimeSpan MSToTimeSpan(T ms)
 {

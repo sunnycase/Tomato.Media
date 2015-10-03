@@ -31,6 +31,9 @@
     <ClCompile Include="Controls\FrameAnimationImage.cpp">
       <Filter>源文件\Controls</Filter>
     </ClCompile>
+    <ClCompile Include="TiledMapReaderRT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -41,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="Controls\FrameAnimationImage.h">
       <Filter>头文件\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledMapReaderRT.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

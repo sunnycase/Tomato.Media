@@ -103,31 +103,37 @@
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <GenerateManifest>false</GenerateManifest>
     <OutDir>$(SolutionDir)bin\WinRT\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -253,6 +259,7 @@
     <ClInclude Include="Controls\FrameAnimationImage.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="TiledMapReaderRT.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controls\FrameAnimationImage.cpp" />
@@ -265,6 +272,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TiledMapReaderRT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tomato.Core\Tomato.Core.WinRT\Tomato.Core.WinRT.vcxproj">

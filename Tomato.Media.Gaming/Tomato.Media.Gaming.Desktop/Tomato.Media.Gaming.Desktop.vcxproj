@@ -74,21 +74,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\Desktop\$(Configuration)\$(Platform)\</OutDir>
     <TargetName>Tomato.Media.Gaming</TargetName>
+    <IncludePath>$(SolutionDir)vendors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

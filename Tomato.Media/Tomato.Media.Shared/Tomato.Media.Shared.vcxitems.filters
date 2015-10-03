@@ -99,6 +99,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -150,6 +153,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)XAudioSession.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

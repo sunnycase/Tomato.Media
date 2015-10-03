@@ -22,6 +22,12 @@
 #define TOMATO_CORE_API __declspec(dllimport)
 #endif
 
+#ifdef TOMATO_MEDIA_EXPORTS
+#define TOMATO_MEDIA_API __declspec(dllexport)
+#else
+#define TOMATO_MEDIA_API __declspec(dllimport)
+#endif
+
 #ifdef __cplusplus_winrt
 #include "winrt/platform.h"
 #else

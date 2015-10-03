@@ -18,6 +18,9 @@ using Windows.UI.Xaml.Media.Animation;
 using PinkAlert.ViewModels;
 using Tomato.Media;
 using Windows.Storage;
+using Tomato.Media.Gaming;
+using Windows.Storage.Streams;
+using System.Threading.Tasks;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -50,6 +53,29 @@ namespace PinkAlert.Views
         {
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
             themeService.Start(new Uri("ms-appx:///Assets/Theme/drok.ogg"));
+            Test();
+        }
+
+        public sealed class ResourceResolver : ITiledMapResourceResolver
+        {
+            public IAsyncOperation<IRandomAccessStream> OnResolveTileSet(string name)
+            {
+                return OnResolveTileSetIntern(name).AsAsyncOperation();
+            }
+
+            private async Task<IRandomAccessStream> OnResolveTileSetIntern(string name)
+            {
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Map/" + name));
+                return await file.OpenReadAsync();
+            }
+        }
+
+        private async void Test()
+        {
+            var reader = new TiledMapReader(new ResourceResolver());
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Map/isometric_grass_and_water.json"));
+            var stream = await file.OpenReadAsync();
+            await reader.Parse(stream);
         }
 
         private void fa_AlterMeter_AnimationEnded(object sender, RoutedEventArgs e)

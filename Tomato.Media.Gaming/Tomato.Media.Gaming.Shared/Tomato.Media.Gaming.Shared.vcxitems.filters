@@ -21,9 +21,30 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DeviceManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMapReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TileSetReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMapHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)DeviceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TiledMapReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TiledMapHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TileSetReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

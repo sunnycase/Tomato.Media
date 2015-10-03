@@ -17,8 +17,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DeviceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMapHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TiledMapReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TileSetReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)DeviceManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TiledMapHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TiledMapReader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TileSetReader.cpp" />
   </ItemGroup>
 </Project>

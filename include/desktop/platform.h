@@ -45,6 +45,11 @@ void ThrowIfNot(T value, const wchar_t* message)
 		ThrowIfFailed(E_FAIL, message);
 }
 
+inline void __declspec(noreturn) ThrowAlways(const wchar_t* message)
+{
+	ThrowIfFailed(E_FAIL, message);
+}
+
 #define CATCH_ALL() catch(tomato_error& ex){ return ex.hr;}catch(_com_error& ex){return ex.Error();}catch(...){return E_FAIL;}
 #define CATCH_ALL_WITHHR(hr) catch(tomato_error& ex){ hr = ex.hr; }catch(_com_error& ex){ hr = ex.Error(); }catch(...){ hr = E_FAIL; }
 #define CATCH_ALL_WITHEVENT(event) catch(tomato_error& ex){ event.set_exception(ex); }catch(_com_error& ex){event.set_exception(ex);}catch(...){event.set_exception(E_FAIL);}

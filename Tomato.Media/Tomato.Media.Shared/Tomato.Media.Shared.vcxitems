@@ -15,6 +15,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
