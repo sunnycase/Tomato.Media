@@ -7,9 +7,10 @@
 #pragma once
 #include "common.h"
 #include <d3d11.h>
-#include <dxgi.h>
+#include <dxgi1_2.h>
 #include <windows.ui.xaml.media.dxinterop.h>
 #include <DirectXMath.h>
+#include "../../include/TextureLoader.h"
 
 DEFINE_NS_MEDIA_GAMING
 
@@ -20,6 +21,8 @@ public:
 #if (NTDDI_VERSION >= NTDDI_WIN8)
 	DeviceManager(ISwapChainPanelNative* swapChainPanel, uint32_t width, uint32_t height);
 #endif
+
+	TextureLoader& GetTextureLoader() const;
 private:
 	void CreateDeviceResources();
 	void CreateCompositionSwapChain(uint32_t width, uint32_t height);
@@ -35,6 +38,8 @@ private:
 	WRL::ComPtr<IDXGIFactory2> dxgiFactory;
 	WRL::ComPtr<IDXGISwapChain1> dxgiSwapChain;
 	D3D_FEATURE_LEVEL featureLevel;
+
+	std::unique_ptr<TextureLoader> _textureLoader;
 };
 
 END_NS_MEDIA_GAMING

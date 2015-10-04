@@ -1,0 +1,79 @@
+﻿<catel:Window x:Class="Tomato.TileSetEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tomato.TileSetEditor"
+        xmlns:catel="http://catel.codeplex.com"
+        xmlns:viewModels="clr-namespace:Tomato.TileSetEditor.ViewModels"
+        mc:Ignorable="d"
+        Title="TileSet Editor" Height="357" Width="685" WindowStartupLocation="CenterScreen">
+    <catel:Window.Resources>
+        <catel:ReferenceToHidingVisibilityConverter x:Key="ReferenceToHidingVisibilityConverter"/>
+    </catel:Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="文件(_F)">
+                <MenuItem Command="{x:Static ApplicationCommands.New}"/>
+                <MenuItem Command="{x:Static ApplicationCommands.Open}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">请新建或打开一个 TileSet</TextBlock>
+        </Grid>
+        <Grid Background="White" Grid.Row="1" Visibility="{Binding TileSet, Converter={StaticResource ReferenceToHidingVisibilityConverter}, Mode=OneWay}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock>Image</TextBlock>
+                <TextBox Grid.Column="1" Text="{Binding TileSet.TileSet.Image, Mode=TwoWay}"/>
+                <Button Grid.Column="2" Command="{Binding BrowseImageCommand}">浏览</Button>
+                <TextBlock Grid.Row="1">ExtraImage</TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="1"/>
+                <Button Grid.Row="1" Grid.Column="2">浏览</Button>
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Padding" Value="10,2"/>
+                        <Setter Property="Margin" Value="5,2"/>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Margin" Value="5,2"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
+            </Grid>
+            <Grid Grid.Row="1" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <GridSplitter Width="5" HorizontalAlignment="Right"/>
+                <ListView Margin="0,0,5,0">
+
+                </ListView>
+            </Grid>
+        </Grid>
+    </Grid>
+    <catel:Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.Open}"
+                        CanExecute="Application_OpenCommand_CanExecute"
+                        Executed="Application_OpenCommand_Executed"/>
+    </catel:Window.CommandBindings>
+</catel:Window>

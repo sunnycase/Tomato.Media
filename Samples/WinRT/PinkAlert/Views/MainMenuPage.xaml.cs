@@ -36,6 +36,9 @@ namespace PinkAlert.Views
             get { return base.ViewModel as MainMenuViewModel; }
         }
 
+        private SwapChainPanel _swapPanel = new SwapChainPanel();
+        private Game _game = new Game();
+
         public MainMenuPage()
         {
             this.InitializeComponent();
@@ -53,11 +56,17 @@ namespace PinkAlert.Views
         {
             var themeService = this.GetServiceLocator().ResolveType<IThemeService>();
             themeService.Start(new Uri("ms-appx:///Assets/Theme/drok.ogg"));
+            _game.SetPresenter(_swapPanel, 800, 600);
             Test();
         }
 
         public sealed class ResourceResolver : ITiledMapResourceResolver
         {
+            public IAsyncOperation<IRandomAccessStream> OnResolveImage(string name)
+            {
+                return OnResolveImageIntern(name).AsAsyncOperation();
+            }
+
             public IAsyncOperation<IRandomAccessStream> OnResolveTileSet(string name)
             {
                 return OnResolveTileSetIntern(name).AsAsyncOperation();
@@ -68,11 +77,17 @@ namespace PinkAlert.Views
                 var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Map/" + name));
                 return await file.OpenReadAsync();
             }
+
+            private async Task<IRandomAccessStream> OnResolveImageIntern(string name)
+            {
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Map/" + name));
+                return await file.OpenReadAsync();
+            }
         }
 
         private async void Test()
         {
-            var reader = new TiledMapReader(new ResourceResolver());
+            var reader = new TiledMapReader(_game, new ResourceResolver());
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Map/isometric_grass_and_water.json"));
             var stream = await file.OpenReadAsync();
             await reader.Parse(stream);

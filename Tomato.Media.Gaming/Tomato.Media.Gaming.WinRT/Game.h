@@ -18,8 +18,13 @@ public:
 	Game();
 
 	void SetPresenter(Windows::UI::Xaml::Controls::SwapChainPanel^ swapChainPanel, uint32 width, uint32 height);
+internal:
+	property DeviceManager& DeviceManager
+	{
+		Gaming::DeviceManager& get() { return *deviceManager; }
+	}
 private:
-	std::unique_ptr<DeviceManager> deviceManager;
+	std::unique_ptr<Gaming::DeviceManager> deviceManager;
 };
 
 END_NS_MEDIA_GAMING

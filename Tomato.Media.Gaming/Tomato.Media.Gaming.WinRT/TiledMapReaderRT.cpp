@@ -28,12 +28,25 @@ namespace
 			return std::wstring(str->Begin(), str->End());
 		});
 	}
+	task<std::vector<byte>> ReadAllBytes(IRandomAccessStream^ stream)
+	{
+		auto buffer = ref new Buffer(stream->Size);
+		return create_task(stream->ReadAsync(buffer, stream->Size, InputStreamOptions::None))
+			.then([](IBuffer^ buffer)
+		{
+			auto dataReader = DataReader::FromBuffer(buffer);
+			std::vector<byte> bytes;
+			bytes.resize(buffer->Length);
+			dataReader->ReadBytes(ArrayReference<byte>(bytes.data(), bytes.size()));
+			return std::move(bytes);
+		});
+	}
 
 	class TiledMapReaderHandler : public Internal::TiledMap::TiledMapReaderHandler
 	{
 	public:
-		TiledMapReaderHandler(ITiledMapResourceResolver^ resourceResolver)
-			:_resourceResolver(resourceResolver)
+		TiledMapReaderHandler(Game^ game, ITiledMapResourceResolver^ resourceResolver)
+			:_game(game), _resourceResolver(resourceResolver)
 		{
 
 		}
@@ -47,14 +60,29 @@ namespace
 				return ReadAllText(stream);
 			});
 		}
+
+		virtual concurrency::task<std::vector<byte>> OnReadImage(const std::wstring & name) const override
+		{
+			return create_task(_resourceResolver->OnResolveImage(ref new String(name.c_str(), name.length())))
+				.then([](IRandomAccessStream^ stream)
+			{
+				return ReadAllBytes(stream);
+			});
+		}
+
+		virtual TextureLoader & OnGetTextureLoader() const override
+		{
+			return _game->DeviceManager.GetTextureLoader();
+		}
 	private:
 		ITiledMapResourceResolver^ _resourceResolver;
+		Game^ _game;
 	};
 }
 
-TiledMapReader::TiledMapReader(ITiledMapResourceResolver^ resourceResolver)
+TiledMapReader::TiledMapReader(Game^ game, ITiledMapResourceResolver^ resourceResolver)
 	:_mapReader(std::make_shared<Internal::TiledMap::TiledMapReader>(
-		std::make_shared<TiledMapReaderHandler>(resourceResolver)))
+		std::make_shared<TiledMapReaderHandler>(game, resourceResolver)))
 {
 
 }

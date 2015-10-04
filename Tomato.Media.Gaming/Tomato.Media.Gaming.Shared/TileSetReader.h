@@ -8,10 +8,38 @@
 #include "common.h"
 #include "tiledmap.h"
 #include <rapidjson/document.h>
+#include "../../include/TextureLoader.h"
+#include <bitset>
+#include <d2d1.h>
 
 DEFINE_NS_MEDIA_GAMING_INTERN
 namespace TiledMap
 {
+	class Tile
+	{
+	public:
+		Tile();
+		void Reset();
+
+		enum TerrainCorner : size_t
+		{
+			TopLeft = 0,
+			TopRight = 1,
+			BottomLeft = 2,
+			BottomRight = 3
+		};
+
+		size_t Id;
+		std::bitset<4> Terrain;
+		std::unordered_map<std::wstring, std::wstring> Properties;
+	};
+
+	struct Terrain
+	{
+		std::wstring Name;
+		size_t Tile;
+	};
+
 	// Tile Í¼¿é
 	class TileSet
 	{
@@ -28,6 +56,14 @@ namespace TiledMap
 		size_t Margin;
 		size_t TileCount;
 		std::wstring ImageSource;
+		ShaderResource Image;
+		std::wstring ExtraImageSource;
+		ShaderResource ExtraImage;
+		size_t ImageWidth;
+		size_t ImageHeight;
+		std::unordered_map<size_t, Tile> Tiles;
+		std::vector<Terrain> Terrains;
+		D2D_POINT_2L TileOffset;
 
 		bool _Loaded;
 	};
@@ -44,6 +80,10 @@ namespace TiledMap
 		concurrency::task<TileSet> InitializeTileSet();
 	private:
 		void ParseTileSet(const rapidjson::GenericValue<rapidjson::UTF16<>>& value);
+		concurrency::task<void> InitializeImage();
+		void ParseTiles(const rapidjson::GenericValue<rapidjson::UTF16<>>& value);
+		void ParseTerrains(const rapidjson::GenericValue<rapidjson::UTF16<>>& value);
+		void ParseTileOffset(const rapidjson::GenericValue<rapidjson::UTF16<>>& value);
 	private:
 		std::shared_ptr<TiledMapReaderHandler> _handler;
 		TileSet _tileSet;

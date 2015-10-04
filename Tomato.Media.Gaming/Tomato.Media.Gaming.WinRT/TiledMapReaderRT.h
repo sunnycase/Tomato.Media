@@ -7,18 +7,21 @@
 #pragma once
 #include "common.h"
 #include "TiledMapReader.h"
+#include "Game.h"
 
 DEFINE_NS_MEDIA_GAMING
 
 public interface class ITiledMapResourceResolver
 {
 	Windows::Foundation::IAsyncOperation<Windows::Storage::Streams::IRandomAccessStream^>^ OnResolveTileSet(Platform::String^ name);
+	Windows::Foundation::IAsyncOperation<Windows::Storage::Streams::IRandomAccessStream^>^ OnResolveImage(Platform::String^ name);
 };
 
+[Windows::Foundation::Metadata::WebHostHiddenAttribute]
 public ref class TiledMapReader sealed
 {
 public:
-	TiledMapReader(ITiledMapResourceResolver^ resourceResolver);
+	TiledMapReader(Game^ game, ITiledMapResourceResolver^ resourceResolver);
 
 	Windows::Foundation::IAsyncAction^ Parse(Windows::Storage::Streams::IRandomAccessStream^ mapStream);
 private:

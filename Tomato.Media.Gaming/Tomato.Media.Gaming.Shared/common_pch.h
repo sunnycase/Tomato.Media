@@ -7,3 +7,5 @@
 #include <DirectXMath.h>
 #include <sstream>
 #include <rapidjson/document.h>
+#include <bitset>
+#include <d2d1.h>

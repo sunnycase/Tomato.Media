@@ -24,3 +24,10 @@ void TiledMap::ParseProperties(const GenericValue<UTF16<>>& value, std::unordere
 			properties.emplace(AsString(value[L"name"]), AsString(value[L"value"]));
 	}
 }
+
+void TiledMap::ParsePropertiesMember(const GenericValue<UTF16<>>& value, std::unordered_map<std::wstring, std::wstring>& properties)
+{
+	auto propertiesIt = value.FindMember(L"properties");
+	if (propertiesIt != value.MemberEnd())
+		ParseProperties(propertiesIt->value, properties);
+}

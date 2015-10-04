@@ -28,6 +28,13 @@ namespace TiledMap
 		LeftUp
 	};
 
+	struct Layer
+	{
+		std::wstring Name;
+		double Opacity;
+		bool Visible;
+	};
+
 	class TiledMap
 	{
 	public:
@@ -43,6 +50,7 @@ namespace TiledMap
 		size_t TileHeight;
 		std::unordered_map<std::wstring, std::wstring> Properties;
 		std::vector<TileSet> Tilesets;
+		std::vector<Layer> Layers;
 	};
 
 	// Tiled µØÍ¼¶ÁÈ¡Æ÷
@@ -56,6 +64,7 @@ namespace TiledMap
 		concurrency::task<void> InitializeTiledMap();
 		void ParseMap(const std::wstring& source);
 		void ParseTilesets(const rapidjson::GenericValue<rapidjson::UTF16<>>& tilesets);
+		void ParseLayers(const rapidjson::GenericValue<rapidjson::UTF16<>>& value);
 	private:
 		std::vector<std::shared_ptr<TileSetReader>> _tileSetReaders;
 		std::shared_ptr<TiledMapReaderHandler> _handler;

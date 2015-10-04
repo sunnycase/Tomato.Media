@@ -19,5 +19,6 @@ namespace TiledMap
 	}
 
 	void ParseProperties(const rapidjson::GenericValue<rapidjson::UTF16<>>& value, std::unordered_map<std::wstring, std::wstring>& properties);
+	void ParsePropertiesMember(const rapidjson::GenericValue<rapidjson::UTF16<>>& value, std::unordered_map<std::wstring, std::wstring>& properties);
 }
 END_NS_MEDIA_GAMING_INTERN

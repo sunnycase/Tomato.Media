@@ -21,6 +21,13 @@ DeviceManager::DeviceManager(ISwapChainPanelNative* swapChainPanel, uint32_t wid
 }
 #endif
 
+TextureLoader & DeviceManager::GetTextureLoader() const
+{
+	if (!_textureLoader)
+		ThrowIfFailed(E_NOT_VALID_STATE);
+	return *_textureLoader;
+}
+
 void DeviceManager::CreateDeviceResources()
 {
 	// 创建 D3D 设备
@@ -49,6 +56,8 @@ void DeviceManager::CreateDeviceResources()
 	LoggingDeviceInfo();
 
 	ThrowIfFailed(dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory)));
+	// 创建其他资源
+	_textureLoader = std::make_unique<TextureLoader>(d3dDevice.Get());
 }
 
 #if (NTDDI_VERSION >= NTDDI_WIN8)

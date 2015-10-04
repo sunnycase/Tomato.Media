@@ -25,5 +25,5 @@ void Game::SetPresenter(SwapChainPanel ^ swapChainPanel, uint32 width, uint32 he
 	ComPtr<ISwapChainPanelNative> swapChainPanelNative;
 	ThrowIfFailed(swapChainPanelUnk->QueryInterface(swapChainPanelNative.GetAddressOf()));
 	// 创建设备
-	deviceManager = std::make_unique<DeviceManager>(swapChainPanelNative.Get(), width, height);
+	deviceManager = std::make_unique<Gaming::DeviceManager>(swapChainPanelNative.Get(), width, height);
 }

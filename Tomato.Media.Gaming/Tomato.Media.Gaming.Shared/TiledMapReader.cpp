@@ -88,29 +88,47 @@ void TiledMapReader::ParseMap(const std::wstring & source)
 	_tileMap.Height = document[L"height"].GetUint();
 	_tileMap.TileWidth = document[L"tilewidth"].GetUint();
 	_tileMap.TileHeight = document[L"tileheight"].GetUint();
-	auto properties = document.FindMember(L"properties");
-	if (properties != document.MemberEnd())
-		ParseProperties(properties->value, _tileMap.Properties);
-	auto tilesets = document.FindMember(L"tilesets");
-	if (tilesets == document.MemberEnd())
-		ThrowAlways(L"Tilesets not found.");
-	else
+	ParsePropertiesMember(document, _tileMap.Properties);
+	ParseTilesets(document);
+}
+
+void TiledMapReader::ParseTilesets(const rapidjson::GenericValue<rapidjson::UTF16<>>& value)
+{
+	auto tilesetsIt = value.FindMember(L"tilesets");
+	if (tilesetsIt != value.MemberEnd())
 	{
-		return ParseTilesets(tilesets->value);
+		auto& tilesets = tilesetsIt->value;
+		ThrowIfNot(tilesets.IsArray(), L"Invalid tilesets.");
+		_tileSetReaders.clear();
+		_tileSetReaders.reserve(tilesets.Size());
+		for (auto it = tilesets.Begin(); it != tilesets.End();++it)
+		{
+			auto tilesetReader = std::make_shared<TileSetReader>(_handler);
+			tilesetReader->Parse(*it);
+			_tileSetReaders.emplace_back(std::move(tilesetReader));
+		}
 	}
 }
 
-void TiledMapReader::ParseTilesets(const rapidjson::GenericValue<rapidjson::UTF16<>>& tilesets)
+void TiledMapReader::ParseLayers(const rapidjson::GenericValue<rapidjson::UTF16<>>& value)
 {
-	if (!tilesets.IsArray() || tilesets.Size() == 0)
-		ThrowAlways(L"Invalid tilesets.");
-	_tileSetReaders.clear();
-	_tileSetReaders.reserve(tilesets.Size());
-	for (auto it = tilesets.Begin(); it != tilesets.End();++it)
+	auto layersIt = value.FindMember(L"layers");
+	if (layersIt != value.MemberEnd())
 	{
-		auto tilesetReader = std::make_shared<TileSetReader>(_handler);
-		tilesetReader->Parse(*it);
-		_tileSetReaders.emplace_back(std::move(tilesetReader));
+		auto& layersMember = layersIt->value;
+		ThrowIfNot(layersMember.IsArray(), L"Invalid layers.");
+		auto& layers = _tileMap.Layers;
+		layers.reserve(layersMember.MemberCount());
+		for (auto it = layersMember.Begin(); it != layersMember.End(); ++it)
+		{
+			auto& layerMember = *it;
+			ThrowIfNot(layerMember.IsObject(), L"Invalid layer.");
+			layers.emplace_back();
+			auto& layer = layers.back();
+			layer.Name = AsString(layerMember[L"name"]);
+			layer.Opacity = layerMember[L"opacity"].GetDouble();
+			layer.Visible = layerMember[L"visible"].GetBool();
+		}
 	}
 }
 

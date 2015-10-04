@@ -102,6 +102,7 @@
     <Content Include="Assets\Art\fsalg.png" />
     <Content Include="Assets\Art\fsbkgdlg.png" />
     <Content Include="Assets\Art\lwscrnl.png" />
+    <Content Include="Assets\Art\Map\fsalg.dds" />
     <Content Include="Assets\Art\mnscrnl.png" />
     <Content Include="Assets\Art\ra2ts_l.ogv" />
     <Content Include="Assets\Art\sdbtm.png" />
@@ -115,6 +116,7 @@
     <Content Include="Assets\Audio\Sound\uslide2.wav" />
     <Content Include="Assets\Audio\Sound\Yamaha-TG100-Whistle-C5.wav" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\Map\isometric_grass_and_water.png" />
     <Content Include="Assets\Theme\drok.ogg" />
     <Content Include="Assets\Audio\Sound\minizip.pkg" />
     <Content Include="Assets\Config\sounds.json" />
