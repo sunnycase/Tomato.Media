@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:Tomato.TileSetEditor"
         xmlns:catel="http://catel.codeplex.com"
         xmlns:viewModels="clr-namespace:Tomato.TileSetEditor.ViewModels"
+        xmlns:views="clr-namespace:Tomato.TileSetEditor.Views"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="TileSet Editor" Height="357" Width="685" WindowStartupLocation="CenterScreen">
     <catel:Window.Resources>
@@ -59,16 +61,120 @@
                     </Style>
                 </Grid.Resources>
             </Grid>
-            <Grid Grid.Row="1" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="200"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <GridSplitter Width="5" HorizontalAlignment="Right"/>
-                <ListView Margin="0,0,5,0">
-
-                </ListView>
-            </Grid>
+            <TabControl Grid.Row="1" Margin="5">
+                <TabItem Header="Tile">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ToolBarTray Orientation="Vertical">
+                            <ToolBar>
+                                <Button>
+                                    <fa:ImageAwesome Icon="Plus"/>
+                                </Button>
+                                <Button>
+                                    <fa:ImageAwesome Icon="Minus"/>
+                                </Button>
+                                <ToolBar.Resources>
+                                    <Style TargetType="fa:ImageAwesome">
+                                        <Setter Property="Width" Value="12"/>
+                                        <Setter Property="Height" Value="12"/>
+                                    </Style>
+                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
+                                        <Setter Property="Padding" Value="3"/>
+                                    </Style>
+                                </ToolBar.Resources>
+                            </ToolBar>
+                        </ToolBarTray>
+                        <ListView Grid.Column="1" ItemsSource="{Binding TileSet.TileSet.Tiles}">
+                            
+                        </ListView>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="PickAnyTileUnit">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <GridSplitter Width="5" HorizontalAlignment="Right"/>
+                        <Grid Margin="0,0,5,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ToolBar>
+                                <Button Command="{Binding AddTileUnitCommand}">
+                                    <fa:ImageAwesome Icon="Plus"/>
+                                </Button>
+                                <Button>
+                                    <fa:ImageAwesome Icon="Minus"/>
+                                </Button>
+                                <ToolBar.Resources>
+                                    <Style TargetType="fa:ImageAwesome">
+                                        <Setter Property="Width" Value="12"/>
+                                    </Style>
+                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
+                                        <Setter Property="Padding" Value="3"/>
+                                    </Style>
+                                </ToolBar.Resources>
+                            </ToolBar>
+                            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding TileSet.TileSet.TileUnits}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <views:TileUnitView DataContext="{Binding}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <views:NonPickAnyTileUnitEditView DataContext="{Binding SelectedItem, ElementName=pickAnyListView}"/>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="TileUnit">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <GridSplitter Width="5" HorizontalAlignment="Right"/>
+                        <Grid Margin="0,0,5,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ToolBar>
+                                <Button Command="{Binding AddTileUnitCommand}">
+                                    <fa:ImageAwesome Icon="Plus"/>
+                                </Button>
+                                <Button>
+                                    <fa:ImageAwesome Icon="Minus"/>
+                                </Button>
+                                <ToolBar.Resources>
+                                    <Style TargetType="fa:ImageAwesome">
+                                        <Setter Property="Width" Value="12"/>
+                                    </Style>
+                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
+                                        <Setter Property="Padding" Value="3"/>
+                                    </Style>
+                                </ToolBar.Resources>
+                            </ToolBar>
+                            <ListView x:Name="nonPickAnyListView" Grid.Row="1" ItemsSource="{Binding TileSet.TileSet.TileUnits}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <views:TileUnitView DataContext="{Binding}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <views:NonPickAnyTileUnitEditView DataContext="{Binding SelectedItem, ElementName=nonPickAnyListView}"/>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Grid>
     <catel:Window.CommandBindings>

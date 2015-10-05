@@ -26,6 +26,7 @@ namespace Tomato.TileSetEditor.ViewModels
         public Command NewTileSetCommand { get; }
         public Command OpenTileSetCommand { get; }
         public Command BrowseImageCommand { get; }
+        public Command AddTileUnitCommand { get; }
 
         private TileSet _tileSet;
         public TileSetContext TileSet { get; private set; }
@@ -35,11 +36,26 @@ namespace Tomato.TileSetEditor.ViewModels
             NewTileSetCommand = new Command(OnNewTileSetCommand);
             OpenTileSetCommand = new Command(OnOpenTileSetCommand);
             BrowseImageCommand = new Command(OnBrowseImageCommand);
+            AddTileUnitCommand = new Command(OnAddTileUnitCommand);
+        }
+
+        private void OnAddTileUnitCommand()
+        {
+            var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
+            uiVisualizerService.ShowDialog<AddTileUnitViewModel>(completedProc: OnAddTileUnitCompleted);
+        }
+
+        private void OnAddTileUnitCompleted(object sender, UICompletedEventArgs e)
+        {
+            if(e.Result == true)
+            {
+                _tileSet.TileUnits.Add(((AddTileUnitViewModel)e.DataContext).TileUnit);
+            }
         }
 
         private void OnBrowseImageCommand()
         {
-            throw new NotImplementedException();
+
         }
 
         private void OnOpenTileSetCommand()

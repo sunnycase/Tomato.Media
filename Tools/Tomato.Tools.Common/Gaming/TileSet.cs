@@ -6,9 +6,12 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.Data;
 using Newtonsoft.Json;
 
 namespace Tomato.Tools.Common.Gaming
@@ -41,6 +44,20 @@ namespace Tomato.Tools.Common.Gaming
         }
     }
 
+    public struct Size
+    {
+        [JsonProperty("xlength")]
+        [Range(1, int.MaxValue)]
+        public int XLength { get; set; }
+
+        [JsonProperty("zlength")]
+        [Range(1, int.MaxValue)]
+        public int ZLength { get; set; }
+
+        [JsonIgnore]
+        public int Count =>  XLength * ZLength;
+    }
+
     public class Terrain
     {
         [JsonProperty("name")]
@@ -56,12 +73,12 @@ namespace Tomato.Tools.Common.Gaming
     }
 
     [JsonConverter(typeof(TerrainCornerJsonConverter))]
-    public struct TerrainCorner
+    public class TerrainCorner
     {
-        public bool TopLeft { get; set; }
-        public bool TopRight { get; set; }
-        public bool BottomLeft { get; set; }
-        public bool BottomRight { get; set; }
+        public int TopLeft { get; set; }
+        public int TopRight { get; set; }
+        public int BottomLeft { get; set; }
+        public int BottomRight { get; set; }
 
         public override string ToString()
         {
@@ -86,10 +103,10 @@ namespace Tomato.Tools.Common.Gaming
         {
             var corner = new TerrainCorner();
             if (reader.TokenType != JsonToken.StartArray) throw new JsonReaderException();
-            corner.TopLeft = reader.ReadAsInt32() != 0;
-            corner.TopRight = reader.ReadAsInt32() != 0;
-            corner.BottomLeft = reader.ReadAsInt32() != 0;
-            corner.BottomRight = reader.ReadAsInt32() != 0;
+            corner.TopLeft = reader.ReadAsInt32() ?? 0;
+            corner.TopRight = reader.ReadAsInt32() ?? 0;
+            corner.BottomLeft = reader.ReadAsInt32() ?? 0;
+            corner.BottomRight = reader.ReadAsInt32() ?? 0;
             reader.Read();
             if (reader.TokenType != JsonToken.EndArray) throw new JsonReaderException();
             return corner;
@@ -99,16 +116,82 @@ namespace Tomato.Tools.Common.Gaming
         {
             var corner = (TerrainCorner)value;
             writer.WriteStartArray();
-            writer.WriteValue(BooleanToInt32(corner.TopLeft));
-            writer.WriteValue(BooleanToInt32(corner.TopRight));
-            writer.WriteValue(BooleanToInt32(corner.BottomLeft));
-            writer.WriteValue(BooleanToInt32(corner.BottomRight));
+            writer.WriteValue(corner.TopLeft);
+            writer.WriteValue(corner.TopRight);
+            writer.WriteValue(corner.BottomLeft);
+            writer.WriteValue(corner.BottomRight);
             writer.WriteEndArray();
         }
+    }
 
-        private static int BooleanToInt32(bool value)
+    public class TileUnitElementPosition
+    {
+        [JsonProperty("x")]
+        public int X { get; set; }
+
+        [JsonProperty("z")]
+        public int Z { get; set; }
+
+        public override string ToString()
         {
-            return value ? 1 : 0;
+            return $"{X}, {Z}";
+        }
+    }
+
+    public class TileUnitElement
+    {
+        [JsonProperty("position")]
+        public TileUnitElementPosition Position { get; set; }
+
+        [JsonProperty("tile")]
+        public int Tile { get; set; }
+
+        [JsonProperty("height")]
+        public int Height { get; set; }
+    }
+
+    public class TileUnit
+    {
+        [JsonProperty("size")]
+        public Size Size { get; set; }
+
+        [JsonProperty("tiles")]
+        public ObservableCollection<TileUnitElement> Tiles { get; set; }
+
+        [JsonProperty("category")]
+        [Required]
+        public string Category { get; set; }
+
+        public TileUnit()
+        {
+            Tiles = new ObservableCollection<TileUnitElement>();
+        }
+    }
+
+    public class PickAnyTileUnitElement
+    {
+        [JsonProperty("tile")]
+        public int Tile { get; set; }
+
+        [JsonProperty("height")]
+        public int Height { get; set; }
+    }
+
+    public class PickAnyTileUnit
+    {
+        [JsonProperty("size")]
+        public Size Size { get; set; }
+
+        [JsonProperty("tiles")]
+        public ObservableCollection<PickAnyTileUnitElement> Tiles { get; set; }
+
+        [JsonProperty("category")]
+        [Required]
+        public string Category { get; set; }
+
+        public PickAnyTileUnit()
+        {
+            Tiles = new ObservableCollection<PickAnyTileUnitElement>();
         }
     }
 
@@ -142,9 +225,23 @@ namespace Tomato.Tools.Common.Gaming
         public Offset TileOffset { get; set; }
 
         [JsonProperty("terrains")]
-        public List<Terrain> Terrains { get; set; } = new List<Terrain>();
+        public ObservableCollection<Terrain> Terrains { get; set; }
 
         [JsonProperty("tiles")]
-        public Dictionary<int, Tile> Tiles { get; set; } = new Dictionary<int, Tile>();
+        public Dictionary<int, Tile> Tiles { get; set; }
+
+        [JsonProperty("tileunits")]
+        public ObservableCollection<TileUnit> TileUnits { get; set; }
+
+        [JsonProperty("pickanytileunits")]
+        public ObservableCollection<PickAnyTileUnit> PickAnyTileUnits { get; set; }
+
+        public TileSet()
+        {
+            Terrains = new ObservableCollection<Terrain>();
+            Tiles = new Dictionary<int, Tile>();
+            TileUnits = new ObservableCollection<TileUnit>();
+            PickAnyTileUnits = new ObservableCollection<PickAnyTileUnit>();
+        }
     }
 }
