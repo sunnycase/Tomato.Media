@@ -30,24 +30,25 @@
         <Grid Background="White" Grid.Row="1" Visibility="{Binding TileSet, Converter={StaticResource ReferenceToHidingVisibilityConverter}, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Margin="5">
+            <ToolBarTray>
+                <ToolBar>
+                    
+                </ToolBar>
+            </ToolBarTray>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock>Image</TextBlock>
-                <TextBox Grid.Column="1" Text="{Binding TileSet.TileSet.Image, Mode=TwoWay}"/>
-                <Button Grid.Column="2" Command="{Binding BrowseImageCommand}">浏览</Button>
-                <TextBlock Grid.Row="1">ExtraImage</TextBlock>
-                <TextBox Grid.Row="1" Grid.Column="1"/>
-                <Button Grid.Row="1" Grid.Column="2">浏览</Button>
+                <TextBlock>名称</TextBlock>
+                <TextBox Grid.Column="1" Text="{Binding TileSet.Name, Mode=TwoWay}" Foreground="Green"/>
                 <Grid.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Padding" Value="10,2"/>
@@ -58,39 +59,13 @@
                     </Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="5,2"/>
                     </Style>
                 </Grid.Resources>
             </Grid>
-            <TabControl Grid.Row="1" Margin="5">
+            <TabControl Grid.Row="2" Margin="5">
                 <TabItem Header="Tile">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <ToolBarTray Orientation="Vertical">
-                            <ToolBar>
-                                <Button>
-                                    <fa:ImageAwesome Icon="Plus"/>
-                                </Button>
-                                <Button>
-                                    <fa:ImageAwesome Icon="Minus"/>
-                                </Button>
-                                <ToolBar.Resources>
-                                    <Style TargetType="fa:ImageAwesome">
-                                        <Setter Property="Width" Value="12"/>
-                                        <Setter Property="Height" Value="12"/>
-                                    </Style>
-                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
-                                        <Setter Property="Padding" Value="3"/>
-                                    </Style>
-                                </ToolBar.Resources>
-                            </ToolBar>
-                        </ToolBarTray>
-                        <ListView Grid.Column="1" ItemsSource="{Binding TileSet.TileSet.Tiles}">
-                            
-                        </ListView>
-                    </Grid>
+                    <views:TilesEditorView DataContext="{Binding TileSet.TilesEditor}"/>
                 </TabItem>
                 <TabItem Header="PickAnyTileUnit">
                     <Grid>
@@ -178,6 +153,9 @@
         </Grid>
     </Grid>
     <catel:Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.New}"
+                        CanExecute="Application_NewCommand_CanExecute"
+                        Executed="Application_NewCommand_Executed"/>
         <CommandBinding Command="{x:Static ApplicationCommands.Open}"
                         CanExecute="Application_OpenCommand_CanExecute"
                         Executed="Application_OpenCommand_Executed"/>

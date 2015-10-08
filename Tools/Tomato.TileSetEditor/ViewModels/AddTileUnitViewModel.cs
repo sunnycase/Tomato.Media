@@ -15,7 +15,7 @@ namespace Tomato.TileSetEditor.ViewModels
         public TileUnit TileUnit { get; private set; }
 
         [ViewModelToModel("TileUnit")]
-        public Size Size { get; set; }
+        public TileUnitSize Size { get; set; }
 
         [ViewModelToModel("TileUnit")]
         public string Category { get; set; }
@@ -26,13 +26,13 @@ namespace Tomato.TileSetEditor.ViewModels
         public int XLength
         {
             get { return Size.XLength; }
-            set { Size = new Size { XLength = value, ZLength = Size.ZLength }; }
+            set { Size = new TileUnitSize { XLength = value, ZLength = Size.ZLength }; }
         }
 
         public int ZLength
         {
             get { return Size.ZLength; }
-            set { Size = new Size { XLength = Size.XLength, ZLength = value }; }
+            set { Size = new TileUnitSize { XLength = Size.XLength, ZLength = value }; }
         }
 
         public AddTileUnitViewModel()
@@ -40,7 +40,7 @@ namespace Tomato.TileSetEditor.ViewModels
             TileUnit = new TileUnit()
             {
                 Category = "新地形",
-                Size = new Size { XLength = 1, ZLength = 1 }
+                Size = new TileUnitSize { XLength = 1, ZLength = 1 }
             };
         }
     }

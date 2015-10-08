@@ -11,57 +11,27 @@ using Tomato.Tools.Common.Gaming;
 using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Tomato.TileSetEditor.Models;
 
 namespace Tomato.TileSetEditor.ViewModels
 {
-    class TileSetContext
-    {
-        public TileSet TileSet { get; set; }
-        public ImageSource Image { get; set; }
-        public ImageSource ExtraImage { get; set; }
-    }
-
     class MainViewModel : ViewModelBase
     {
         public Command NewTileSetCommand { get; }
         public Command OpenTileSetCommand { get; }
-        public Command BrowseImageCommand { get; }
-        public Command AddTileUnitCommand { get; }
-
-        private TileSet _tileSet;
-        public TileSetContext TileSet { get; private set; }
+        
+        public TileSetModel TileSet { get; private set; }
 
         public MainViewModel()
         {
             NewTileSetCommand = new Command(OnNewTileSetCommand);
             OpenTileSetCommand = new Command(OnOpenTileSetCommand);
-            BrowseImageCommand = new Command(OnBrowseImageCommand);
-            AddTileUnitCommand = new Command(OnAddTileUnitCommand);
-        }
-
-        private void OnAddTileUnitCommand()
-        {
-            var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
-            uiVisualizerService.ShowDialog<AddTileUnitViewModel>(completedProc: OnAddTileUnitCompleted);
-        }
-
-        private void OnAddTileUnitCompleted(object sender, UICompletedEventArgs e)
-        {
-            if(e.Result == true)
-            {
-                _tileSet.TileUnits.Add(((AddTileUnitViewModel)e.DataContext).TileUnit);
-            }
-        }
-
-        private void OnBrowseImageCommand()
-        {
-
         }
 
         private void OnOpenTileSetCommand()
         {
             var openFileService = this.GetDependencyResolver().Resolve<IOpenFileService>();
-            openFileService.Filter = "TileSet (*.tts)|*.tts";
+            openFileService.Filter = Constants.TileSetFilter;
             openFileService.CheckFileExists = true;
             if (openFileService.DetermineFile())
                 LoadTileSet(openFileService.FileName);
@@ -69,28 +39,22 @@ namespace Tomato.TileSetEditor.ViewModels
 
         private void OnNewTileSetCommand()
         {
-            _tileSet = new TileSet();
-            TileSet = new TileSetContext
-            {
-                TileSet = _tileSet
-            };
+            var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
+            uiVisualizerService.ShowDialog<CreateTileSetViewModel>(completedProc: OnNewTileSetCompleted);
         }
 
-        private void LoadTileSet(string path)
+        private async void OnNewTileSetCompleted(object sender, UICompletedEventArgs e)
         {
-            var dir = Path.GetDirectoryName(path);
-            _tileSet = JsonConvert.DeserializeObject<TileSet>(File.ReadAllText(path));
-            LoadTileSetContext(dir);
+            if (e.Result == true)
+            {
+                var viewModel = (CreateTileSetViewModel)e.DataContext;
+                TileSet = await viewModel.Model.Create();
+            }
         }
 
-        private void LoadTileSetContext(string directory)
+        private async void LoadTileSet(string fileName)
         {
-            TileSet = new TileSetContext
-            {
-                TileSet = _tileSet,
-                Image = string.IsNullOrEmpty(_tileSet.Image) ?
-                    new BitmapImage(new Uri(Path.Combine(directory, _tileSet.Image))) : null
-            };
+            TileSet = await TileSetModel.Load(fileName);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Tomato.TileSetEditor.ViewModels
         [Model]
         public TileUnit TileUnit { get; private set; }
 
-        public TileSetContext TileSetContext { get; private set; }
+        //public TileSetContext TileSetContext { get; private set; }
 
         public NonPickAnyTileUnitEditViewModel(TileUnit tileUnit)
         {
@@ -26,7 +26,7 @@ namespace Tomato.TileSetEditor.ViewModels
             var mainViewModel = viewModel as MainViewModel;
             if(mainViewModel != null && propertyName == nameof(MainViewModel.TileSet))
             {
-                TileSetContext = mainViewModel.TileSet;
+                //TileSetContext = mainViewModel.TileSet;
             }
         }
 

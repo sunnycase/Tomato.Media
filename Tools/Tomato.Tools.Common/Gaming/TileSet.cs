@@ -44,7 +44,7 @@ namespace Tomato.Tools.Common.Gaming
         }
     }
 
-    public struct Size
+    public struct TileUnitSize
     {
         [JsonProperty("xlength")]
         [Range(1, int.MaxValue)]
@@ -73,7 +73,7 @@ namespace Tomato.Tools.Common.Gaming
     }
 
     [JsonConverter(typeof(TerrainCornerJsonConverter))]
-    public class TerrainCorner
+    public struct TerrainCorner
     {
         public int TopLeft { get; set; }
         public int TopRight { get; set; }
@@ -86,10 +86,37 @@ namespace Tomato.Tools.Common.Gaming
         }
     }
 
+    public struct ExtraImageRef
+    {
+        [JsonProperty("extraimage")]
+        public int ExtraImage { get; set; }
+
+        [JsonProperty("offset")]
+        public Offset Offset { get; set; }
+    }
+
     public class Tile
     {
         [JsonProperty("terrain")]
-        public TerrainCorner Terrain { get; set; }
+        public TerrainCorner? Terrain { get; set; }
+
+        [JsonProperty("extraimage")]
+        public ExtraImageRef? ExtraImage { get; set; }
+    }
+
+    public struct ExtraImage
+    {
+        [JsonProperty("x")]
+        public int X { get; set; }
+
+        [JsonProperty("y")]
+        public int Y { get; set; }
+
+        [JsonProperty("width")]
+        public int Width { get; set; }
+
+        [JsonProperty("height")]
+        public int Height { get; set; }
     }
 
     class TerrainCornerJsonConverter : JsonConverter
@@ -124,25 +151,8 @@ namespace Tomato.Tools.Common.Gaming
         }
     }
 
-    public class TileUnitElementPosition
+    public struct TileUnitElement
     {
-        [JsonProperty("x")]
-        public int X { get; set; }
-
-        [JsonProperty("z")]
-        public int Z { get; set; }
-
-        public override string ToString()
-        {
-            return $"{X}, {Z}";
-        }
-    }
-
-    public class TileUnitElement
-    {
-        [JsonProperty("position")]
-        public TileUnitElementPosition Position { get; set; }
-
         [JsonProperty("tile")]
         public int Tile { get; set; }
 
@@ -153,10 +163,10 @@ namespace Tomato.Tools.Common.Gaming
     public class TileUnit
     {
         [JsonProperty("size")]
-        public Size Size { get; set; }
+        public TileUnitSize Size { get; set; }
 
         [JsonProperty("tiles")]
-        public ObservableCollection<TileUnitElement> Tiles { get; set; }
+        public TileUnitElement?[] Tiles { get; set; } 
 
         [JsonProperty("category")]
         [Required]
@@ -164,7 +174,12 @@ namespace Tomato.Tools.Common.Gaming
 
         public TileUnit()
         {
-            Tiles = new ObservableCollection<TileUnitElement>();
+            Tiles = new TileUnitElement?[0];
+        }
+
+        public TileUnit(TileUnitSize size)
+        {
+            Tiles = new TileUnitElement?[size.Count];
         }
     }
 
@@ -180,7 +195,7 @@ namespace Tomato.Tools.Common.Gaming
     public class PickAnyTileUnit
     {
         [JsonProperty("size")]
-        public Size Size { get; set; }
+        public TileUnitSize Size { get; set; }
 
         [JsonProperty("tiles")]
         public ObservableCollection<PickAnyTileUnitElement> Tiles { get; set; }
@@ -203,32 +218,20 @@ namespace Tomato.Tools.Common.Gaming
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("image")]
-        public string Image { get; set; }
-
-        [JsonProperty("imagewidth")]
-        public int ImageWidth { get; set; }
-
-        [JsonProperty("imageheight")]
-        public int ImageHeight { get; set; }
-
         [JsonProperty("tilewidth")]
         public int TileWidth { get; set; }
 
         [JsonProperty("tileheight")]
         public int TileHeight { get; set; }
 
-        [JsonProperty("tilecount")]
-        public int TileCount { get; set; }
-        
-        [JsonProperty("tileoffset")]
-        public Offset TileOffset { get; set; }
-
         [JsonProperty("terrains")]
         public ObservableCollection<Terrain> Terrains { get; set; }
 
         [JsonProperty("tiles")]
         public Dictionary<int, Tile> Tiles { get; set; }
+
+        [JsonProperty("extraimages")]
+        public Dictionary<int, ExtraImage> ExtraImages { get; set; }
 
         [JsonProperty("tileunits")]
         public ObservableCollection<TileUnit> TileUnits { get; set; }
@@ -240,6 +243,7 @@ namespace Tomato.Tools.Common.Gaming
         {
             Terrains = new ObservableCollection<Terrain>();
             Tiles = new Dictionary<int, Tile>();
+            ExtraImages = new Dictionary<int, ExtraImage>();
             TileUnits = new ObservableCollection<TileUnit>();
             PickAnyTileUnits = new ObservableCollection<PickAnyTileUnit>();
         }
