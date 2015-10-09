@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="Tomato.TileSetEditor.Views.PickAnyTileUnitsEditorView"
+﻿<catel:UserControl x:Class="Tomato.TileSetEditor.Views.ExtraImagesEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -21,7 +21,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <ToolBar>
-                <Button Command="{Binding AddTileUnitCommand}">
+                <Button Command="{Binding AddExtraImageCommand}">
                     <fa:ImageAwesome Icon="Plus"/>
                 </Button>
                 <Button>
@@ -36,8 +36,8 @@
                     </Style>
                 </ToolBar.Resources>
             </ToolBar>
-            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding TileUnits}">
-                <ListView.ItemTemplate>
+            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding ExtraImages}">
+                <!--<ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -74,11 +74,10 @@
                             </Grid>
                         </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>
+                </ListView.ItemTemplate>-->
             </ListView>
         </Grid>
         <Grid Grid.Column="1">
-            <views:PickAnyTileUnitEditorView DataContext="{Binding SelectedItem, ElementName=pickAnyListView}"/>
         </Grid>
     </Grid>
 </catel:UserControl>

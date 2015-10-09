@@ -34,7 +34,8 @@ namespace Tomato.TileSetEditor.ViewModels
             var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
             uiVisualizerService.ShowDialog<CreateTileViewModel>(model, (s, e) =>
             {
-                Model.AddTile(model.TileImageSource, model.ExtraImage);
+                if (e.Result == true)
+                    Model.AddTile(model.TileImageSource, model.ExtraImage);
             });
         }
     }

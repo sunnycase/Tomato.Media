@@ -68,6 +68,9 @@
                 <TabItem Header="Tile">
                     <views:TilesEditorView DataContext="{Binding TileSet.TilesEditor}"/>
                 </TabItem>
+                <TabItem Header="ExtraImage">
+                    <views:ExtraImagesEditorView DataContext="{Binding TileSet.ExtraImagesEditor}"/>
+                </TabItem>
                 <TabItem Header="PickAnyTileUnit">
                     <views:PickAnyTileUnitsEditorView DataContext="{Binding TileSet.PickAnyTileUnitsEditor}"/>
                 </TabItem>

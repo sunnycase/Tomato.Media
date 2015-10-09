@@ -104,7 +104,7 @@ namespace Tomato.Tools.Common.Gaming
         public ExtraImageRef? ExtraImage { get; set; }
     }
 
-    public struct ExtraImage
+    public class ExtraImage
     {
         [JsonProperty("x")]
         public int X { get; set; }
@@ -219,7 +219,7 @@ namespace Tomato.Tools.Common.Gaming
         public List<Tile> Tiles { get; set; }
 
         [JsonProperty("extraimages")]
-        public Dictionary<int, ExtraImage> ExtraImages { get; set; }
+        public List<ExtraImage> ExtraImages { get; set; }
 
         [JsonProperty("tileunits")]
         public ObservableCollection<TileUnit> TileUnits { get; set; }
@@ -231,7 +231,7 @@ namespace Tomato.Tools.Common.Gaming
         {
             Terrains = new ObservableCollection<Terrain>();
             Tiles = new List<Tile>();
-            ExtraImages = new Dictionary<int, ExtraImage>();
+            ExtraImages = new List<ExtraImage>();
             TileUnits = new ObservableCollection<TileUnit>();
             PickAnyTileUnits = new ObservableCollection<PickAnyTileUnit>();
         }
