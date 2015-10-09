@@ -52,5 +52,15 @@ namespace Tomato.TileSetEditor
         {
             ViewModel.NewTileSetCommand.Execute(e.Parameter);
         }
+
+        private void Application_SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel.SaveTileSetCommand.Execute(e.Parameter);
+        }
+
+        private void Application_SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.SaveTileSetCommand.CanExecute(e.Parameter);
+        }
     }
 }

@@ -22,6 +22,7 @@
             <MenuItem Header="文件(_F)">
                 <MenuItem Command="{x:Static ApplicationCommands.New}"/>
                 <MenuItem Command="{x:Static ApplicationCommands.Open}"/>
+                <MenuItem Command="{x:Static ApplicationCommands.Save}"/>
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
@@ -68,45 +69,7 @@
                     <views:TilesEditorView DataContext="{Binding TileSet.TilesEditor}"/>
                 </TabItem>
                 <TabItem Header="PickAnyTileUnit">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="200"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <GridSplitter Width="5" HorizontalAlignment="Right"/>
-                        <Grid Margin="0,0,5,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <ToolBar>
-                                <Button Command="{Binding AddTileUnitCommand}">
-                                    <fa:ImageAwesome Icon="Plus"/>
-                                </Button>
-                                <Button>
-                                    <fa:ImageAwesome Icon="Minus"/>
-                                </Button>
-                                <ToolBar.Resources>
-                                    <Style TargetType="fa:ImageAwesome">
-                                        <Setter Property="Width" Value="12"/>
-                                    </Style>
-                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
-                                        <Setter Property="Padding" Value="3"/>
-                                    </Style>
-                                </ToolBar.Resources>
-                            </ToolBar>
-                            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding TileSet.TileSet.TileUnits}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <views:TileUnitView DataContext="{Binding}"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <views:NonPickAnyTileUnitEditView DataContext="{Binding SelectedItem, ElementName=pickAnyListView}"/>
-                        </Grid>
-                    </Grid>
+                    <views:PickAnyTileUnitsEditorView DataContext="{Binding TileSet.PickAnyTileUnitsEditor}"/>
                 </TabItem>
                 <TabItem Header="TileUnit">
                     <Grid>
@@ -159,5 +122,8 @@
         <CommandBinding Command="{x:Static ApplicationCommands.Open}"
                         CanExecute="Application_OpenCommand_CanExecute"
                         Executed="Application_OpenCommand_Executed"/>
+        <CommandBinding Command="{x:Static ApplicationCommands.Save}"
+                        CanExecute="Application_SaveCommand_CanExecute"
+                        Executed="Application_SaveCommand_Executed"/>
     </catel:Window.CommandBindings>
 </catel:Window>

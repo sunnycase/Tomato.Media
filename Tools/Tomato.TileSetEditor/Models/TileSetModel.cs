@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Catel.Data;
@@ -11,6 +12,7 @@ using Catel.Fody;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
+using Tomato.TileSetEditor.Services;
 using Tomato.Tools.Common.Gaming;
 
 namespace Tomato.TileSetEditor.Models
@@ -20,31 +22,26 @@ namespace Tomato.TileSetEditor.Models
         private readonly TileSet _tileSet;
         public TileSet TileSet { get { return _tileSet; } }
         public string FileName { get; private set; }
-        public BitmapSource Image { get; private set; }
         public BitmapSource ExtraImage { get; private set; }
         public string Name { get; set; }
 
         public TilesEditorModel TilesEditor { get; private set; }
+        public PickAnyTileUnitsEditorModel PickAnyTileUnitsEditor { get; private set; }
 
         public TileSetModel([NotNull]TileSet tileSet, string fileName, BitmapSource image, BitmapSource extraImage)
         {
             _tileSet = tileSet;
             FileName = fileName;
-            Image = image;
             ExtraImage = extraImage;
 
             Name = tileSet.Name;
-            TilesEditor = new TilesEditorModel(this);
+            TilesEditor = new TilesEditorModel(this, image);
+            PickAnyTileUnitsEditor = new PickAnyTileUnitsEditorModel(this);
         }
 
         private void OnNameChanged()
         {
             _tileSet.Name = Name;
-        }
-
-        public int GetMaxTileCount()
-        {
-            return (Image.PixelWidth / _tileSet.TileWidth) * (Image.PixelHeight / _tileSet.TileHeight);
         }
 
         public async Task SaveAsync()
@@ -59,7 +56,7 @@ namespace Tomato.TileSetEditor.Models
                 zipStream.CloseEntry();
 
                 zipStream.PutNextEntry(new ZipEntry(Constants.ImageFileName) { DateTime = DateTime.Now });
-                await SaveImageSource(zipStream, Image, buffer);
+                await SaveImageSource(zipStream, TilesEditor.CreateMergedTileImage(), buffer);
                 zipStream.CloseEntry();
 
                 zipStream.PutNextEntry(new ZipEntry(Constants.ExtraImageFileName) { DateTime = DateTime.Now });

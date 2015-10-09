@@ -28,26 +28,14 @@ namespace Tomato.TileSetEditor.ViewModels
         [ViewModelToModel("Model")]
         public int TileHeight { get; set; }
 
-        [ViewModelToModel("Model")]
-        public int TilesPerRow { get; set; }
-
-        [ViewModelToModel("Model")]
-        public int TilesRowCount { get; set; }
-
-        [ViewModelToModel("Model")]
-        public int ExtraImageWidth { get; set; }
-
-        [ViewModelToModel("Model")]
-        public int ExtraImageHeight { get; set; }
-
         [ValidationToViewModel]
         public IValidationSummary ValidationSummary { get; set; }
 
         public Command BrowseFileNameCommand { get; private set; }
 
-        public CreateTileSetViewModel()
+        public CreateTileSetViewModel(CreateTileSetModel model)
         {
-            Model = new CreateTileSetModel();
+            Model = model;
             BrowseFileNameCommand = new Command(OnBrowseFileNameCommand);
         }
 

@@ -61,6 +61,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Catel.MVVM.4.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -85,19 +86,28 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constants.cs" />
+    <Compile Include="Models\CreateTileModel.cs" />
     <Compile Include="Models\CreateTileSetModel.cs" />
+    <Compile Include="Models\PickAnyTileUnitModel.cs" />
+    <Compile Include="Models\PickAnyTileUnitsEditorModel.cs" />
     <Compile Include="Models\TileModel.cs" />
     <Compile Include="Models\TilesEditorModel.cs" />
     <Compile Include="Models\TileSetModel.cs" />
     <Compile Include="Models\TileUnitModel.cs" />
     <Compile Include="Services\IMainViewService.cs" />
+    <Compile Include="Services\ITileService.cs" />
     <Compile Include="Services\ITileSetContextService.cs" />
     <Compile Include="ViewModels\AddTileUnitViewModel.cs" />
     <Compile Include="ViewModels\CreateTileSetViewModel.cs" />
+    <Compile Include="ViewModels\CreateTileViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NonPickAnyTileUnitEditViewModel.cs" />
+    <Compile Include="ViewModels\PickAnyTileUnitsEditorViewModel.cs" />
     <Compile Include="ViewModels\TilesEditorViewModel.cs" />
     <Compile Include="ViewModels\TileUnitViewModel.cs" />
+    <Compile Include="Views\CreateTileWindow.xaml.cs">
+      <DependentUpon>CreateTileWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CreateTileSetWindow.xaml.cs">
       <DependentUpon>CreateTileSetWindow.xaml</DependentUpon>
     </Compile>
@@ -106,6 +116,9 @@
     </Compile>
     <Compile Include="Views\NonPickAnyTileUnitEditView.xaml.cs">
       <DependentUpon>NonPickAnyTileUnitEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PickAnyTileUnitsEditorView.xaml.cs">
+      <DependentUpon>PickAnyTileUnitsEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TilesEditorView.xaml.cs">
       <DependentUpon>TilesEditorView.xaml</DependentUpon>
@@ -125,6 +138,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CreateTileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\CreateTileSetWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -136,6 +153,10 @@
     <Page Include="Views\NonPickAnyTileUnitEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PickAnyTileUnitsEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\TilesEditorView.xaml">
       <SubType>Designer</SubType>

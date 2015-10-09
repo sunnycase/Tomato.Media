@@ -24,10 +24,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock>文件名</TextBlock>
             <Grid Grid.Column="1">
@@ -44,14 +40,6 @@
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TileWidth, Mode=TwoWay}"/>
             <TextBlock Grid.Row="3">Tile 高度</TextBlock>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TileHeight, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="4">Tile 列数</TextBlock>
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding TilesPerRow, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="5">Tile 行数</TextBlock>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding TilesRowCount, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="6">ExtraImage 宽度</TextBlock>
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ExtraImageWidth, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="7">ExtraImage 高度</TextBlock>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding ExtraImageHeight, Mode=TwoWay}"/>
             <Grid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Padding" Value="10,2"/>

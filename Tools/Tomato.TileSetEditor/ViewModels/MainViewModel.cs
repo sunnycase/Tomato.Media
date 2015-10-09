@@ -19,6 +19,7 @@ namespace Tomato.TileSetEditor.ViewModels
     {
         public Command NewTileSetCommand { get; }
         public Command OpenTileSetCommand { get; }
+        public TaskCommand SaveTileSetCommand { get; }
         
         public TileSetModel TileSet { get; private set; }
 
@@ -26,6 +27,12 @@ namespace Tomato.TileSetEditor.ViewModels
         {
             NewTileSetCommand = new Command(OnNewTileSetCommand);
             OpenTileSetCommand = new Command(OnOpenTileSetCommand);
+            SaveTileSetCommand = new TaskCommand(OnSaveTileSetCommand, () => TileSet != null && !SaveTileSetCommand.IsExecuting);
+        }
+
+        private async Task OnSaveTileSetCommand()
+        {
+            await TileSet.SaveAsync();
         }
 
         private void OnOpenTileSetCommand()
@@ -39,17 +46,13 @@ namespace Tomato.TileSetEditor.ViewModels
 
         private void OnNewTileSetCommand()
         {
+            var model = new CreateTileSetModel();
             var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
-            uiVisualizerService.ShowDialog<CreateTileSetViewModel>(completedProc: OnNewTileSetCompleted);
-        }
-
-        private async void OnNewTileSetCompleted(object sender, UICompletedEventArgs e)
-        {
-            if (e.Result == true)
+            uiVisualizerService.ShowDialog<CreateTileSetViewModel>(model, async (s, e) =>
             {
-                var viewModel = (CreateTileSetViewModel)e.DataContext;
-                TileSet = await viewModel.Model.Create();
-            }
+                if (e.Result == true)
+                    TileSet = await model.Create();
+            });
         }
 
         private async void LoadTileSet(string fileName)
