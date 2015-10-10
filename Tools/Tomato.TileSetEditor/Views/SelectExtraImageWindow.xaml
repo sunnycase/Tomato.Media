@@ -1,0 +1,27 @@
+﻿<catel:DataWindow x:Class="Tomato.TileSetEditor.Views.SelectExtraImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tomato.TileSetEditor.Views"
+        xmlns:catel="http://catel.codeplex.com"
+        mc:Ignorable="d"
+        Title="选择 ExtraImage" Height="291.631" Width="512.446">
+    <Grid>
+        <ListView ItemsSource="{Binding ExtraImagesSource}" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  SelectedItem="{Binding SelectedExtraImage, Mode=TwoWay}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="5">
+                        <Image Width="60" Stretch="Uniform" Source="{Binding ImageSource}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</catel:DataWindow>

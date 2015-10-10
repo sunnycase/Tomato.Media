@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Catel.Data;
 using Tomato.Tools.Common.Gaming;
@@ -12,7 +13,9 @@ namespace Tomato.TileSetEditor.Models
 {
     class CreateTileModel : ModelBase
     {
-        public ExtraImageRef? ExtraImage { get; set; }
+        public ExtraImageModel ExtraImage { get; set; }
+
+        public Point ExtraImageOffset { get; set; }
 
         [Required]
         public BitmapImage TileImageSource { get; set; }

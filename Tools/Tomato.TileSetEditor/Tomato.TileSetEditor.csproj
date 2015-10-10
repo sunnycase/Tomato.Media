@@ -97,6 +97,7 @@
     <Compile Include="Models\TilesEditorModel.cs" />
     <Compile Include="Models\TileSetModel.cs" />
     <Compile Include="Models\TileUnitModel.cs" />
+    <Compile Include="Services\IExtraImageService.cs" />
     <Compile Include="Services\IMainViewService.cs" />
     <Compile Include="Services\ITileService.cs" />
     <Compile Include="Services\ITileSetContextService.cs" />
@@ -110,10 +111,12 @@
     <Compile Include="ViewModels\NonPickAnyTileUnitEditViewModel.cs" />
     <Compile Include="ViewModels\PickAnyTileUnitEditorViewModel.cs" />
     <Compile Include="ViewModels\PickAnyTileUnitsEditorViewModel.cs" />
+    <Compile Include="ViewModels\SelectExtraImageViewModel.cs" />
     <Compile Include="ViewModels\SelectTilesViewModel.cs" />
     <Compile Include="ViewModels\TilePresenterViewModel.cs" />
     <Compile Include="ViewModels\TilesEditorViewModel.cs" />
     <Compile Include="ViewModels\TileUnitViewModel.cs" />
+    <Compile Include="Views\AutoSizeCanvas.cs" />
     <Compile Include="Views\CreatePickAnyTileUnitWindow.xaml.cs">
       <DependentUpon>CreatePickAnyTileUnitWindow.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,7 @@
     <Compile Include="Views\AddTileUnitWindow.xaml.cs">
       <DependentUpon>AddTileUnitWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DragMoveDecorator.cs" />
     <Compile Include="Views\NonPickAnyTileUnitEditView.xaml.cs">
       <DependentUpon>NonPickAnyTileUnitEditView.xaml</DependentUpon>
     </Compile>
@@ -140,6 +144,9 @@
     </Compile>
     <Compile Include="Views\PickAnyTileUnitsEditorView.xaml.cs">
       <DependentUpon>PickAnyTileUnitsEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectExtraImageWindow.xaml.cs">
+      <DependentUpon>SelectExtraImageWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectTilesWindow.xaml.cs">
       <DependentUpon>SelectTilesWindow.xaml</DependentUpon>
@@ -198,6 +205,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PickAnyTileUnitsEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SelectExtraImageWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -35,7 +35,7 @@ namespace Tomato.TileSetEditor.ViewModels
             uiVisualizerService.ShowDialog<CreateTileViewModel>(model, (s, e) =>
             {
                 if (e.Result == true)
-                    Model.AddTile(model.TileImageSource, model.ExtraImage);
+                    Model.AddTile(model.TileImageSource, model.ExtraImage, model.ExtraImageOffset);
             });
         }
     }

@@ -8,7 +8,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:views="clr-namespace:Tomato.TileSetEditor.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="301.288" d:DesignWidth="512.446">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MinWidth="200"/>
@@ -37,14 +37,14 @@
                 </ToolBar.Resources>
             </ToolBar>
             <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding ExtraImages}">
-                <!--<ListView.ItemTemplate>
+                <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <views:TilePresenterView DataContext="{Binding FirstTile}"/>
+                            <Image Source="{Binding ImageSource}" Width="60" Height="30" Stretch="Uniform"/>
                             <Grid Grid.Column="1" Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -54,10 +54,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock>类别</TextBlock>
-                                <TextBlock Grid.Column="1" Text="{Binding Category}" Foreground="Green"/>
-                                <TextBlock Grid.Row="1">数量</TextBlock>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Tiles.Count}" Foreground="Green"/>
+                                <TextBlock>位置</TextBlock>
+                                <TextBox Grid.Column="1" Text="{Binding Location}" Foreground="Green"/>
+                                <TextBlock Grid.Row="1">大小</TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Size}" Foreground="Green"/>
                                 <Grid.Resources>
                                     <Style TargetType="Button">
                                         <Setter Property="Padding" Value="10,2"/>
@@ -74,10 +74,64 @@
                             </Grid>
                         </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>-->
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
         <Grid Grid.Column="1">
+            <ListView ItemsSource="{Binding ExtraImages}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <local:AutoSizeCanvas/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:DragMoveDecorator Offset="{Binding Location, Mode=TwoWay}">
+                            <Image Source="{Binding ImageSource}" Width="{Binding Size.Width}" Height="{Binding Size.Height}"/>
+                        </local:DragMoveDecorator>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                        <Setter Property="Canvas.Left" Value="{Binding Location.X}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Location.Y}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Grid>
+                                        <Rectangle x:Name="HilightRect" Stroke="Blue" StrokeThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                   Opacity="0"/>
+                                        <Rectangle x:Name="SelectedRect" Stroke="Blue" StrokeThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                   Opacity="0"/>
+                                        <ContentPresenter/>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal"/>
+                                                <VisualState x:Name="MouseOver">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectedRect" Storyboard.TargetProperty="Opacity"
+                                                                         Duration="0:0:0.2" To="1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                            <VisualStateGroup x:Name="SelectionStates">
+                                                <VisualState x:Name="Unselected"/>
+                                                <VisualState x:Name="Selected">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="HilightRect" Storyboard.TargetProperty="Opacity"
+                                                                         Duration="0:0:0.2" To="1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
         </Grid>
     </Grid>
 </catel:UserControl>

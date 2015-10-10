@@ -7,7 +7,9 @@
              xmlns:catel="http://catel.codeplex.com"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <local:AutoSizeCanvas>
         <Image Source="{Binding TileImage}" Stretch="None"/>
-    </Grid>
+        <Image Canvas.Left="{Binding ExtraImageOffset.X}" Canvas.Top="{Binding ExtraImageOffset.Y}" Source="{Binding ExtraImage.ImageSource}"
+               Width="{Binding ExtraImage.Size.Width}" Height="{Binding ExtraImage.Size.Height}"/>
+    </local:AutoSizeCanvas>
 </catel:UserControl>

@@ -41,7 +41,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="5">
-                        <Image Width="60" Stretch="Uniform" Source="{Binding TileImage}"/>
+                        <local:TilePresenterView DataContext="{Binding}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

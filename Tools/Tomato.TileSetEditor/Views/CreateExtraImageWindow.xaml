@@ -16,7 +16,7 @@
             </Grid.RowDefinitions>
             <Button HorizontalAlignment="Left" Command="{Binding SelectExtraImageSourceCommand}">选择...</Button>
             <Border Margin="5" Grid.Row="1">
-                <Image Stretch="None" Width="120" Source="{Binding ExtraImageSource}"/>
+                <Image Stretch="None" Source="{Binding ExtraImageSource}"/>
             </Border>
         </Grid>
         <Grid.Resources>

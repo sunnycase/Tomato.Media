@@ -62,7 +62,7 @@ namespace Tomato.TileSetEditor.Models
                 zipStream.CloseEntry();
 
                 zipStream.PutNextEntry(new ZipEntry(Constants.ExtraImageFileName) { DateTime = DateTime.Now });
-                await SaveImageSource(zipStream, ExtraImage, buffer);
+                await SaveImageSource(zipStream, ExtraImagesEditor.CreateMergedExtraImage(), buffer);
                 zipStream.CloseEntry();
             }
         }

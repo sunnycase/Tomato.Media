@@ -9,11 +9,13 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Catel.Data;
+using Catel.IoC;
+using Tomato.TileSetEditor.Services;
 using Tomato.Tools.Common.Gaming;
 
 namespace Tomato.TileSetEditor.Models
 {
-    class ExtraImagesEditorModel : ModelBase
+    class ExtraImagesEditorModel : ModelBase, IExtraImageService
     {
         private readonly TileSetModel _tileSet;
 
@@ -30,6 +32,8 @@ namespace Tomato.TileSetEditor.Models
                 new ExtraImageModel(i, e, LoadImageFromExtraImage(e, extraImage))));
             RaisePropertyChanged(nameof(ExtraImages));
             _extraImages.CollectionChanged += _extraImages_CollectionChanged;
+
+            this.GetServiceLocator().RegisterInstance<IExtraImageService>(this);
         }
 
         public void AddExtraImage(BitmapSource image)
@@ -70,6 +74,42 @@ namespace Tomato.TileSetEditor.Models
             image.Unlock();
             image.Freeze();
             return image;
+        }
+
+        public BitmapSource CreateMergedExtraImage()
+        {
+            if (_extraImages.Count != 0)
+            {
+                var boudingRect = new Rect();
+                var drawing = new DrawingVisual();
+                using (var context = drawing.RenderOpen())
+                {
+                    foreach (var image in _extraImages)
+                    {
+                        var rect = new Rect(image.Location, image.Size);
+                        context.DrawImage(image.ImageSource, rect);
+                        boudingRect.Union(rect);
+                    }
+                }
+                if (boudingRect.Left != 0 || boudingRect.Top != 0)
+                    throw new ArgumentException("图片不能超出边界。");
+                var bitmap = new RenderTargetBitmap((int)boudingRect.Width, (int)boudingRect.Height, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(drawing);
+                return bitmap;
+            }
+            return new RenderTargetBitmap(4, 4, 96, 96, PixelFormats.Pbgra32);
+        }
+
+        public ExtraImageModel GetExtraImageByTileId(int id)
+        {
+            if (id < _extraImages.Count)
+                return _extraImages[id];
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        public IEnumerable<ExtraImageModel> GetAllExtraImages()
+        {
+            return _extraImages;
         }
     }
 }

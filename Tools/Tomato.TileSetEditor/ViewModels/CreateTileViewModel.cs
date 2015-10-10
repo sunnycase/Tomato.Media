@@ -11,6 +11,7 @@ using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Tomato.TileSetEditor.Models;
+using Tomato.TileSetEditor.Services;
 using Tomato.Tools.Common.Gaming;
 
 namespace Tomato.TileSetEditor.ViewModels
@@ -21,7 +22,10 @@ namespace Tomato.TileSetEditor.ViewModels
         public CreateTileModel Model { get; private set; }
 
         [ViewModelToModel("Model")]
-        public ExtraImageRef? ExtraImage { get; set; }
+        public ExtraImageModel ExtraImage { get; set; }
+
+        [ViewModelToModel("Model")]
+        public Point ExtraImageOffset { get; set; }
 
         [ViewModelToModel("Model")]
         public BitmapImage TileImageSource { get; set; }
@@ -29,30 +33,32 @@ namespace Tomato.TileSetEditor.ViewModels
         [ValidationToViewModel]
         public IValidationSummary ValidationSummary { get; private set; }
 
-        public Command SelectTileImageSourceCommand { get; private set; }
+        public Command SelectTileImageSourceCommand { get; }
 
-        public bool HasExtraImage
-        {
-            get { return ExtraImage.HasValue; }
-            set { ExtraImage = value ? (ExtraImageRef?)new ExtraImageRef() : null; }
-        }
+        public Command SelectExtraImageCommand { get; }
 
-        public int ExtraImageId
-        {
-            get { return ExtraImage?.ExtraImage ?? 0; }
-            set { ExtraImage = new ExtraImageRef { ExtraImage = value, Offset = ExtraImage.Value.Offset }; }
-        }
-
-        public Point ExtraImageOffset
-        {
-            get { return new Point(ExtraImage?.Offset.X ?? 0, ExtraImage?.Offset.Y ?? 0); }
-            set { ExtraImage = new ExtraImageRef { ExtraImage = ExtraImageId, Offset = new Offset { X = (int)value.X, Y = (int)value.Y } }; }
-        }
+        public bool HasExtraImage { get; set; }
 
         public CreateTileViewModel(CreateTileModel model)
         {
             Model = model;
             SelectTileImageSourceCommand = new Command(OnSelectTileImageSourceCommand);
+            SelectExtraImageCommand = new Command(OnSelectExtraImageCommand);
+        }
+
+        private void OnSelectExtraImageCommand()
+        {
+            var uiVisualizerService = this.GetDependencyResolver().Resolve<IUIVisualizerService>();
+            var extraImageService = this.GetDependencyResolver().Resolve<IExtraImageService>();
+            var viewModel = new SelectExtraImageViewModel(extraImageService.GetAllExtraImages())
+            {
+                SelectedExtraImage = ExtraImage
+            };
+            uiVisualizerService.ShowDialog(viewModel, (s, e) =>
+            {
+                if (e.Result == true)
+                    ExtraImage = viewModel.SelectedExtraImage;
+            });
         }
 
         private void OnSelectTileImageSourceCommand()
@@ -71,6 +77,12 @@ namespace Tomato.TileSetEditor.ViewModels
                 else
                     TileImageSource = imageSource;
             }
+        }
+
+        private void OnHasExtraImageChanged()
+        {
+            if (!HasExtraImage)
+                ExtraImage = null;
         }
     }
 }

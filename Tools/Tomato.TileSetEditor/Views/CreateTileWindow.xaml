@@ -31,8 +31,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock>ExtraImage Id</TextBlock>
-                <TextBox Grid.Column="1" Text="{Binding ExtraImageId, Mode=TwoWay}"/>
+                <TextBlock>ExtraImage</TextBlock>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Button Command="{Binding SelectExtraImageCommand}" HorizontalAlignment="Left">选择...</Button>
+                    <Image Grid.Row="1" Margin="5" Width="60" Stretch="Uniform" Source="{Binding ExtraImage.ImageSource}"/>
+                </Grid>
                 <TextBlock Grid.Row="1">ExtraImage Offset</TextBlock>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ExtraImageOffset, Mode=TwoWay}"/>
             </Grid>

@@ -44,7 +44,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <views:TilePresenterView DataContext="{Binding FirstTile}"/>
+                            <views:TilePresenterView VerticalAlignment="Center" HorizontalAlignment="Center" DataContext="{Binding FirstTile}"/>
                             <Grid Grid.Column="1" Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>

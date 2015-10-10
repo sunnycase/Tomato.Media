@@ -41,11 +41,19 @@ namespace Tomato.TileSetEditor.Models
             this.GetServiceLocator().RegisterInstance<ITileService>(this);
         }
 
-        public void AddTile(ImageSource tileImage, ExtraImageRef? extraImage)
+        public void AddTile(ImageSource tileImage, ExtraImageModel extraImage, Point extraImageOffset)
         {
             _tiles.Add(new TileModel(_tiles.Count, new Tile()
             {
-                ExtraImage = extraImage
+                ExtraImage = extraImage == null ? (ExtraImageRef?)null : new ExtraImageRef
+                {
+                    ExtraImage = extraImage.Id,
+                    Offset = new Offset
+                    {
+                        X = (int)extraImageOffset.X,
+                        Y = (int)extraImageOffset.Y
+                    }
+                }
             }, tileImage));
         }
 
