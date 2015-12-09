@@ -74,6 +74,11 @@ namespace Tomato.TileSetEditor.ViewModels
                     var messageService = this.GetDependencyResolver().Resolve<IMessageService>();
                     messageService.ShowWarningAsync($"图片分辨率必须为 {Model.TileWidth}x{Model.TileHeight}。");
                 }
+                //else if(imageSource.DpiX != 96 || imageSource.DpiY != 96)
+                //{
+                //    var messageService = this.GetDependencyResolver().Resolve<IMessageService>();
+                //    messageService.ShowWarningAsync($"图片 Dpi 必须为 96。");
+                //}
                 else
                     TileImageSource = imageSource;
             }

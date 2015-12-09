@@ -39,7 +39,13 @@ namespace Tomato.TileSetEditor.ViewModels
             if (openFileService.DetermineFile())
             {
                 var imageSource = new BitmapImage(new Uri(openFileService.FileName)) { CacheOption = BitmapCacheOption.OnLoad };
-                ExtraImageSource = imageSource;
+                //if (imageSource.DpiX != 96 || imageSource.DpiY != 96)
+                //{
+                //    var messageService = this.GetDependencyResolver().Resolve<IMessageService>();
+                //    messageService.ShowWarningAsync($"图片 Dpi 必须为 96。");
+                //}
+                //else
+                    ExtraImageSource = imageSource;
             }
         }
     }

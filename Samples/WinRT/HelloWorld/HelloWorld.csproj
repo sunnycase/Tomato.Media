@@ -97,7 +97,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Assets\04 - irony -TV Mix-.mp3" />
+    <Content Include="Assets\04 - irony -TV Mix-.mp3" />
     <Content Include="Assets\ra2ts_l.ogv" />
     <None Include="project.json" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -39,10 +40,9 @@ namespace HelloWorld
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
-
+            playerClient.MessageReceived += PlayerClient_MessageReceived;
 
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi"));
-            //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ra2ts_l.ogv"));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream);
             videoPresenter = new VideoPresenter();
@@ -50,6 +50,13 @@ namespace HelloWorld
             img_Video.Source = videoPresenter.ImageSource;
 
             videoPresenter.Play();
+        }
+
+        private void PlayerClient_MessageReceived(object sender, string message)
+        {
+            if (message == "Ready to Play")
+                playerClient.SendMessage("Play");
+            Debug.WriteLine($"Player Message: {message}");
         }
     }
 }

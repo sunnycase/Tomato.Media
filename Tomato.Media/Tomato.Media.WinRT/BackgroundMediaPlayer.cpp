@@ -29,9 +29,9 @@ namespace
 		MediaPlayerHandlerGetterFactory(IInspectable* handler)
 			:_handler(handler)
 		{
-			
+
 		}
-		
+
 		STDMETHOD(ActivateInstance)(_Outptr_result_nullonfailure_ IInspectable **ppvObject)
 		{
 			return _handler.CopyTo(ppvObject);
@@ -49,6 +49,7 @@ namespace
 }
 
 String^ ::NS_MEDIA::BackgroundMediaPlayerActivatedMessageKey = L"Tomato.Media.BackgroundMediaPlayer.Activated";
+String^ ::NS_MEDIA::BackgroundMediaPlayerUserMessageKey = L"Tomato.Media.BackgroundMediaPlayer.UserMessage";
 
 BackgroundMediaPlayer::BackgroundMediaPlayer()
 {
@@ -67,6 +68,14 @@ void BackgroundMediaPlayer::Run(Windows::ApplicationModel::Background::IBackgrou
 	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
 }
 
+void BackgroundMediaPlayer::SendMessage(String ^ message)
+{
+	auto valueSet = ref new ValueSet();
+	valueSet->Insert(L"MessageId", BackgroundMediaPlayerUserMessageKey);
+	valueSet->Insert(L"MessageContent", message);
+	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
+}
+
 void BackgroundMediaPlayer::ActivateHandler()
 {
 	auto audioHandlerName = GetResetSetting<settings::BackgroundMediaPlayerHandlerFullNameSetting>();
@@ -74,15 +83,10 @@ void BackgroundMediaPlayer::ActivateHandler()
 	Object^ handlerObj;
 	ThrowIfFailed(RoActivateInstance(reinterpret_cast<HSTRING>(audioHandlerName),
 		reinterpret_cast<IInspectable**>(&handlerObj)));
-	auto factory = Make<MediaPlayerHandlerGetterFactory>(reinterpret_cast<IInspectable*>(handlerObj));
-
-	//RO_REGISTRATION_COOKIE revoke;
-	//auto classId = reinterpret_cast<HSTRING>(BackgroundMediaPlyaerHanderGetter::typeid->FullName);
-	//PFNGETACTIVATIONFACTORY fn = GetFactories;
-	//ThrowIfFailed(RoRegisterActivationFactories(&classId, &fn, 1, &revoke));
 
 	auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
 	audioHandler->OnActivated(this);
+	ThrowIfFailed(WRL::AsWeak(reinterpret_cast<IInspectable*>(handlerObj), &_audioHandler));
 }
 
 void BackgroundMediaPlayer::AttachMessageHandlers()
@@ -106,7 +110,17 @@ void BackgroundMediaPlayer::ConfigureMediaPlayer()
 
 void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^sender, Playback::MediaPlayerDataReceivedEventArgs ^args)
 {
-
+	auto valueSet = args->Data;
+	auto key = (String^)valueSet->Lookup(L"MessageId");
+	if (key == BackgroundMediaPlayerUserMessageKey)
+	{
+		Object^ handlerObj;
+		if (SUCCEEDED(_audioHandler.As(reinterpret_cast<WRL::ComPtr<IInspectable>*>(&handlerObj))))
+		{
+			auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
+			audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageContent"));
+		}
+	}
 }
 
 void BackgroundMediaPlayer::SetMediaSource(MediaSource^ mediaSource)

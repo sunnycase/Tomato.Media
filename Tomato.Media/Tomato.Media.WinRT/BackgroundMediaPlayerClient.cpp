@@ -14,6 +14,7 @@ using namespace Platform;
 using namespace NS_MEDIA;
 using namespace NS_MEDIA::details;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::Media;
 
 BackgroundMediaPlayerClient::BackgroundMediaPlayerClient(Platform::String ^ mediaPlayerHandlerTypeName)
@@ -39,10 +40,15 @@ void BackgroundMediaPlayerClient::OnMessageReceivedFromBackground(Object ^ sende
 	auto valueSet = e->Data;
 	auto key = (String^)valueSet->Lookup(L"MessageId");
 	if (key == BackgroundMediaPlayerActivatedMessageKey)
-	{
-		//WRL::ComPtr<IInspectable> handlerUnk;
-		//auto classId = reinterpret_cast<HSTRING>(BackgroundMediaPlyaerHanderGetter::typeid->FullName);
-		//auto hr = RoActivateInstance(classId, &handlerUnk);
 		PlayerActivated(this, nullptr);
-	}
+	else if (key == BackgroundMediaPlayerUserMessageKey)
+		MessageReceived(this, (String^)e->Data->Lookup(L"MessageContent"));
+}
+
+void BackgroundMediaPlayerClient::SendMessage(Platform::String ^ message)
+{
+	auto valueSet = ref new ValueSet();
+	valueSet->Insert(L"MessageId", BackgroundMediaPlayerUserMessageKey);
+	valueSet->Insert(L"MessageContent", message);
+	Playback::BackgroundMediaPlayer::SendMessageToBackground(valueSet);
 }

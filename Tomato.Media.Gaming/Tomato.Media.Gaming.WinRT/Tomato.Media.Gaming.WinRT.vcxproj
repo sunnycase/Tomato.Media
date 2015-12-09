@@ -287,12 +287,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\packages\Win2D.uwp.1.4.0\build\native\Win2D.uwp.targets" Condition="Exists('..\..\packages\Win2D.uwp.1.4.0\build\native\Win2D.uwp.targets')" />
+    <Import Project="..\..\packages\Win2D.uwp.1.5.0\build\native\Win2D.uwp.targets" Condition="Exists('..\..\packages\Win2D.uwp.1.5.0\build\native\Win2D.uwp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>此项目引用这台计算机上缺少的 NuGet 程序包。使用 NuGet 程序包还原可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Win2D.uwp.1.4.0\build\native\Win2D.uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Win2D.uwp.1.4.0\build\native\Win2D.uwp.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Win2D.uwp.1.5.0\build\native\Win2D.uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Win2D.uwp.1.5.0\build\native\Win2D.uwp.targets'))" />
   </Target>
 </Project>

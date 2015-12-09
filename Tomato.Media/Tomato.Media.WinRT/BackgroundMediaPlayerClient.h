@@ -18,6 +18,9 @@ public:
 	BackgroundMediaPlayerClient(Platform::String^ mediaPlayerHandlerTypeName);
 
 	event Windows::Foundation::EventHandler<Platform::Object^>^ PlayerActivated;
+	event Windows::Foundation::EventHandler<Platform::String^>^ MessageReceived;
+
+	void SendMessage(Platform::String^ message);
 private:
 	void AttachMessageListener();
 	void DetachMessageListener();

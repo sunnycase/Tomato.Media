@@ -33,6 +33,8 @@ public:
 
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
+
+	void SendMessage(Platform::String^ message);
 private:
 	void ActivateHandler();
 	void AttachMessageHandlers();
@@ -40,13 +42,16 @@ private:
 
 	void OnMessageReceivedFromForeground(Platform::Object ^sender, Windows::Media::Playback::MediaPlayerDataReceivedEventArgs ^args);
 	void OnMediaOpened(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+	void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 private:
 	Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
 	Windows::Media::Playback::MediaPlayerState playerState = Windows::Media::Playback::MediaPlayerState::Closed;
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
-	void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+
+	WRL::WeakRef _audioHandler;
 };
 
 extern Platform::String^ BackgroundMediaPlayerActivatedMessageKey;
+extern Platform::String^ BackgroundMediaPlayerUserMessageKey;
 
 END_NS_MEDIA
