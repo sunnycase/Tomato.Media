@@ -27,19 +27,19 @@ namespace BackgroundMediaShared
             mediaPlayer.SetMediaSource(mediaSource);
         }
 
-        public void OnReceiveMessage(string message)
+        public void OnReceiveMessage(string tag, string message)
         {
             if (message == "Play")
             {
                 mediaPlayer.Play();
-                mediaPlayer.SendMessage("Playing");
+                mediaPlayer.SendMessage("M", "Playing");
             }
-            Debug.WriteLine($"Client Message: {message}");
+            Debug.WriteLine($"Client Message: {tag}, {message}");
         }
 
         private void MediaPlayer_MediaOpened(IMediaPlayer sender, object args)
         {
-            mediaPlayer.SendMessage("Ready to Play");
+            mediaPlayer.SendMessage("M", "Ready to Play");
         }
     }
 }

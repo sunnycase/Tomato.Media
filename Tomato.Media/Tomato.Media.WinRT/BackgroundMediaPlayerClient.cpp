@@ -42,13 +42,14 @@ void BackgroundMediaPlayerClient::OnMessageReceivedFromBackground(Object ^ sende
 	if (key == BackgroundMediaPlayerActivatedMessageKey)
 		PlayerActivated(this, nullptr);
 	else if (key == BackgroundMediaPlayerUserMessageKey)
-		MessageReceived(this, (String^)e->Data->Lookup(L"MessageContent"));
+		MessageReceived(this, ref new MessageReceivedEventArgs((String^)e->Data->Lookup(L"MessageTag"), (String^)e->Data->Lookup(L"MessageContent")));
 }
 
-void BackgroundMediaPlayerClient::SendMessage(Platform::String ^ message)
+void BackgroundMediaPlayerClient::SendMessage(Platform::String^ tag, Platform::String ^ message)
 {
 	auto valueSet = ref new ValueSet();
 	valueSet->Insert(L"MessageId", BackgroundMediaPlayerUserMessageKey);
+	valueSet->Insert(L"MessageTag", tag);
 	valueSet->Insert(L"MessageContent", message);
 	Playback::BackgroundMediaPlayer::SendMessageToBackground(valueSet);
 }

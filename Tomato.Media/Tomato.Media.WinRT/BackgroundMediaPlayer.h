@@ -20,7 +20,7 @@ public:
 	///<summary>获取播放器状态。</summary>
 	property Windows::Media::Playback::MediaPlayerState State
 	{
-		Windows::Media::Playback::MediaPlayerState get() { return playerState; }
+		Windows::Media::Playback::MediaPlayerState get() { return mediaPlayer->CurrentState; }
 	}
 
 	// 通过 IBackgroundTask 继承
@@ -34,7 +34,7 @@ public:
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
 
-	void SendMessage(Platform::String^ message);
+	void SendMessage(Platform::String^ tag, Platform::String^ message);
 private:
 	void ActivateHandler();
 	void AttachMessageHandlers();
@@ -45,7 +45,6 @@ private:
 	void OnCurrentStateChanged(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 private:
 	Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
-	Windows::Media::Playback::MediaPlayerState playerState = Windows::Media::Playback::MediaPlayerState::Closed;
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
 
 	WRL::WeakRef _audioHandler;

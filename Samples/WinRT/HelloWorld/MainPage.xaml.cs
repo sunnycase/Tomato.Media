@@ -40,7 +40,7 @@ namespace HelloWorld
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
-            playerClient.MessageReceived += PlayerClient_MessageReceived;
+            playerClient.MessageReceived += PlayerClient_MessageReceived; ;
 
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi"));
             var stream = await file.OpenReadAsync();
@@ -52,11 +52,11 @@ namespace HelloWorld
             videoPresenter.Play();
         }
 
-        private void PlayerClient_MessageReceived(object sender, string message)
+        private void PlayerClient_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            if (message == "Ready to Play")
-                playerClient.SendMessage("Play");
-            Debug.WriteLine($"Player Message: {message}");
+            if (e.Message == "Ready to Play")
+                playerClient.SendMessage("M", "Play");
+            Debug.WriteLine($"Player Message: {e.Tag}, {e.Message}");
         }
     }
 }

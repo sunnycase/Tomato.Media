@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Media</id>
-    <version>0.0.1-alpha1-1</version>
+    <version>0.0.1-alpha1-3</version>
     <authors>SunnyCase</authors>
     <description>Tomato Media Library for media playback and processing.</description>
     <language>Neutral</language>
     <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>1. Fix wrong mediaPlayerState getter.</releaseNotes>
     <copyright>Copyright (c) 2015 SunnyCase</copyright>
     <tags>WinRT UWP Media Music Video</tags>
   </metadata>

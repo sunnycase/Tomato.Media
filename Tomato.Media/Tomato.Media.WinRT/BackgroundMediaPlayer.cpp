@@ -68,10 +68,11 @@ void BackgroundMediaPlayer::Run(Windows::ApplicationModel::Background::IBackgrou
 	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
 }
 
-void BackgroundMediaPlayer::SendMessage(String ^ message)
+void BackgroundMediaPlayer::SendMessage(String^ tag, String ^ message)
 {
 	auto valueSet = ref new ValueSet();
 	valueSet->Insert(L"MessageId", BackgroundMediaPlayerUserMessageKey);
+	valueSet->Insert(L"MessageTag", tag);
 	valueSet->Insert(L"MessageContent", message);
 	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
 }
@@ -117,8 +118,8 @@ void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^se
 		Object^ handlerObj;
 		if (SUCCEEDED(_audioHandler.As(reinterpret_cast<WRL::ComPtr<IInspectable>*>(&handlerObj))))
 		{
-			auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
-			audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageContent"));
+			if (auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj))
+				audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageTag"), (String^)valueSet->Lookup(L"MessageContent"));
 		}
 	}
 }

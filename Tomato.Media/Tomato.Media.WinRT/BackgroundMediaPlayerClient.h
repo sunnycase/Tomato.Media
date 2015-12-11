@@ -9,6 +9,29 @@
 
 DEFINE_NS_MEDIA
 
+public ref class MessageReceivedEventArgs sealed
+{
+public:
+	MessageReceivedEventArgs(Platform::String^ tag, Platform::String^ message)
+		:tag(tag), message(message)
+	{
+
+	}
+
+	property Platform::String^ Tag
+	{
+		Platform::String^ get() { return tag; }
+	}
+
+	property Platform::String^ Message
+	{
+		Platform::String^ get() { return message; }
+	}
+private:
+	Platform::String^ tag;
+	Platform::String^ message;
+};
+
 ///<summary>ºóÌ¨ÒôÆµ²¥·ÅÆ÷</summary>
 public ref class BackgroundMediaPlayerClient sealed
 {
@@ -18,9 +41,9 @@ public:
 	BackgroundMediaPlayerClient(Platform::String^ mediaPlayerHandlerTypeName);
 
 	event Windows::Foundation::EventHandler<Platform::Object^>^ PlayerActivated;
-	event Windows::Foundation::EventHandler<Platform::String^>^ MessageReceived;
+	event Windows::Foundation::EventHandler<MessageReceivedEventArgs^>^ MessageReceived;
 
-	void SendMessage(Platform::String^ message);
+	void SendMessage(Platform::String^ tag, Platform::String^ message);
 private:
 	void AttachMessageListener();
 	void DetachMessageListener();

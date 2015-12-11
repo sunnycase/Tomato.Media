@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.props" Condition="Exists('..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.props')" />
+  <Import Project="..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.props" Condition="Exists('..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -303,13 +303,13 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets')" />
+    <Import Project="..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>此项目引用这台计算机上缺少的 NuGet 程序包。使用 NuGet 程序包还原可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.props'))" />
-    <Error Condition="!Exists('..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets'))" />
+    <Error Condition="!Exists('..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.props'))" />
+    <Error Condition="!Exists('..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\directxtk_desktop_2015.2015.11.30.1\build\native\directxtk_desktop_2015.targets'))" />
   </Target>
 </Project>
