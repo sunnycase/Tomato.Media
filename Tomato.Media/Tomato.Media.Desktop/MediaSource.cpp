@@ -38,7 +38,7 @@ HRESULT MediaSource::Open(IStream * pStream)
 {
 	try
 	{
-		mediaSource.Open(pStream);
+		mediaSource.Open(pStream, {});
 	}
 	CATCH_ALL();
 	return S_OK;

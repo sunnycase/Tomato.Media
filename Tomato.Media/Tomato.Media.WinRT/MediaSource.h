@@ -15,6 +15,7 @@ public ref class MediaSource sealed
 {
 public:
 	static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromStream(Windows::Storage::Streams::IRandomAccessStream^ stream);
+	static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromStream(Windows::Storage::Streams::IRandomAccessStream^ stream, Platform::String^ uriHint);
 
 	///<summay>加载完整元数据</summay>
 	//Windows::Foundation::IAsyncAction^ InitializeFullMetadatas();
@@ -28,14 +29,14 @@ public:
 	///<summary>艺术家</summary>
 	property Platform::String^ Artist {Platform::String^ get(); }
 	///<summary>长度</summary>
-	property Windows::Foundation::TimeSpan Duration {Windows::Foundation::TimeSpan get(); }
+	property Platform::IBox<Windows::Foundation::TimeSpan>^ Duration {Platform::IBox<Windows::Foundation::TimeSpan>^ get(); }
 	///<summary>歌词</summary>
 	property Platform::String^ Lyrics {Platform::String^ get(); }
 internal:
 	property IMFMediaSource* MFMediaSource {IMFMediaSource* get() { return mediaSource.Get(); }}
 private:
 	MediaSource();
-	concurrency::task<void> OpenAsync(Windows::Storage::Streams::IRandomAccessStream^ stream);
+	concurrency::task<void> OpenAsync(Windows::Storage::Streams::IRandomAccessStream^ stream, Platform::String^ uriHint = nullptr);
 private:
 	MFMediaSourceWrapper mediaSource;
 };

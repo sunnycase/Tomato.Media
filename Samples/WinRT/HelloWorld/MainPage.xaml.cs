@@ -29,6 +29,7 @@ namespace HelloWorld
     {
         private BackgroundMediaPlayerClient playerClient;
         private VideoPresenter videoPresenter;
+        private const string fileName = "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi";
 
         public MainPage()
         {
@@ -42,9 +43,9 @@ namespace HelloWorld
             playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
             playerClient.MessageReceived += PlayerClient_MessageReceived; ;
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi"));
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
             var stream = await file.OpenReadAsync();
-            var mediaSource = await MediaSource.CreateFromStream(stream);
+            var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
             videoPresenter = new VideoPresenter();
             videoPresenter.SetMediaSource(mediaSource);
             img_Video.Source = videoPresenter.ImageSource;

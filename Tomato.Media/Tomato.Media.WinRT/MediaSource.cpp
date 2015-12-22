@@ -18,9 +18,9 @@ MediaSource::MediaSource()
 
 }
 
-task<void> MediaSource::OpenAsync(IRandomAccessStream ^ stream)
+task<void> MediaSource::OpenAsync(IRandomAccessStream ^ stream, Platform::String^ uriHint)
 {
-	return mediaSource.OpenAsync(stream);
+	return mediaSource.OpenAsync(stream, uriHint);
 }
 
 IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(IRandomAccessStream ^ stream)
@@ -35,6 +35,18 @@ IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(IRandomAccessStream
 	});
 }
 
+IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(IRandomAccessStream ^ stream, Platform::String^ uriHint)
+{
+	return create_async([=]
+	{
+		auto mediaSource = ref new MediaSource();
+		return mediaSource->OpenAsync(stream, uriHint).then([=]
+		{
+			return mediaSource;
+		});
+	});
+}
+
 String^ MediaSource::Title::get()
 {
 	auto title(mediaSource.Title);
@@ -43,16 +55,14 @@ String^ MediaSource::Title::get()
 
 String^ MediaSource::AlbumArtist::get()
 {
-	return nullptr;
-	//auto album(mediaSource.Album);
-	//return ref new String(album.c_str(), album.length());
+	auto albumArtist(mediaSource.AlbumArtist);
+	return ref new String(albumArtist.c_str(), albumArtist.length());
 }
 
 String^ MediaSource::Artist::get()
 {
-	return nullptr;
-	//return ws2RTString(nativeSource->GetMetadatas()
-	//	.GetOrDefault<DefaultMediaMetadatas::Artist>());
+	auto artist(mediaSource.Artist);
+	return ref new String(artist.c_str(), artist.length());
 }
 
 String^ MediaSource::Album::get()
@@ -61,15 +71,16 @@ String^ MediaSource::Album::get()
 	return ref new String(album.c_str(), album.length());
 }
 
-TimeSpan MediaSource::Duration::get()
+Platform::IBox<TimeSpan>^ MediaSource::Duration::get()
 {
-	return TimeSpan{};
-	//return TimeSpan{ nativeSource->GetDuration() };
+	auto duration = mediaSource.Duration;
+	if (duration == -1)
+		return nullptr;
+	return TimeSpan{ duration };
 }
 
 String^ MediaSource::Lyrics::get()
 {
-	return nullptr;
-	//return ws2RTString(nativeSource->GetMetadatas()
-	//	.GetOrDefault<DefaultMediaMetadatas::Lyrics>());
+	auto lyrics(mediaSource.Lyrics);
+	return ref new String(lyrics.c_str(), lyrics.length());
 }

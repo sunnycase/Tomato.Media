@@ -23,6 +23,10 @@ namespace BackgroundMediaShared
             var mediaSource = await MediaSource.CreateFromStream(stream);
             Debug.WriteLine($"Title: {mediaSource.Title}");
             Debug.WriteLine($"Album: {mediaSource.Album}");
+            Debug.WriteLine($"Artist: {mediaSource.Artist}");
+            Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
+            Debug.WriteLine($"Duration: {mediaSource.Duration}");
+            Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
 
             mediaPlayer.SetMediaSource(mediaSource);
         }
