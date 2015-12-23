@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Media</id>
-    <version>0.0.1-alpha1-3</version>
+    <version>0.0.1-alpha1-4</version>
     <authors>SunnyCase</authors>
     <description>Tomato Media Library for media playback and processing.</description>
     <language>Neutral</language>

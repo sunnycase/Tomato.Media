@@ -43,7 +43,7 @@ task<void> MFMediaSourceWrapper::OpenAsync(IRandomAccessStream ^ stream, Platfor
 
 	ComPtr<IMFByteStream> byteStream;
 	ThrowIfFailed(MFCreateMFByteStreamOnStreamEx(reinterpret_cast<IUnknown*>(stream), &byteStream));
-	
+
 	return OpenAsync(byteStream.Get(), std::wstring(uriHint->Begin(), uriHint->End()));
 }
 
@@ -56,7 +56,7 @@ void MFMediaSourceWrapper::Open(IMFByteStream* byteStream, const std::wstring& u
 
 	ComPtr<IMFSourceResolver> sourceResolver;
 	ThrowIfFailed(MFCreateSourceResolver(&sourceResolver));
-	
+
 	MF_OBJECT_TYPE objType;
 	ComPtr<IUnknown> unkMediaSource;
 	DWORD flag = MF_RESOLUTION_MEDIASOURCE;
@@ -114,64 +114,66 @@ void MFMediaSourceWrapper::CheckOpened() const
 		ThrowIfFailed(E_NOT_VALID_STATE, L"Must open the media source firstly.");
 }
 
-std::wstring MFMediaSourceWrapper::get_Title() const
+std::wstring MFMediaSourceWrapper::ReadStringMetadata(LPCWSTR key) const
 {
 	EnsureInitializeMetadata();
 
 	PROPVARIANT variant;
-	if (FAILED(metadata->GetProperty(L"Title", &variant)))
+	if (FAILED(metadata->GetProperty(key, &variant)))
 		return{};
-	std::wstring value(variant.pwszVal);
-	PropVariantClear(&variant);
-	return value;
+	if (variant.vt & VT_LPWSTR)
+	{
+		if (variant.vt & VT_VECTOR)
+		{
+			std::wstring value;
+			auto size = variant.calpwstr.cElems;
+			auto ptr = reinterpret_cast<LPWSTR*>(variant.calpwstr.pElems);
+			for (size_t i = 0; i < size; i++)
+			{
+				if (i != 0)
+					value += L';';
+				value.append(ptr[i]);
+			}
+			PropVariantClear(&variant);
+			return value;
+		}
+		else
+		{
+			std::wstring value(variant.pwszVal);
+			PropVariantClear(&variant);
+			return value;
+		}
+	}
+	else
+	{
+		PropVariantClear(&variant);
+		return{};
+	}
+}
+
+std::wstring MFMediaSourceWrapper::get_Title() const
+{
+	return ReadStringMetadata(L"Title");
 }
 
 std::wstring MFMediaSourceWrapper::get_Album() const
 {
-	EnsureInitializeMetadata();
-
-	PROPVARIANT variant;
-	if (FAILED(metadata->GetProperty(L"WM/AlbumTitle", &variant)))
-		return{};
-	std::wstring value(variant.pwszVal);
-	PropVariantClear(&variant);
-	return value;
+	return ReadStringMetadata(L"WM/AlbumTitle");
 }
 
 std::wstring MFMediaSourceWrapper::get_Artist() const
 {
-	EnsureInitializeMetadata();
-
-	PROPVARIANT variant;
-	if (FAILED(metadata->GetProperty(L"Author", &variant)))
-		return{};
-	std::wstring value(variant.pwszVal);
-	PropVariantClear(&variant);
-	return value;
+	return ReadStringMetadata(L"Author");
 }
 
 std::wstring MFMediaSourceWrapper::get_AlbumArtist() const
 {
-	EnsureInitializeMetadata();
-
-	PROPVARIANT variant;
-	if (FAILED(metadata->GetProperty(L"WM/AlbumArtist", &variant)))
-		return{};
-	std::wstring value(variant.pwszVal);
-	PropVariantClear(&variant);
-	return value;
+	return ReadStringMetadata(L"WM/AlbumArtist");
 }
 
 std::wstring MFMediaSourceWrapper::get_Lyrics() const
 {
-	EnsureInitializeMetadata();
-
-	PROPVARIANT variant;
-	if (FAILED(metadata->GetProperty(L"WM/Lyrics", &variant)))
-		return{};
-	std::wstring value(variant.pwszVal);
-	PropVariantClear(&variant);
-	return value;
+	return ReadStringMetadata(L"WM/Lyrics");
 }
 
 MFTIME MFMediaSourceWrapper::get_Duration() const

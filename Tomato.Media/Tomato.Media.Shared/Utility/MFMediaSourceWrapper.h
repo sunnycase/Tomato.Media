@@ -50,6 +50,7 @@ private:
 	// 载入元数据
 	void EnsureInitializeMetadata() const;
 	void CheckOpened() const;
+	std::wstring ReadStringMetadata(LPCWSTR key) const;
 private:
 	mutable WRL::ComPtr<IMFMetadata> metadata;
 	mutable WRL::ComPtr<IMFPresentationDescriptor> pd;
