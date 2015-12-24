@@ -17,7 +17,14 @@ public interface class IMediaPlayer
 	void Play();
 	void Pause();
 
+	property Windows::Media::SystemMediaTransportControls^ SystemMediaTransportControls
+	{
+		Windows::Media::SystemMediaTransportControls^ get();
+	}
+
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
+	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
+	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
 };
 

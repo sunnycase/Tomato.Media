@@ -84,7 +84,6 @@ void BackgroundMediaPlayer::ActivateHandler()
 	Object^ handlerObj;
 	ThrowIfFailed(RoActivateInstance(reinterpret_cast<HSTRING>(audioHandlerName),
 		reinterpret_cast<IInspectable**>(&handlerObj)));
-
 	auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
 	audioHandler->OnActivated(this);
 	ThrowIfFailed(WRL::AsWeak(reinterpret_cast<IInspectable*>(handlerObj), &_audioHandler));
@@ -105,6 +104,10 @@ void BackgroundMediaPlayer::ConfigureMediaPlayer()
 
 	mediaPlayer->MediaOpened += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
 		this, &BackgroundMediaPlayer::OnMediaOpened);
+	mediaPlayer->MediaEnded += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
+		this, &BackgroundMediaPlayer::OnMediaEnded);
+	mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this, 
+		&BackgroundMediaPlayer::OnMediaFailed);
 	mediaPlayer->CurrentStateChanged += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnCurrentStateChanged);
 }
 
@@ -148,5 +151,14 @@ void BackgroundMediaPlayer::OnMediaOpened(Playback::MediaPlayer ^sender, Platfor
 void BackgroundMediaPlayer::OnCurrentStateChanged(Playback::MediaPlayer ^sender, Platform::Object ^args)
 {
 	CurrentStateChanged(this, args);
+}
 
+void BackgroundMediaPlayer::OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args)
+{
+	MediaEnded(this, args);
+}
+
+void BackgroundMediaPlayer::OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args)
+{
+	MediaFailed(this, args);
 }

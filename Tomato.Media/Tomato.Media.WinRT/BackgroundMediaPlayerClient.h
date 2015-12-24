@@ -33,12 +33,13 @@ private:
 };
 
 ///<summary>后台音频播放器</summary>
+[Windows::Foundation::Metadata::WebHostHidden]
 public ref class BackgroundMediaPlayerClient sealed
 {
 public:
 	///<summary>创建 <see cref="BackgroundMediaPlayerClient"/> 的新实例。</summary>
 	///<param name="mediaPlayerHandlerTypeName">实现了 <see cref="IBackgroundMediaHandler"/> 的类型。</param>
-	BackgroundMediaPlayerClient(Platform::String^ mediaPlayerHandlerTypeName);
+	BackgroundMediaPlayerClient(Windows::UI::Xaml::Interop::TypeName mediaPlayerHandlerTypeName);
 
 	event Windows::Foundation::EventHandler<Platform::Object^>^ PlayerActivated;
 	event Windows::Foundation::EventHandler<MessageReceivedEventArgs^>^ MessageReceived;

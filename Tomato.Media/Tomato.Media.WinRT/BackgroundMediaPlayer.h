@@ -31,7 +31,14 @@ public:
 	virtual void Play();
 	virtual void Pause();
 
+	property Windows::Media::SystemMediaTransportControls^ SystemMediaTransportControls
+	{
+		virtual Windows::Media::SystemMediaTransportControls^ get() { return mediaPlayer->SystemMediaTransportControls; }
+	}
+
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
+	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
+	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
 
 	void SendMessage(Platform::String^ tag, Platform::String^ message);
@@ -48,6 +55,8 @@ private:
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
 
 	WRL::WeakRef _audioHandler;
+	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+	void OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args);
 };
 
 extern Platform::String^ BackgroundMediaPlayerActivatedMessageKey;

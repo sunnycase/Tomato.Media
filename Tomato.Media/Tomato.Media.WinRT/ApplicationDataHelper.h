@@ -13,19 +13,19 @@ namespace details
 {
 	Windows::Storage::ApplicationDataContainer^ GetSettingContainer();
 
-	template<typename TSetting, typename TValue = TSetting::TValue>
+	template<typename TSetting>
 	// 设置数据
-	void SetSetting(TValue value)
+	void SetSetting(typename TSetting::TValue value)
 	{
 		GetSettingContainer()->Values->Insert(TSetting::Key, value);
 	}
 
-	template<typename TSetting, typename TValue = TSetting::TValue>
+	template<typename TSetting>
 	// 读取并清除数据
-	TValue GetResetSetting()
+	typename TSetting::TValue GetResetSetting()
 	{
 		auto values = GetSettingContainer()->Values;
-		auto value = static_cast<TValue>(values->Lookup(TSetting::Key));
+		auto value = static_cast<TSetting::TValue>(values->Lookup(TSetting::Key));
 		values->Remove(TSetting::Key);
 		return value;
 	}

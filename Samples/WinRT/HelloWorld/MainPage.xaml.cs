@@ -40,7 +40,7 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler).FullName);
+            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
             playerClient.MessageReceived += PlayerClient_MessageReceived; ;
 
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
