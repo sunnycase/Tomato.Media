@@ -36,10 +36,17 @@ public:
 		virtual Windows::Media::SystemMediaTransportControls^ get() { return mediaPlayer->SystemMediaTransportControls; }
 	}
 
+	property Windows::Foundation::TimeSpan Position
+	{
+		virtual Windows::Foundation::TimeSpan get() { return mediaPlayer->Position; }
+		virtual void set(Windows::Foundation::TimeSpan value) { mediaPlayer->Position = value; }
+	}
+
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
+	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ SeekCompleted;
 
 	void SendMessage(Platform::String^ tag, Platform::String^ message);
 private:
@@ -57,6 +64,7 @@ private:
 	WRL::WeakRef _audioHandler;
 	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 	void OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args);
+	void OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 };
 
 extern Platform::String^ BackgroundMediaPlayerActivatedMessageKey;

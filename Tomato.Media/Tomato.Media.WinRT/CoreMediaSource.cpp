@@ -24,8 +24,7 @@ HRESULT CoreMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID * p
 	{
 		if (riid == IID_IMFMediaSource)
 		{
-			mediaSource.CopyTo(reinterpret_cast<IMFMediaSource**>(ppvObject));
-			return S_OK;
+			return mediaSource.CopyTo(reinterpret_cast<IMFMediaSource**>(ppvObject));
 		}
 	}
 	return MF_E_UNSUPPORTED_SERVICE;

@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "MediaSourceBase.h"
 #include "../../include/MFWorkerQueueProvider.h"
+#include <libavcodec/avcodec.h>
 
 using namespace NS_MEDIA;
 using namespace NS_MEDIA_CODEC;

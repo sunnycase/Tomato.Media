@@ -22,10 +22,17 @@ public interface class IMediaPlayer
 		Windows::Media::SystemMediaTransportControls^ get();
 	}
 
+	property Windows::Foundation::TimeSpan Position
+	{
+		Windows::Foundation::TimeSpan get();
+		void set(Windows::Foundation::TimeSpan value);
+	}
+
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ CurrentStateChanged;
+	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ SeekCompleted;
 };
 
 END_NS_MEDIA

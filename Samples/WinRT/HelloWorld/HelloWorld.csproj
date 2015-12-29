@@ -17,11 +17,12 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>HelloWorld_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>HelloWorld_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>2D9CF05A3289293134B24BD96198C9D2784F7287</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>590CC1E4C19AA7A5C31E2A65DF6B8423D1326859</PackageCertificateThumbprint>
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +100,7 @@
     </Content>
     <Content Include="Assets\04 - irony -TV Mix-.mp3" />
     <Content Include="Assets\ra2ts_l.ogv" />
+    <None Include="HelloWorld_StoreKey.pfx" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +120,7 @@
   <ItemGroup>
     <Content Include="Assets\Dango Daikazoku.png" />
     <Content Include="Assets\Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

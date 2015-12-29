@@ -41,6 +41,7 @@
     <None Include="Tomato.Media.Codec.def">
       <Filter>源文件</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <MidlRT Include="Tomato.Media.Codec.idl">

@@ -109,6 +109,7 @@ void BackgroundMediaPlayer::ConfigureMediaPlayer()
 	mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this, 
 		&BackgroundMediaPlayer::OnMediaFailed);
 	mediaPlayer->CurrentStateChanged += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnCurrentStateChanged);
+	mediaPlayer->SeekCompleted += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnSeekCompleted);
 }
 
 
@@ -161,4 +162,9 @@ void BackgroundMediaPlayer::OnMediaEnded(Windows::Media::Playback::MediaPlayer ^
 void BackgroundMediaPlayer::OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args)
 {
 	MediaFailed(this, args);
+}
+
+void BackgroundMediaPlayer::OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args)
+{
+	SeekCompleted(this, args);
 }

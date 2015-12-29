@@ -173,7 +173,7 @@
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -213,7 +213,7 @@
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -253,7 +253,7 @@
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
