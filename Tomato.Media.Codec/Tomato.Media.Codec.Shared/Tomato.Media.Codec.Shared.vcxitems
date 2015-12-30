@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
@@ -55,17 +56,22 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\smallft.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\vorbis_raii.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\window.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libogg\bitwise.c">
@@ -164,12 +170,16 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\window.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.cpp" />
   </ItemGroup>
 </Project>

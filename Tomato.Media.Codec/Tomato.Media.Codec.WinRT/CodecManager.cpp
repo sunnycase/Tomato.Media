@@ -7,8 +7,10 @@
 #include "pch.h"
 #include "CodecManager.h"
 #include "ByteStreamHandlers/OggByteStreamHandler.h"
+#include "ByteStreamHandlers/FFmpegByteStreamHandler.h"
 #include "Transforms/TheoraDecoderTransform.h"
 #include "Transforms/VorbisDecoderTransform.h"
+#include "Transforms/FFmpegAudioDecoderTransform.h"
 
 using namespace NS_MEDIA_CODEC;
 using namespace WRL;
@@ -68,8 +70,10 @@ HRESULT CodecManager::RegisterDefaultCodecs(void)
 	try
 	{
 		RegisterByteStreamHandler<OggByteStreamHandler>(mediaExtensionManager.Get());
+		RegisterByteStreamHandler<FFmpegByteStreamHandler>(mediaExtensionManager.Get());
 		RegisterVideoDecoderTransform<TheoraDecoderTransform>(mediaExtensionManager.Get());
 		RegisterAudioDecoderTransform<VorbisDecoderTransform>(mediaExtensionManager.Get());
+		RegisterAudioDecoderTransform<FFmpegAudioDecoderTransform>(mediaExtensionManager.Get());
 	}
 	CATCH_ALL();
 	return S_OK;

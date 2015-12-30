@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tomato.Media;
+using Tomato.Media.Codec;
 using Windows.Media;
 using Windows.Storage;
 
@@ -14,9 +15,19 @@ namespace BackgroundMediaShared
     {
         private BackgroundMediaPlayer mediaPlayer;
         private SystemMediaTransportControls smtc;
+        private CodecManager _codecManager;
+
+        private static readonly string[] files = new[]
+        {
+            "04.花篝り.APE",
+            "04 - irony -TV Mix-.mp3"
+        };
 
         public async void OnActivated(BackgroundMediaPlayer mediaPlayer)
         {
+            _codecManager = new CodecManager();
+            _codecManager.RegisterDefaultCodecs();
+
             this.mediaPlayer = mediaPlayer;
             smtc = mediaPlayer.SystemMediaTransportControls;
             ConfigureSystemMediaTransportControls();
@@ -24,7 +35,7 @@ namespace BackgroundMediaShared
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
             mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/04 - irony -TV Mix-.mp3"));
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{files[0]}"));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream);
             Debug.WriteLine($"Title: {mediaSource.Title}");

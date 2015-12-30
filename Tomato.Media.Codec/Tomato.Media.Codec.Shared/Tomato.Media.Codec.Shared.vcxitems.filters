@@ -49,6 +49,12 @@
     <Filter Include="头文件\Transforms">
       <UniqueIdentifier>{c5c01ffd-5e93-4348-b72e-2e226b2251e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Utilities">
+      <UniqueIdentifier>{05b25efc-cf7a-449f-9f2c-2c286beb29ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Utilities">
+      <UniqueIdentifier>{c71a3aeb-ca37-4287-893f-3ebaaf495ca5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
@@ -198,6 +204,21 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.h">
       <Filter>头文件\Transforms</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.h">
+      <Filter>头文件\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.h">
+      <Filter>头文件\MediaStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.h">
+      <Filter>头文件\ByteStreamHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp">
@@ -325,6 +346,21 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\synthesis.c">
       <Filter>源文件\libvorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.cpp">
+      <Filter>源文件\MediaSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.cpp">
+      <Filter>源文件\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.cpp">
+      <Filter>源文件\MediaStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.cpp">
+      <Filter>源文件\ByteStreamHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

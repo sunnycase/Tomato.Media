@@ -29,13 +29,13 @@ namespace HelloWorld
     {
         private BackgroundMediaPlayerClient playerClient;
         private VideoPresenter videoPresenter;
-        private const string fileName = "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi";
+        private const string fileName = "ms-appx:///Assets/04.花篝り.APE";//"ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi";
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            Loaded += MainPage_Loaded;
+            //Loaded += MainPage_Loaded;
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -58,6 +58,16 @@ namespace HelloWorld
             if (e.Message == "Ready to Play")
                 playerClient.SendMessage("M", "Play");
             Debug.WriteLine($"Player Message: {e.Tag}, {e.Message}");
+        }
+
+        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+
+        }
+
+        private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

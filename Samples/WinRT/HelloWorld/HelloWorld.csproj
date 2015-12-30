@@ -100,6 +100,7 @@
     </Content>
     <Content Include="Assets\04 - irony -TV Mix-.mp3" />
     <Content Include="Assets\ra2ts_l.ogv" />
+    <Content Include="Assets\04.花篝り.APE" />
     <None Include="HelloWorld_StoreKey.pfx" />
     <None Include="project.json" />
   </ItemGroup>
