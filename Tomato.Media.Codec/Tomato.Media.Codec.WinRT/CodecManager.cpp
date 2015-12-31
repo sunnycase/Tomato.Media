@@ -69,10 +69,10 @@ HRESULT CodecManager::RegisterDefaultCodecs(void)
 {
 	try
 	{
-		RegisterByteStreamHandler<OggByteStreamHandler>(mediaExtensionManager.Get());
+		//RegisterByteStreamHandler<OggByteStreamHandler>(mediaExtensionManager.Get());
 		RegisterByteStreamHandler<FFmpegByteStreamHandler>(mediaExtensionManager.Get());
-		RegisterVideoDecoderTransform<TheoraDecoderTransform>(mediaExtensionManager.Get());
-		RegisterAudioDecoderTransform<VorbisDecoderTransform>(mediaExtensionManager.Get());
+		//RegisterVideoDecoderTransform<TheoraDecoderTransform>(mediaExtensionManager.Get());
+		//RegisterAudioDecoderTransform<VorbisDecoderTransform>(mediaExtensionManager.Get());
 		RegisterAudioDecoderTransform<FFmpegAudioDecoderTransform>(mediaExtensionManager.Get());
 	}
 	CATCH_ALL();

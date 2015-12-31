@@ -162,10 +162,10 @@ AVFormatContextWrapper::AVFormatContextWrapper(AVFormatContext * context) noexce
 }
 
 AVFormatContextWrapper::AVFormatContextWrapper(AVFormatContextWrapper && other) noexcept
-	:_context(std::exchange(other._context, nullptr)), _opened(std::exchange(other._opened, false)), 
+	: _context(std::exchange(other._context, nullptr)), _opened(std::exchange(other._opened, false)),
 	_opaque(std::exchange(other._opaque, nullptr))
 {
-	
+
 }
 
 AVFormatContextWrapper::~AVFormatContextWrapper()
@@ -190,7 +190,7 @@ void AVFormatContextWrapper::Open(std::shared_ptr<void>&& opaque, AVIOContext* c
 		ThrowIfNot(avformat_open_input(&_context, nullptr, nullptr, nullptr) == 0, L"Open file error.");
 		_opened = true;
 	}
-	catch(...)
+	catch (...)
 	{
 		_context->pb = nullptr;
 	}
@@ -241,11 +241,35 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromStream(AVStream* stream)
 	format.Samples.wReserved = 0;
 
 	format.CodecId = codecContext->codec_id;
+	format.SampleFormat = codecContext->sample_fmt;
+	format.BitsPerCodedSample = codecContext->bits_per_coded_sample;
+	format.Flags = codecContext->flags;
+	format.Flags2 = codecContext->flags2;
 
 	return format;
+}
+
+ComPtr<LibAVCodecOptions> LibAVCodecOptions::CreateFromStream(AVStream* stream)
+{
+	auto codecContext = stream->codec;
+	auto options = Make<LibAVCodecOptions>();
+
+	if (codecContext->extradata_size)
+		options->ExtraData.assign(codecContext->extradata, codecContext->extradata + codecContext->extradata_size);
+	return std::move(options);
 }
 
 void avcodeccontext_deleter::operator()(AVCodecContext * handle) const noexcept
 {
 	avcodec_free_context(&handle);
+}
+
+void avframe_deleter::operator()(AVFrame* handle) const noexcept
+{
+	av_frame_free(&handle);
+}
+
+void swrcontext_deleter::operator()(SwrContext* handle) const noexcept
+{
+	swr_free(&handle);
 }

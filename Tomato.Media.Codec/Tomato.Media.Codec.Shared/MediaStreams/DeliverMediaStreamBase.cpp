@@ -108,6 +108,7 @@ void DeliverMediaStreamBase::Start(const PROPVARIANT & position)
 
 			samplesCache.swap(decltype(samplesCache)());
 			sampleRequests.swap(decltype(sampleRequests)());
+			cachedDuration.store(0, std::memory_order_release);
 			OnResetStream();
 		}
 
@@ -140,6 +141,7 @@ void DeliverMediaStreamBase::Stop()
 
 		samplesCache.swap(decltype(samplesCache)());
 		sampleRequests.swap(decltype(sampleRequests)());
+		cachedDuration.store(0, std::memory_order_release);
 
 		streamState = Stopped;
 		ThrowIfFailed(eventQueue->QueueEventParamVar(MEStreamStopped, GUID_NULL, S_OK, nullptr));

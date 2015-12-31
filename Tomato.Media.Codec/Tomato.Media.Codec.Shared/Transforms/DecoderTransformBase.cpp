@@ -137,6 +137,11 @@ bool DecoderTransformBase::IsValidOutputStream(DWORD outputStreamId) const noexc
 	// 只有一个输出流
 	return outputStreamId == 0;
 }
+
+DWORD DecoderTransformBase::OnGetOutputStreamFlags() const noexcept
+{
+	return MFT_OUTPUT_STREAM_WHOLE_SAMPLES;
+}
 //-------------------------------------------------------------------
 // Name: GetOutputStreamInfo
 // Returns information about an output stream.
@@ -156,8 +161,7 @@ HRESULT DecoderTransformBase::GetOutputStreamInfo(
 	//       stream. If there is no media type, we only need to fill in the dwFlags
 	//       member of MFT_OUTPUT_STREAM_INFO. The other members depend on having a
 	//       a valid media type.
-	pStreamInfo->dwFlags = MFT_OUTPUT_STREAM_WHOLE_SAMPLES |
-		MFT_OUTPUT_STREAM_FIXED_SAMPLE_SIZE;
+	pStreamInfo->dwFlags = OnGetOutputStreamFlags();
 
 	if (!outputMediaType)
 	{
@@ -522,6 +526,7 @@ HRESULT DecoderTransformBase::ProcessInput(
 	DWORD               dwFlags
 	)
 {
+	ComPtr<DecoderTransformBase> thisGuard(this);
 	if (!pSample) return E_INVALIDARG;
 
 	if (!IsValidInputStream(dwInputStreamID))
@@ -575,6 +580,7 @@ HRESULT DecoderTransformBase::ProcessOutput(
 	if (cOutputBufferCount != 1)
 		return E_INVALIDARG;
 
+	ComPtr<DecoderTransformBase> thisGuard(this);
 	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// If we don't have an input sample, we need some input before
 	// we can generate any output.

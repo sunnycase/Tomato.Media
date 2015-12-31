@@ -29,7 +29,10 @@ namespace HelloWorld
     {
         private BackgroundMediaPlayerClient playerClient;
         private VideoPresenter videoPresenter;
-        private const string fileName = "ms-appx:///Assets/04.花篝り.APE";//"ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi";
+        private string fileName = new[] {
+            "ms-appx:///Assets/04.花篝り.APE",
+            "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi",
+            "ms-appx:///Assets/bully.ogg" }[2];
 
         public MainPage()
         {

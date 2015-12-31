@@ -169,6 +169,7 @@ protected:
 	virtual void OnValidateInputType(IMFMediaType* type) = 0;
 	// 验证输出类型
 	virtual void OnValidateOutputType(IMFMediaType* type) = 0;
+	virtual DWORD OnGetOutputStreamFlags() const noexcept;
 	// 获取输出帧大小
 	virtual DWORD OnGetOutputFrameSize() const noexcept = 0;
 	// 设置输入类型

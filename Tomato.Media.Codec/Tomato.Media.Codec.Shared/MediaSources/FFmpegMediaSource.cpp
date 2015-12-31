@@ -92,6 +92,8 @@ namespace
 			ComPtr<IMFMediaType> mediaType;
 			ThrowIfFailed(MFCreateMediaType(&mediaType));
 			ThrowIfFailed(MFInitMediaTypeFromWaveFormatEx(mediaType.Get(), &waveFormat.Format, sizeof(waveFormat)));
+			auto options = LibAVCodecOptions::CreateFromStream(stream);
+			ThrowIfFailed(mediaType->SetUnknown(MF_MT_LIBAV_CODEC_OPTIONS, options.Get()));
 
 			ComPtr<IMFStreamDescriptor> desc;
 			ThrowIfFailed(MFCreateStreamDescriptor(DWORD(stream->id), 1, mediaType.GetAddressOf(), &desc));
@@ -140,7 +142,7 @@ namespace
 			return S_OK;
 		}
 
-		bool thin;
+		BOOL thin;
 		float rate = 1.f;
 	};
 
@@ -164,6 +166,7 @@ namespace
 		ComPtr<IMFPresentationDescriptor> presentationDescriptor;
 		ThrowIfFailed(MFCreatePresentationDescriptor(streamDescriptors.size(), reinterpret_cast<
 			IMFStreamDescriptor**>(streamDescriptors.data()), &presentationDescriptor));
+		ThrowIfFailed(presentationDescriptor->SetUINT64(MF_PD_DURATION, dt2hns(fmtCtx->duration, nullptr)));
 		// ÉèÖÃ Context ÊôÐÔ
 		ThrowIfFailed(presentationDescriptor->SelectStream(0));
 		return presentationDescriptor;

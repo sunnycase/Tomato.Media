@@ -56,14 +56,25 @@ private:
 	void InitializeAvailableOutputTypes();
 	void InitializeDecoder(IMFMediaType* inputType);
 	//bool FeedBodyPacket(ogg_packet& packet);
-	DWORD FillFloatFrame(IMFMediaBuffer* buffer, BYTE* data, DWORD maxLength);
+	DWORD FillFrame(IMFMediaBuffer* buffer, BYTE* data, DWORD maxLength);
+	bool DecodeOneFrame();
 private:
 	std::vector<WRL::ComPtr<IMFMediaType>> availableOutputTypes;
 	FFmpeg::unique_avcodeccontext _codecContext;
+	FFmpeg::unique_avframe _frame;
+	FFmpeg::unique_swrcontext _swrContext;
 	unique_cotaskmem<FFmpeg::WAVEFORMATLIBAV> _waveFormat;
+	AVSampleFormat _outputSampleFormat;
+	UINT32 _outputChannels;
+	UINT32 _outputSampleRate;
+	UINT32 _outputBlockAlign;
+
+	WRL::ComPtr<IMFMediaBuffer> _inputBuffer;
+	AVPacket _inputPacket;
 
 	size_t bytesPerDecodecSample = 0;
 	size_t decodedSamples = 0;
+	MFTIME _sampleTime = -1;
 };
 
 END_NS_MEDIA_CODEC

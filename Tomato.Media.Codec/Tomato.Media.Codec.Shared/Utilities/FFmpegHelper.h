@@ -13,6 +13,7 @@
 extern "C" {
 #endif
 #include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
 #ifdef __cplusplus
 }
 #endif
@@ -102,9 +103,19 @@ namespace FFmpeg
 
 		enum AVCodecID CodecId;
 		WORD DesiredDecodedFormat;
+		enum AVSampleFormat SampleFormat;
+		int BitsPerCodedSample;
+		int Flags, Flags2;
 
 		static WAVEFORMATLIBAV CreateFromStream(AVStream* stream);
 	private:
+	};
+
+	struct LibAVCodecOptions : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IUnknown>
+	{
+		std::vector<uint8_t> ExtraData;
+
+		static WRL::ComPtr<LibAVCodecOptions> CreateFromStream(AVStream* stream);
 	};
 
 	struct avcodeccontext_deleter
@@ -112,6 +123,19 @@ namespace FFmpeg
 		void operator()(AVCodecContext* handle) const noexcept;
 	};
 	using unique_avcodeccontext = std::unique_ptr<AVCodecContext, avcodeccontext_deleter>;
+
+
+	struct avframe_deleter
+	{
+		void operator()(AVFrame* handle) const noexcept;
+	};
+	using unique_avframe = std::unique_ptr<AVFrame, avframe_deleter>;
+
+	struct swrcontext_deleter
+	{
+		void operator()(SwrContext* handle) const noexcept;
+	};
+	using unique_swrcontext = std::unique_ptr<SwrContext, swrcontext_deleter>;
 }
 
 END_NS_MEDIA_CODEC

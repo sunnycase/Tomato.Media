@@ -19,14 +19,16 @@ ActivatableClass(FFmpegByteStreamHandler);
 CoCreatableClass(FFmpegByteStreamHandler);
 #endif
 
-const ByteStreamHandlerRegisterInfo FFmpegByteStreamHandler::RegisterInfos[1] =
+const ByteStreamHandlerRegisterInfo FFmpegByteStreamHandler::RegisterInfos[3] =
 {
-	{ L".ape", L"audio/x-ape" }
+	{ L".ape", L"audio/x-ape" },
+	{ L".flac", L"audio/flac" },
+	{ L".ogg", L"audio/ogg" },
 };
 
 FFmpegByteStreamHandler::FFmpegByteStreamHandler()
 {
-	
+
 }
 
 FFmpegByteStreamHandler::~FFmpegByteStreamHandler()

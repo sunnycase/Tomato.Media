@@ -42,6 +42,10 @@ void FFmpegAudioDecoderTransform::OnValidateInputType(IMFMediaType * type)
 	ThrowIfFailed(type->GetGUID(MF_MT_SUBTYPE, &subType));
 	if (subType != MFAudioFormat_LibAV)
 		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
+	// 验证 Options
+	ComPtr<IUnknown> optionsUnk;
+	if (FAILED(type->GetUnknown(MF_MT_LIBAV_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk))))
+		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
 }
 
 void FFmpegAudioDecoderTransform::OnValidateOutputType(IMFMediaType * type)
@@ -76,84 +80,123 @@ WRL::ComPtr<IMFMediaType> FFmpegAudioDecoderTransform::OnSetInputType(IMFMediaTy
 
 WRL::ComPtr<IMFMediaType> FFmpegAudioDecoderTransform::OnSetOutputType(IMFMediaType * type)
 {
+	GUID subType;
+	UINT32 bitsPerSample;
+	ThrowIfFailed(type->GetGUID(MF_MT_SUBTYPE, &subType));
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, &_outputBlockAlign));
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, &bitsPerSample));
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, &_outputSampleRate));
+	ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, &_outputChannels));
+	bytesPerDecodecSample = _outputBlockAlign;
+
+	_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_NONE;
+	if (subType == MFAudioFormat_PCM)
+	{
+		switch (bitsPerSample)
+		{
+		case 8:
+			_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_U8;
+			break;
+		case 16:
+			_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S16;
+			break;
+		case 32:
+			_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_S32;
+			break;
+		}
+	}
+	else if (subType == MFAudioFormat_Float)
+	{
+		switch (bitsPerSample)
+		{
+		case 32:
+			_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_FLT;
+			break;
+		case 64:
+			_outputSampleFormat = AVSampleFormat::AV_SAMPLE_FMT_DBL;
+			break;
+		}
+	}
+	if (_outputSampleFormat == AVSampleFormat::AV_SAMPLE_FMT_NONE)
+		ThrowAlways(L"format not support.");
+
 	return type;
 }
 
 namespace
 {
-	//void CreatePacket(IMFSample* sample, BYTE* data, DWORD length)
-	//{
-	//	ogg_packet packet;
-	//	UINT32 bos, eos;
-	//	UINT64 packetno, granulepos;
-	//	ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_BOS, &bos));
-	//	ThrowIfFailed(sample->GetUINT32(MF_MT_OGG_PACKET_EOS, &eos));
-	//	ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_NO, &packetno));
-	//	ThrowIfFailed(sample->GetUINT64(MF_MT_OGG_PACKET_GRANULEPOS, &granulepos));
-
-	//	packet.bytes = long(length);
-	//	packet.b_o_s = long(bos);
-	//	packet.e_o_s = long(eos);
-	//	packet.granulepos = ogg_int64_t(granulepos);
-	//	packet.packet = data;
-	//	packet.packetno = ogg_int64_t(packetno);
-	//	return packet;
-	//}
+	void InitPacket(AVPacket& packet, BYTE* data, DWORD length)
+	{
+		av_init_packet(&packet);
+		packet.dts = packet.pts = AV_NOPTS_VALUE;
+		packet.data = data;
+		packet.size = static_cast<int>(length);
+	}
 }
 
 bool FFmpegAudioDecoderTransform::OnReceiveInput(IMFSample * sample)
 {
-	//ComPtr<IMFMediaBuffer> buffer;
-	//ThrowIfFailed(sample->ConvertToContiguousBuffer(buffer.GetAddressOf()));
-
-	//BYTE* data; DWORD length;
-	//Core::MFBufferLocker locker(buffer.Get());
-	//locker.Lock(data, nullptr, &length);
-	//auto packet = CreatePacket(sample, data, length);
-
-	//if (packet.packetno == 0)
-	//	vorbis_synthesis_restart(&vorbisDspState);
-
-	//// Header
-	//if (vorbisState == VorbisState::Header)
-	//{
-	//	auto ret = vorbis_synthesis_headerin(&vorbisInfo, &vorbisComment, &packet);
-	//	// 遇到了 Body
-	//	if (ret != 0 && vorbisInfo.codec_setup)
-	//	{
-	//		vorbisDspState.assign(vorbisInfo);
-	//		vorbisBlock.assign(vorbisDspState);
-	//		bytesPerDecodecSample = vorbisInfo.channels * 4;	// 32bit Float
-
-	//		vorbisState = VorbisState::Body;
-	//		return FeedBodyPacket(packet);
-	//	}
-	//	// 忽略错误
-	//	return false;
-	//}
-	//// Body
-	//return FeedBodyPacket(packet);
-	return false;
+	if (FAILED(sample->GetSampleTime(&_sampleTime)))
+		_sampleTime = -1;
+	ThrowIfFailed(sample->ConvertToContiguousBuffer(&_inputBuffer));
+	BYTE* data; DWORD length;
+	ThrowIfFailed(_inputBuffer->Lock(&data, nullptr, &length));
+	InitPacket(_inputPacket, data, length);
+	return DecodeOneFrame();
 }
 
 void FFmpegAudioDecoderTransform::OnProduceOutput(MFT_OUTPUT_DATA_BUFFER & output)
 {
-	//if (!output.pSample) ThrowIfFailed(E_INVALIDARG);
-	//ComPtr<IMFMediaBuffer> buffer;
-	//ThrowIfFailed(output.pSample->GetBufferByIndex(0, buffer.GetAddressOf()));
-	//BYTE* data; DWORD maxLength;
-	//DWORD cntLength = 0;
-	//{
-	//	Core::MFBufferLocker locker(buffer.Get());
-	//	locker.Lock(data, &maxLength, nullptr);
-	//	if (maxLength < OnGetOutputFrameSize()) ThrowIfFailed(E_INVALIDARG);
-	//	memset(data, 0, maxLength);
+	if (!output.pSample) ThrowIfFailed(E_INVALIDARG);
+	ComPtr<IMFMediaBuffer> buffer;
+	ThrowIfFailed(output.pSample->GetBufferByIndex(0, buffer.GetAddressOf()));
+	BYTE* data; DWORD maxLength;
+	DWORD cntLength = 0;
+	{
+		Core::MFBufferLocker locker(buffer.Get());
+		locker.Lock(data, &maxLength, nullptr);
+		if (maxLength < OnGetOutputFrameSize()) ThrowIfFailed(E_INVALIDARG);
 
-	//	cntLength = FillFloatFrame(buffer.Get(), data, maxLength);
-	//}
-	//ThrowIfFailed(buffer->SetCurrentLength(cntLength));
-	//auto duration = MFTIME(decodedSamples * 1e7 / vorbisInfo.rate);
-	//decodedSamples = 0;
+		cntLength = FillFrame(buffer.Get(), data, maxLength);
+	}
+	ThrowIfFailed(buffer->SetCurrentLength(cntLength));
+	auto duration = MFTIME(decodedSamples * 1e7 / _outputSampleRate);
+	ThrowIfFailed(output.pSample->SetSampleDuration(duration));
+	if (_sampleTime != -1)
+	{
+		ThrowIfFailed(output.pSample->SetSampleTime(_sampleTime));
+		_sampleTime += duration;
+	}
+	if (DecodeOneFrame())
+		output.dwStatus = MFT_OUTPUT_DATA_BUFFER_INCOMPLETE;
+}
+
+bool FFmpegAudioDecoderTransform::DecodeOneFrame()
+{
+	decodedSamples = 0;
+	auto& packet = _inputPacket;
+	auto ret = [&] {
+		if (packet.size == 0)
+			return false;
+
+		int got_frame = 0;
+		while (!got_frame)
+		{
+			auto ret = avcodec_decode_audio4(_codecContext.get(), _frame.get(), &got_frame, &packet);
+			if (ret < 0 || (ret == 0 && !got_frame))
+				return false;
+			packet.size -= ret;
+			packet.data += ret;
+		}
+		decodedSamples = _frame->nb_samples;
+		return true;
+	}();
+	if (!ret && _inputBuffer)
+	{
+		_inputBuffer->Unlock();
+		_inputBuffer.Reset();
+	}
+	return ret;
 }
 
 WRL::ComPtr<IMFMediaType> FFmpegAudioDecoderTransform::OnGetOutputAvailableType(DWORD index) noexcept
@@ -189,49 +232,48 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 	ThrowIfNot(codec, L"Cannot find a codec.");
 	_codecContext.reset(avcodec_alloc_context3(codec));
 	ThrowIfNot(_codecContext, L"Cannot allocate codec context.");
+	_codecContext->sample_fmt = _waveFormat->SampleFormat;
+	_codecContext->sample_rate = (int)tmpFormat->nSamplesPerSec;
+	_codecContext->channels = (int)tmpFormat->nChannels;
+	_codecContext->block_align = (int)tmpFormat->nBlockAlign;
+	_codecContext->bits_per_coded_sample = _waveFormat->BitsPerCodedSample;
+	_codecContext->flags = _waveFormat->Flags;
+	_codecContext->flags2 = _waveFormat->Flags2;
+
+	ComPtr<IUnknown> optionsUnk;
+	ThrowIfFailed(inputType->GetUnknown(MF_MT_LIBAV_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk)));
+	auto options = static_cast<LibAVCodecOptions*>(optionsUnk.Get());
+	if (!options->ExtraData.empty())
+	{
+		auto size = options->ExtraData.size();
+		_codecContext->extradata = reinterpret_cast<uint8_t*>(av_malloc(size));
+		ThrowIfNot(memcpy_s(_codecContext->extradata, size, options->ExtraData.data(), size) == 0, L"Cannot copy extra data");
+		_codecContext->extradata_size = (int)size;
+	}
+	ThrowIfNot(avcodec_open2(_codecContext.get(), codec, nullptr) >= 0, L"Cannot open codec context.");
+
+	_frame.reset(av_frame_alloc());
+	ThrowIfNot(_frame, L"Cannot allocate frame.");
 }
 
-//bool FFmpegAudioDecoderTransform::FeedBodyPacket(ogg_packet & packet)
-//{
-//	auto ret = vorbis_synthesis(&vorbisBlock, &packet);
-//	// 提交 packet 成功
-//	if (ret == 0)
-//	{
-//		ret = vorbis_synthesis_blockin(&vorbisDspState, &vorbisBlock);
-//		// 提交 block 成功
-//		if (ret == 0)
-//		{
-//			decodedSamples = vorbis_synthesis_pcmout(&vorbisDspState, nullptr);
-//			return decodedSamples != 0;
-//		}
-//	}
-//	// 忽略其它错误
-//	return false;
-//}
-
-DWORD FFmpegAudioDecoderTransform::FillFloatFrame(IMFMediaBuffer* buffer, BYTE * data, DWORD maxLength)
+DWORD FFmpegAudioDecoderTransform::FillFrame(IMFMediaBuffer* buffer, BYTE * data, DWORD maxLength)
 {
-	//auto cntData = reinterpret_cast<float*>(data);
-	//float** channelsSrc = nullptr;
-	//auto availSamples = vorbis_synthesis_pcmout(&vorbisDspState, &channelsSrc);
+	auto swrContext = swr_alloc_set_opts(_swrContext.get(), av_get_default_channel_layout(_outputChannels),
+		_outputSampleFormat, _outputSampleRate, _frame->channel_layout, _waveFormat->SampleFormat,
+		_waveFormat->Format.nSamplesPerSec, 0, nullptr);
+	if (swrContext != _swrContext.get())
+	{
+		_swrContext.reset(swrContext);
+		ThrowIfNot(swrContext && swr_init(swrContext) >= 0, L"Cannot load resampler.");
+	}
+	ThrowIfNot(swrContext, L"Cannot load resampler.");
 
-	//if (availSamples && channelsSrc)
-	//{
-	//	const auto samplesToRead = size_t(availSamples);
-	//	const auto channels = size_t(vorbisInfo.channels);
-	//	if (maxLength < samplesToRead * channels * 4)
-	//		ThrowIfFailed(E_INVALIDARG);
-
-	//	for (size_t i = 0; i < size_t(availSamples); i++)
-	//		for (size_t channel = 0; channel < channels; channel++)
-	//			*cntData++ = channelsSrc[channel][i];
-
-	//	ThrowIfNot(vorbis_synthesis_read(&vorbisDspState, availSamples) == 0,
-	//		L"Unexpected decode error.");
-	//}
-
-	//return DWORD(reinterpret_cast<BYTE*>(cntData) - data);
-	return 0;
+	int converted = 0;
+	uint8_t* out[] = { data };
+	converted = swr_convert(swrContext, out, _frame->nb_samples, (const uint8_t**)_frame->extended_data, _frame->nb_samples);
+	ThrowIfNot(converted == _frame->nb_samples, L"Resample failed.");
+	av_frame_unref(_frame.get());
+	return converted * _outputBlockAlign;
 }
 
 void FFmpegAudioDecoderTransform::BeginStreaming()

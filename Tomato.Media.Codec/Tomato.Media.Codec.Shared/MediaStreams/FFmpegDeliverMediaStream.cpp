@@ -58,10 +58,10 @@ void FFmpegDeliverMediaStream::QueuePacket(AVPacket& packet)
 			ThrowIfFailed(sample->AddBuffer(mediaBuffer.Get()));
 			if (packet.pts != AV_NOPTS_VALUE)
 				ThrowIfFailed(sample->SetSampleTime(dt2hns(packet.pts, _stream)));
-			if (packet.dts != AV_NOPTS_VALUE)
-				ThrowIfFailed(sample->SetSampleDuration(dt2hns(packet.dts, _stream)));
+			EnqueueSample(sample.Get());
 		}
-		RequestData();
+		else
+			RequestData();
 	}
 	catch (...)
 	{
