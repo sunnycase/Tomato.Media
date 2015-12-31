@@ -321,6 +321,9 @@
     <ProjectReference Include="..\..\Tomato.Core\Tomato.Core.WinRT\Tomato.Core.WinRT.vcxproj">
       <Project>{e0bf017e-cca1-4f42-9104-dbd6b96477b2}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Tomato.Media\Tomato.Media.WinRT\Tomato.Media.WinRT.vcxproj">
+      <Project>{f5a28f95-fc11-43ce-a2b6-9a8649ac606b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

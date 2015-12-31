@@ -24,10 +24,18 @@ void ThrowWin32IfNot(T value)
 	if (!value) throw Platform::Exception::CreateException(HRESULT_FROM_WIN32(GetLastError()));
 }
 
-template<typename T>
+template<typename T, typename = std::enable_if_t<std::is_scalar<T>::value>>
 void ThrowIfNot(T value, const wchar_t* message)
 {
-	if (!value) ThrowIfFailed(E_FAIL, message);
+	if (!value)
+		ThrowIfFailed(E_FAIL, message);
+}
+
+template<typename T, typename = std::enable_if_t<!std::is_scalar<T>::value>>
+void ThrowIfNot(const T& value, const wchar_t* message)
+{
+	if (!value)
+		ThrowIfFailed(E_FAIL, message);
 }
 
 inline void __declspec(noreturn) ThrowAlways(const wchar_t* message)

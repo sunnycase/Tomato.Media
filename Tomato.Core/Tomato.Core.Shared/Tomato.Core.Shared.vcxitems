@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFOperationQueue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFRAII.h" />
@@ -66,6 +67,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp" />

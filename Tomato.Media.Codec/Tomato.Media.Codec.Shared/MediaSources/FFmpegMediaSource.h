@@ -7,7 +7,6 @@
 #pragma once
 #include "MediaSourceBase.h"
 #include "MediaStreams/FFmpegDeliverMediaStream.h"
-#include "libogg/ogg.h"
 #include "../../include/MFWorkerQueueProvider.h"
 #include "../../include/MFAsyncCallback.h"
 #include "Utilities/FFmpegHelper.h"
@@ -44,12 +43,12 @@ private:
 	void EndOfSource();
 	void AddStream(AVStream* stream, IMFStreamDescriptor* streamDescriptor);
 private:
-	ogg_sync_state syncState;
 	Core::MFWorkerQueueProviderRef workerQueue;
 	bool workThreadRegistered = false;
 	std::shared_ptr<FFmpeg::Wrappers::AVFormatContextWrapper> _fmtContext;
 	std::map<int, WRL::ComPtr<FFmpegDeliverMediaStream>> _streamIdMaps;
 	std::map<int, WRL::ComPtr<FFmpegDeliverMediaStream>> _streamIndexMaps;
+	WRL::ComPtr<IMFMetadataProvider> _metadataProvider;
 };
 
 END_NS_MEDIA_CODEC

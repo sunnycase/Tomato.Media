@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "FFmpegMediaSource.h"
 #include "constants.h"
+#include "../../include/media/MFMetadataBuilder.h"
 
 using namespace NS_CORE;
 using namespace NS_MEDIA;
@@ -108,7 +109,8 @@ namespace
 	class MetadataProvider : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IMFMetadataProvider>
 	{
 	public:
-		MetadataProvider()
+		MetadataProvider(std::shared_ptr<FFmpeg::Wrappers::AVFormatContextWrapper> fmtContext)
+			:_fmtContext(fmtContext)
 		{
 
 		}
@@ -116,8 +118,46 @@ namespace
 		// Í¨¹ý RuntimeClass ¼Ì³Ð
 		STDMETHODIMP GetMFMetadata(IMFPresentationDescriptor * pPresentationDescriptor, DWORD dwStreamIdentifier, DWORD dwFlags, IMFMetadata ** ppMFMetadata) override
 		{
-			return E_NOTIMPL;
+			try
+			{
+				if (dwStreamIdentifier == 0)
+					FillMetadata(_fmtContext->Get()->metadata, ppMFMetadata);
+				else
+				{
+					auto lastStreamIt = _fmtContext->Get()->streams + _fmtContext->Get()->nb_streams;
+					auto streamIt = std::find_if(_fmtContext->Get()->streams, lastStreamIt,
+						[id = (int)dwStreamIdentifier](AVStream* stream) { return stream->id == id;});
+					if (streamIt != lastStreamIt)
+						FillMetadata((*streamIt)->metadata, ppMFMetadata);
+					else
+						return MF_E_PROPERTY_NOT_FOUND;
+				}
+			}
+			CATCH_ALL();
+			return S_OK;
 		}
+	private:
+		void FillMetadata(AVDictionary* dict, IMFMetadata ** ppMFMetadata)
+		{
+			auto builder = Make<MFMetadataBuilder>();
+			AVDictionaryEntry* entry = nullptr;
+			if (entry = av_dict_get(dict, "title", nullptr, 0))
+				builder->SetProperty(L"Title", L"");
+			if (entry = av_dict_get(dict, "title", entry, 0))
+				builder->SetProperty(L"Title", L"");
+			// Album
+			if (entry = av_dict_get(dict, "album", nullptr, 0))
+				builder->SetProperty(L"WM/AlbumTitle", L"");
+			// AlbumArtist
+			if (entry = av_dict_get(dict, "album_artist", nullptr, 0))
+				builder->SetProperty(L"WM/AlbumArtist", L"");
+			// Artist
+			if (entry = av_dict_get(dict, "artist", nullptr, 0))
+				builder->SetProperty(L"Author", L"");
+			*ppMFMetadata = builder.Detach();
+		}
+	private:
+		std::shared_ptr<FFmpeg::Wrappers::AVFormatContextWrapper> _fmtContext;
 	};
 
 	class RateControl : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IMFRateControl>
@@ -201,8 +241,9 @@ HRESULT FFmpegMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID *
 	{
 		if (guidService == MF_METADATA_PROVIDER_SERVICE)
 		{
-			auto provider = Make<MetadataProvider>();
-			return provider.CopyTo(riid, ppvObject);
+			if(!_metadataProvider)
+				_metadataProvider = Make<MetadataProvider>(_fmtContext);
+			return _metadataProvider.CopyTo(riid, ppvObject);
 		}
 	}
 	return hr;

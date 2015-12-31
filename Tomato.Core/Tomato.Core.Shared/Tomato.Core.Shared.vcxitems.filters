@@ -171,6 +171,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp">
@@ -279,6 +282,9 @@
       <Filter>源文件\minizip\aes</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PackageFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

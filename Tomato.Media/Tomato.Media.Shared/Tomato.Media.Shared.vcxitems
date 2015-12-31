@@ -15,6 +15,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\MFMetadataBuilder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMetadataBuilder.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
