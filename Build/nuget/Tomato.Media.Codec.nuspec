@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Tomato.Media.Codec</id>
+    <version>0.0.2-alpha1</version>
+    <authors>SunnyCase</authors>
+    <description>Tomato Media Codecs Library.</description>
+    <language>Neutral</language>
+    <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2015 SunnyCase</copyright>
+    <tags>WinRT UWP Media Music Codec Video</tags>
+    <dependencies>
+    	<group>
+    		<dependency id="Tomato.Core" version="0.0.2-alpha1"/>
+    		<dependency id="Tomato.Media" version="0.0.2-alpha1"/>
+    		<dependency id="FFmpeg.Win10" version="2.7.1.1"/>
+  		</group>
+  	</dependencies>
+  </metadata>
+
+  <files>
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Codec.winmd" target="lib\uap10.0\Tomato.Media.Codec.winmd" />
+
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Codec.dll" target="runtimes\win10-x86\native\Tomato.Media.Codec.dll" />
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Codec.pri" target="runtimes\win10-x86\native\Tomato.Media.Codec.pri" />
+
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.Codec.dll" target="runtimes\win10-x64\native\Tomato.Media.Codec.dll" />
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.Codec.pri" target="runtimes\win10-x64\native\Tomato.Media.Codec.pri" />
+
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.Codec.dll" target="runtimes\win10-arm\native\Tomato.Media.Codec.dll" />
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.Codec.pri" target="runtimes\win10-arm\native\Tomato.Media.Codec.pri" />
+</files>
+</package>
