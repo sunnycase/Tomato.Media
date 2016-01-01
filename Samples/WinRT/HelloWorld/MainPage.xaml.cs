@@ -32,13 +32,13 @@ namespace HelloWorld
         private string fileName = new[] {
             "ms-appx:///Assets/04.花篝り.APE",
             "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi",
-            "ms-appx:///Assets/bully.ogg" }[2];
+            "ms-appx:///Assets/bully.ogg" }[0];
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            //Loaded += MainPage_Loaded;
+            Loaded += MainPage_Loaded;
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -49,11 +49,20 @@ namespace HelloWorld
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
-            videoPresenter = new VideoPresenter();
-            videoPresenter.SetMediaSource(mediaSource);
-            img_Video.Source = videoPresenter.ImageSource;
+            Debug.WriteLine($"Title: {mediaSource.Title}");
+            Debug.WriteLine($"Album: {mediaSource.Album}");
+            Debug.WriteLine($"Artist: {mediaSource.Artist}");
+            Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
+            Debug.WriteLine($"Duration: {mediaSource.Duration}");
+            Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+            //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
+            //var stream = await file.OpenReadAsync();
+            //var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
+            //videoPresenter = new VideoPresenter();
+            //videoPresenter.SetMediaSource(mediaSource);
+            //img_Video.Source = videoPresenter.ImageSource;
 
-            videoPresenter.Play();
+            //videoPresenter.Play();
         }
 
         private void PlayerClient_MessageReceived(object sender, MessageReceivedEventArgs e)

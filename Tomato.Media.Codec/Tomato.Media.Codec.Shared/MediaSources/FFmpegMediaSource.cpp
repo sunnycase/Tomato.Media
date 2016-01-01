@@ -8,6 +8,7 @@
 #include "FFmpegMediaSource.h"
 #include "constants.h"
 #include "../../include/media/MFMetadataBuilder.h"
+#include "../../include/encoding.h"
 
 using namespace NS_CORE;
 using namespace NS_MEDIA;
@@ -142,18 +143,18 @@ namespace
 			auto builder = Make<MFMetadataBuilder>();
 			AVDictionaryEntry* entry = nullptr;
 			if (entry = av_dict_get(dict, "title", nullptr, 0))
-				builder->SetProperty(L"Title", L"");
+				builder->SetProperty(L"Title", s2ws(entry->value));
 			if (entry = av_dict_get(dict, "title", entry, 0))
-				builder->SetProperty(L"Title", L"");
+				builder->SetProperty(L"Title", s2ws(entry->value));
 			// Album
 			if (entry = av_dict_get(dict, "album", nullptr, 0))
-				builder->SetProperty(L"WM/AlbumTitle", L"");
+				builder->SetProperty(L"WM/AlbumTitle", s2ws(entry->value));
 			// AlbumArtist
 			if (entry = av_dict_get(dict, "album_artist", nullptr, 0))
-				builder->SetProperty(L"WM/AlbumArtist", L"");
+				builder->SetProperty(L"WM/AlbumArtist", s2ws(entry->value));
 			// Artist
 			if (entry = av_dict_get(dict, "artist", nullptr, 0))
-				builder->SetProperty(L"Author", L"");
+				builder->SetProperty(L"Author", s2ws(entry->value));
 			*ppMFMetadata = builder.Detach();
 		}
 	private:

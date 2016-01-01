@@ -82,7 +82,7 @@ HRESULT MFMetadataBuilder::GetAllPropertyNames(PROPVARIANT * ppvNames)
 			auto ptr = unique_cotaskmem<WCHAR>((LPWSTR)CoTaskMemAlloc(len));
 			if (!ptr) return E_OUTOFMEMORY;
 			ZeroMemory(ptr.get(), len);
-			if (memcpy_s(ptr.get(), len, key.data(), key.size()) != 0)
+			if (memcpy_s(ptr.get(), len, key.data(), key.size() * sizeof(wchar_t)) != 0)
 				return E_FAIL;
 			ptrs.get()[idx++] = ptr.get();
 			ptrCaches.emplace_back(std::move(ptr));
@@ -98,11 +98,12 @@ HRESULT MFMetadataBuilder::GetAllPropertyNames(PROPVARIANT * ppvNames)
 
 void MFMetadataBuilder::SetProperty(const std::wstring & key, const std::wstring & value)
 {
+	auto srcLen = value.size() * sizeof(wchar_t);
 	auto len = (value.size() + 1) * sizeof(wchar_t);
 	auto ptr = unique_cotaskmem<WCHAR>((LPWSTR)CoTaskMemAlloc(len));
 	ThrowIfNot(ptr, L"Out of memeory.");
 	ZeroMemory(ptr.get(), len);
-	ThrowIfNot(memcpy_s(ptr.get(), len, key.data(), key.size()) == 0, L"Cannot copy value.");
+	ThrowIfNot(memcpy_s(ptr.get(), len, value.data(), srcLen) == 0, L"Cannot copy value.");
 
 	auto it = _properties.find(key);
 	if (it != _properties.end())

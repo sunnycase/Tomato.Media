@@ -7,15 +7,6 @@
     <Filter Include="源文件">
       <UniqueIdentifier>{a46535c9-481c-4faa-9cef-c3a4148bf393}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\libogg">
-      <UniqueIdentifier>{d96d3ad2-ee20-476c-bdf0-f9e3138cc35b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\libogg">
-      <UniqueIdentifier>{ea6c5b8c-9004-4f19-9934-bb2c86284f4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\libvorbis">
-      <UniqueIdentifier>{8a504a83-34ec-4c23-bf75-61cb3be5d6b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\ByteStreamHandlers">
       <UniqueIdentifier>{85b51333-a8c2-4cd5-9b0c-989975aff759}</UniqueIdentifier>
     </Filter>
@@ -28,20 +19,11 @@
     <Filter Include="源文件\MediaSources">
       <UniqueIdentifier>{7418ba34-025f-4ca4-92f1-af43b39aef74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\libvorbis">
-      <UniqueIdentifier>{fe8cdbad-4be3-4504-a2b3-41afac80d552}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\MediaStreams">
       <UniqueIdentifier>{1fca8e33-7fe8-4499-abe1-cb4acc9abbfc}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\MediaStreams">
       <UniqueIdentifier>{2d2a9579-be2e-4485-8efe-ed87e3e1eae4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\libtheora">
-      <UniqueIdentifier>{10b58981-9f49-4f84-92d0-dca588d9d737}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\libtheora">
-      <UniqueIdentifier>{cc3a61c4-50b1-45b3-af75-f8a867a7b283}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Transforms">
       <UniqueIdentifier>{6affc978-f397-4653-a916-e91e73f36069}</UniqueIdentifier>
@@ -63,16 +45,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libogg\ogg.h">
-      <Filter>头文件\libogg</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libogg\os_types.h">
-      <Filter>头文件\libogg</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.h">
-      <Filter>头文件\ByteStreamHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.h">
       <Filter>头文件\ByteStreamHandlers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h">
@@ -81,128 +54,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h">
       <Filter>头文件\MediaSources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.h">
-      <Filter>头文件\MediaSources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codec.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codebook.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\codec_internal.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\misc.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\os.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\psy.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\window.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\registry.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\envelope.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\mdct.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\backends.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\smallft.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\scales.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lpc.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\masking.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\bitrate.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\highlevel.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lsp.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lookup.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\lookup_data.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\codec.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theoradec.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\decint.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\internal.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\bitpack.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\huffdec.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\dequant.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\quant.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\huffman.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\ocintrin.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\dct.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)constants.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h">
       <Filter>头文件\Transforms</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.h">
-      <Filter>头文件\Transforms</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.h">
-      <Filter>头文件\MediaStreams</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h">
       <Filter>头文件\MediaStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libtheora\theora_raii.h">
-      <Filter>头文件\libtheora</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libvorbis\vorbis_raii.h">
-      <Filter>头文件\libvorbis</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.h">
-      <Filter>头文件\Transforms</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.h">
       <Filter>头文件\MediaSources</Filter>
@@ -224,107 +83,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp">
       <Filter>源文件\ByteStreamHandlers</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\OggByteStreamHandler.cpp">
-      <Filter>源文件\ByteStreamHandlers</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp">
       <Filter>源文件\MediaSources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libogg\framing.c">
-      <Filter>源文件\libogg</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libogg\bitwise.c">
-      <Filter>源文件\libogg</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\OggMediaSource.cpp">
-      <Filter>源文件\MediaSources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\info.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\codebook.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\envelope.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\mdct.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\psy.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\registry.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\smallft.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\window.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lpc.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\bitrate.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\floor0.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\floor1.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lsp.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\lookup.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\mapping0.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\res0.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\block.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\sharedbook.c">
-      <Filter>源文件\libvorbis</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\decinfo.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\decode.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\internal.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\bitpack.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\dequant.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\huffdec.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\quant.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\theora.info.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\state.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\fragment.c">
-      <Filter>源文件\libtheora</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libtheora\idct.c">
-      <Filter>源文件\libtheora</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp">
       <Filter>源文件</Filter>
@@ -332,20 +92,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp">
       <Filter>源文件\Transforms</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\TheoraDecoderTransform.cpp">
-      <Filter>源文件\Transforms</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp">
       <Filter>源文件\MediaStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\OggDeliverMediaStream.cpp">
-      <Filter>源文件\MediaStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\VorbisDecoderTransform.cpp">
-      <Filter>源文件\Transforms</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libvorbis\synthesis.c">
-      <Filter>源文件\libvorbis</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.cpp">
       <Filter>源文件\MediaSources</Filter>

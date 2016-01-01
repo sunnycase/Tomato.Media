@@ -67,6 +67,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cpp" />

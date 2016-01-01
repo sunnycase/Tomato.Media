@@ -168,10 +168,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\minizip_raii.h">
       <Filter>头文件\minizip</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -285,6 +285,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

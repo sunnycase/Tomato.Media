@@ -12,3 +12,4 @@
 #include <windows.media.h>
 #include <queue>
 #include <condition_variable>
+#include <cassert>

@@ -29,31 +29,6 @@ runtimeclass CodecManager
 [version(NTDDI_WIN8)]
 [activatable(NTDDI_WIN8)]
 [marshaling_behavior(agile)]
-runtimeclass OggByteStreamHandler
-{
-	[default] interface Windows.Media.IMediaExtension;
-}
-
-[version(NTDDI_WIN8)]
-[activatable(NTDDI_WIN8)]
-[marshaling_behavior(agile)]
-runtimeclass TheoraDecoderTransform
-{
-	[default] interface Windows.Media.IMediaExtension;
-}
-
-[version(NTDDI_WIN8)]
-[activatable(NTDDI_WIN8)]
-[marshaling_behavior(agile)]
-runtimeclass VorbisDecoderTransform
-{
-	[default] interface Windows.Media.IMediaExtension;
-}
-
-
-[version(NTDDI_WIN8)]
-[activatable(NTDDI_WIN8)]
-[marshaling_behavior(agile)]
 runtimeclass FFmpegByteStreamHandler
 {
 	[default] interface Windows.Media.IMediaExtension;

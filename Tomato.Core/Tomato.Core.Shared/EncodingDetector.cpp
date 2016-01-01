@@ -17,3 +17,13 @@ EncodingDetector::EncodingDetector()
 EncodingDetector::~EncodingDetector()
 {
 }
+
+DWORD EncodingDetector::DetectCodePage(const std::string& text)
+{
+	INT len = text.length(), score = 2;
+	auto infos = std::make_unique<DetectEncodingInfo[]>(score);
+	ThrowIfFailed(_multiLang->DetectInputCodepage(MLDETECTCP_NONE, 0, const_cast<CHAR*>(text.data()), 
+		&len, infos.get(), &score));
+	if (score == 0) return CP_ACP;
+	return infos[0].nCodePage;
+}

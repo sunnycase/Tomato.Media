@@ -15,6 +15,8 @@ class EncodingDetector
 public:
 	TOMATO_CORE_API EncodingDetector();
 	TOMATO_CORE_API ~EncodingDetector();
+
+	TOMATO_CORE_API DWORD DetectCodePage(const std::string& text);
 private:
 	WRL::ComPtr<IMultiLanguage2> _multiLang;
 };

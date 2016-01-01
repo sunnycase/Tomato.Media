@@ -2,26 +2,38 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Media</id>
-    <version>0.0.1-alpha1-6</version>
+    <version>0.0.2-alpha1</version>
     <authors>SunnyCase</authors>
     <description>Tomato Media Library for media playback and processing.</description>
     <language>Neutral</language>
     <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>1. Add some media player events.</releaseNotes>
+    <releaseNotes>1. Add FFmpeg.</releaseNotes>
     <copyright>Copyright (c) 2015 SunnyCase</copyright>
     <tags>WinRT UWP Media Music Video</tags>
+    <dependencies>
+    	<group>
+    		<dependency id="Tomato.Core" version="0.0.2-alpha1"/>
+  		</group>
+  	</dependencies>
   </metadata>
 
   <files>
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Core.winmd" target="lib\uap10.0\Tomato.Core.winmd" />
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Media.winmd" target="lib\uap10.0\Tomato.Media.winmd" />
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.winmd" target="lib\uap10.0\Tomato.Media.winmd" />
 
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Core.dll" target="runtimes\win10-x86\native\Tomato.Core.dll" />
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Core.pri" target="runtimes\win10-x86\native\Tomato.Core.pri" />
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Media.dll" target="runtimes\win10-x86\native\Tomato.Media.dll" />
-    <file src="..\..\bin\WinRT\Debug\Win32\Tomato.Media.pri" target="runtimes\win10-x86\native\Tomato.Media.pri" />
-    <file src="..\..\bin\WinRT\Debug\Win32\DefaultVideoPS.cso" target="runtimes\win10-x86\native\Tomato.Media\DefaultVideoPS.cso" />
-    <file src="..\..\bin\WinRT\Debug\Win32\DefaultVideoVS.cso" target="runtimes\win10-x86\native\Tomato.Media\DefaultVideoVS.cso" />
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.dll" target="runtimes\win10-x86\native\Tomato.Media.dll" />
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.pri" target="runtimes\win10-x86\native\Tomato.Media.pri" />
+    <file src="..\..\bin\WinRT\Release\Win32\DefaultVideoPS.cso" target="runtimes\win10-x86\native\Tomato.Media\DefaultVideoPS.cso" />
+    <file src="..\..\bin\WinRT\Release\Win32\DefaultVideoVS.cso" target="runtimes\win10-x86\native\Tomato.Media\DefaultVideoVS.cso" />
+
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.dll" target="runtimes\win10-x64\native\Tomato.Media.dll" />
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.pri" target="runtimes\win10-x64\native\Tomato.Media.pri" />
+    <file src="..\..\bin\WinRT\Release\x64\DefaultVideoPS.cso" target="runtimes\win10-x64\native\Tomato.Media\DefaultVideoPS.cso" />
+    <file src="..\..\bin\WinRT\Release\x64\DefaultVideoVS.cso" target="runtimes\win10-x64\native\Tomato.Media\DefaultVideoVS.cso" />
+
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.dll" target="runtimes\win10-arm\native\Tomato.Media.dll" />
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.pri" target="runtimes\win10-arm\native\Tomato.Media.pri" />
+    <file src="..\..\bin\WinRT\Release\arm\DefaultVideoPS.cso" target="runtimes\win10-arm\native\Tomato.Media\DefaultVideoPS.cso" />
+    <file src="..\..\bin\WinRT\Release\arm\DefaultVideoVS.cso" target="runtimes\win10-arm\native\Tomato.Media\DefaultVideoVS.cso" />
 </files>
 </package>
