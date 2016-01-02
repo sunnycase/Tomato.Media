@@ -28,6 +28,18 @@ public interface class IMediaPlayer
 		void set(Windows::Foundation::TimeSpan value);
 	}
 
+	property bool IsMuted
+	{
+		bool get();
+		void set(bool value);
+	}
+
+	property double Volume
+	{
+		double get();
+		void set(double value);
+	}
+
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
 	event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;

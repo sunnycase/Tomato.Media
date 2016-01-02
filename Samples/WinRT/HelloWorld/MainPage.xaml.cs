@@ -32,7 +32,8 @@ namespace HelloWorld
         private string fileName = new[] {
             "ms-appx:///Assets/04.花篝り.APE",
             "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi",
-            "ms-appx:///Assets/bully.ogg" }[0];
+            "ms-appx:///Assets/04 - irony -TV Mix-.mp3",
+            "ms-appx:///Assets/bully.ogg" }[2];
 
         public MainPage()
         {
@@ -55,6 +56,14 @@ namespace HelloWorld
             Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
             Debug.WriteLine($"Duration: {mediaSource.Duration}");
             Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+
+            var meta = await MediaMetadataProvider.CreateFromStream(stream, false);
+            Debug.WriteLine($"Title: {meta.Title}");
+            Debug.WriteLine($"Album: {meta.Album}");
+            Debug.WriteLine($"Artist: {meta.Artist}");
+            Debug.WriteLine($"AlbumArtist: {meta.AlbumArtist}");
+            Debug.WriteLine($"Duration: {meta.Duration}");
+            Debug.WriteLine($"Lyrics: {meta.Lyrics}");
             //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
             //var stream = await file.OpenReadAsync();
             //var mediaSource = await MediaSource.CreateFromStream(stream, fileName);

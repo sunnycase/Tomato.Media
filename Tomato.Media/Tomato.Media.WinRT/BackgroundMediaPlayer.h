@@ -42,6 +42,18 @@ public:
 		virtual void set(Windows::Foundation::TimeSpan value) { mediaPlayer->Position = value; }
 	}
 
+	property bool IsMuted
+	{
+		virtual bool get() { return mediaPlayer->IsMuted; }
+		virtual void set(bool value) { mediaPlayer->IsMuted = value; }
+	}
+
+	property double Volume
+	{
+		virtual double get() { return mediaPlayer->Volume; }
+		virtual void set(double value) { mediaPlayer->Volume = value; }
+	}
+
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaOpened;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Platform::Object^>^ MediaEnded;
 	virtual event Windows::Foundation::TypedEventHandler<IMediaPlayer^, Windows::Media::Playback::MediaPlayerFailedEventArgs^>^ MediaFailed;

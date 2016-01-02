@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\any.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h" />
@@ -25,12 +26,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\unzip.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\zip.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\NonCopyable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\pop_min_max.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\push_undef_minmax.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\riff.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\ring_buffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zconf.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zlib.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\BinaryReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebuggerAppender.h" />

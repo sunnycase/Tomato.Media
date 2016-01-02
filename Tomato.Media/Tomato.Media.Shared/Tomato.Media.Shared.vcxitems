@@ -23,6 +23,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)IAudioRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MetadataReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
@@ -50,6 +55,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp" />

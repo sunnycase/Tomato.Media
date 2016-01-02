@@ -263,6 +263,7 @@
     <ClInclude Include="CoreMediaSource.h" />
     <ClInclude Include="IBackgroundMediaPlayerHandler.h" />
     <ClInclude Include="IMediaPlayer.h" />
+    <ClInclude Include="MediaMetadataProvider.h" />
     <ClInclude Include="MediaSource.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="VideoPresenter.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="BackgroundMediaPlayer.cpp" />
     <ClCompile Include="BackgroundMediaPlayerClient.cpp" />
     <ClCompile Include="CoreMediaSource.cpp" />
+    <ClCompile Include="MediaMetadataProvider.cpp" />
     <ClCompile Include="MediaSource.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

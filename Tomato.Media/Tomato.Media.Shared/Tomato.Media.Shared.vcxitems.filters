@@ -16,6 +16,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{cfcad880-5c55-4b0d-8dd2-9256f9dec496}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Metadata">
+      <UniqueIdentifier>{aca4c20c-094c-4359-9065-ba69d3676946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Metadata">
+      <UniqueIdentifier>{2309ac3b-8f25-4b31-bffa-69ee5380c39e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h">
@@ -105,6 +111,21 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\MFMetadataBuilder.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MetadataReader.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
@@ -163,6 +184,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMetadataBuilder.cpp">
       <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.cpp">
+      <Filter>源文件\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp">
+      <Filter>源文件\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp">
+      <Filter>源文件\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp">
+      <Filter>源文件\Metadata</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
