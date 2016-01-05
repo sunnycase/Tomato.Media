@@ -140,5 +140,10 @@ namespace BackgroundMediaShared
         {
             mediaPlayer.SendMessage("M", "Ready to Play");
         }
+
+        public void OnCanceled()
+        {
+
+        }
     }
 }

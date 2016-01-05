@@ -435,7 +435,7 @@ void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)
 
 	PROPVARIANT positionVar;
 	PropVariantInit(&positionVar);
-	finalizer fin([&] {PropVariantClear(&positionVar);});
+	auto fin = make_finalizer([&] {PropVariantClear(&positionVar);});
 
 	if (position == -1)
 		positionVar.vt = VT_EMPTY;

@@ -41,23 +41,32 @@
 #include <memory>
 
 ///<summary>ÖÕ½áÆ÷</summary>
+template<typename TCall>
 class finalizer final
 {
 public:
-	finalizer(std::function<void()> action)
-		:action(std::move(action))
+	finalizer(TCall&& action)
+		:action(std::forward<decltype(action)>(action))
 	{
 
 	}
+
+	finalizer(finalizer&&) = default;
+	finalizer& operator=(finalizer&&) = default;
 
 	~finalizer()
 	{
-		if (action)
-			action();
+		action();
 	}
 private:
-	std::function<void()> action;
+	TCall action;
 };
+
+template<typename TCall>
+finalizer<TCall> make_finalizer(TCall&& action)
+{
+	return finalizer<TCall>(std::forward<decltype(action)>(action));
+}
 
 #ifdef _WIN32
 

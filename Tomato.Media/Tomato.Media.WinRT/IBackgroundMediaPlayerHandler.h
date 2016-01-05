@@ -17,6 +17,7 @@ public interface class IBackgroundMediaPlayerHandler
 	///<summary>播放器激活时触发。</summary>
 	void OnActivated(BackgroundMediaPlayer^ mediaPlayer);
 	void OnReceiveMessage(Platform::String^ tag, Platform::String^ message);
+	void OnCanceled();
 };
 
 END_NS_MEDIA

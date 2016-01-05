@@ -59,13 +59,18 @@ BackgroundMediaPlayer::BackgroundMediaPlayer()
 void BackgroundMediaPlayer::Run(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^taskInstance)
 {
 	AttachMessageHandlers();
-	ConfigureMediaPlayer();
 
 	deferral = taskInstance->GetDeferral();
+
+	ConfigureMediaPlayer();
+
 	ActivateHandler();
 	auto valueSet = ref new ValueSet();
 	valueSet->Insert(L"MessageId", BackgroundMediaPlayerActivatedMessageKey);
 	Playback::BackgroundMediaPlayer::SendMessageToForeground(valueSet);
+
+	taskInstance->Task->Completed += ref new Windows::ApplicationModel::Background::BackgroundTaskCompletedEventHandler(this, &BackgroundMediaPlayer::OnCompleted);
+	taskInstance->Canceled += ref new Windows::ApplicationModel::Background::BackgroundTaskCanceledEventHandler(this, &BackgroundMediaPlayer::OnCanceled);
 }
 
 void BackgroundMediaPlayer::SendMessage(String^ tag, String ^ message)
@@ -91,7 +96,7 @@ void BackgroundMediaPlayer::ActivateHandler()
 
 void BackgroundMediaPlayer::AttachMessageHandlers()
 {
-	Playback::BackgroundMediaPlayer::MessageReceivedFromForeground += ref new EventHandler<Playback::MediaPlayerDataReceivedEventArgs ^>(
+	_messageFromForegroundRegToken = Playback::BackgroundMediaPlayer::MessageReceivedFromForeground += ref new EventHandler<Playback::MediaPlayerDataReceivedEventArgs ^>(
 		this, &BackgroundMediaPlayer::OnMessageReceivedFromForeground);
 }
 
@@ -102,16 +107,25 @@ void BackgroundMediaPlayer::ConfigureMediaPlayer()
 	mediaPlayer->AudioDeviceType = Playback::MediaPlayerAudioDeviceType::Multimedia;
 	mediaPlayer->AutoPlay = false;
 
-	mediaPlayer->MediaOpened += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
+	_mediaOpenedRegToken = mediaPlayer->MediaOpened += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
 		this, &BackgroundMediaPlayer::OnMediaOpened);
-	mediaPlayer->MediaEnded += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
+	_mediaEndedRegToken = mediaPlayer->MediaEnded += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
 		this, &BackgroundMediaPlayer::OnMediaEnded);
-	mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this, 
+	_mediaFailedRegToken = mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this, 
 		&BackgroundMediaPlayer::OnMediaFailed);
-	mediaPlayer->CurrentStateChanged += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnCurrentStateChanged);
-	mediaPlayer->SeekCompleted += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnSeekCompleted);
+	_currentStateChangedRegToken = mediaPlayer->CurrentStateChanged += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnCurrentStateChanged);
+	_seekCompletedRegToken = mediaPlayer->SeekCompleted += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnSeekCompleted);
 }
 
+void BackgroundMediaPlayer::Shutdown()
+{
+	mediaPlayer->MediaOpened -= _mediaOpenedRegToken;
+	mediaPlayer->MediaEnded -= _mediaEndedRegToken;
+	mediaPlayer->MediaFailed -= _mediaFailedRegToken;
+	mediaPlayer->CurrentStateChanged -= _currentStateChangedRegToken;
+	mediaPlayer->SeekCompleted -= _seekCompletedRegToken;
+	Playback::BackgroundMediaPlayer::MessageReceivedFromForeground -= _messageFromForegroundRegToken;
+}
 
 void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^sender, Playback::MediaPlayerDataReceivedEventArgs ^args)
 {
@@ -167,4 +181,21 @@ void BackgroundMediaPlayer::OnMediaFailed(Windows::Media::Playback::MediaPlayer 
 void BackgroundMediaPlayer::OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args)
 {
 	SeekCompleted(this, args);
+}
+
+void BackgroundMediaPlayer::OnCompleted(Windows::ApplicationModel::Background::BackgroundTaskRegistration ^sender, Windows::ApplicationModel::Background::BackgroundTaskCompletedEventArgs ^args)
+{
+	deferral->Complete();
+}
+
+void BackgroundMediaPlayer::OnCanceled(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^sender, Windows::ApplicationModel::Background::BackgroundTaskCancellationReason reason)
+{
+	auto fin(make_finalizer([&] {deferral->Complete();}));
+	Shutdown();
+	Object^ handlerObj;
+	if (SUCCEEDED(_audioHandler.As(reinterpret_cast<WRL::ComPtr<IInspectable>*>(&handlerObj))))
+	{
+		if (auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj))
+			audioHandler->OnCanceled();
+	}
 }

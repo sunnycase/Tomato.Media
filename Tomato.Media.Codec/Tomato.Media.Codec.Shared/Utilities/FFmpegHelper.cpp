@@ -59,6 +59,7 @@ MFAVIOContext::MFAVIOContext(IMFByteStream * byteStream, size_t bufferSize, bool
 AVFormatContextWrapper MFAVIOContext::OpenFormatContext()
 {
 	AVFormatContextWrapper fmtContext(avformat_alloc_context());
+	ThrowIfNot(fmtContext, L"Cannot alloc format context.");
 	fmtContext.Open(shared_from_this(), _ioContext.Get());
 	return std::move(fmtContext);
 }
@@ -183,6 +184,8 @@ void AVFormatContextWrapper::Open(std::shared_ptr<void>&& opaque, AVIOContext* c
 {
 	if (_opened)
 		ThrowAlways(L"Format is already opened.");
+	if (!_context)
+		ThrowAlways(L"Empty format context.");
 	try
 	{
 		_context->pb = context;
@@ -192,7 +195,9 @@ void AVFormatContextWrapper::Open(std::shared_ptr<void>&& opaque, AVIOContext* c
 	}
 	catch (...)
 	{
-		_context->pb = nullptr;
+		if (_context)
+			_context->pb = nullptr;
+		throw;
 	}
 }
 

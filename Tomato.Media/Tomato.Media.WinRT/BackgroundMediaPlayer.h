@@ -65,6 +65,7 @@ private:
 	void ActivateHandler();
 	void AttachMessageHandlers();
 	void ConfigureMediaPlayer();
+	void Shutdown();
 
 	void OnMessageReceivedFromForeground(Platform::Object ^sender, Windows::Media::Playback::MediaPlayerDataReceivedEventArgs ^args);
 	void OnMediaOpened(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
@@ -77,6 +78,11 @@ private:
 	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 	void OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args);
 	void OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
+	void OnCompleted(Windows::ApplicationModel::Background::BackgroundTaskRegistration ^sender, Windows::ApplicationModel::Background::BackgroundTaskCompletedEventArgs ^args);
+	void OnCanceled(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^sender, Windows::ApplicationModel::Background::BackgroundTaskCancellationReason reason);
+
+	Windows::Foundation::EventRegistrationToken _mediaOpenedRegToken, _mediaEndedRegToken, _currentStateChangedRegToken,
+		_mediaFailedRegToken, _seekCompletedRegToken, _messageFromForegroundRegToken;
 };
 
 extern Platform::String^ BackgroundMediaPlayerActivatedMessageKey;

@@ -26,8 +26,30 @@ BackgroundMediaPlayerClient::BackgroundMediaPlayerClient(Windows::UI::Xaml::Inte
 
 void BackgroundMediaPlayerClient::AttachMessageListener()
 {
-	messageListenerToken = Playback::BackgroundMediaPlayer::MessageReceivedFromBackground += ref new EventHandler<Playback::MediaPlayerDataReceivedEventArgs ^>(
-		this, &BackgroundMediaPlayerClient::OnMessageReceivedFromBackground);
+	bool failed = true;
+	int retryCount = 2;
+
+	while (--retryCount >= 0)
+	{
+		int hr = S_OK;
+		try
+		{
+			messageListenerToken = Playback::BackgroundMediaPlayer::MessageReceivedFromBackground += ref new EventHandler<Playback::MediaPlayerDataReceivedEventArgs ^>(
+				this, &BackgroundMediaPlayerClient::OnMessageReceivedFromBackground);
+			failed = false;
+			break;
+		}
+		catch (Exception^ ex)
+		{
+			if (ex->HResult == RPC_S_SERVER_UNAVAILABLE)
+				hr = ex->HResult;
+			else
+				throw;
+		}
+		Playback::BackgroundMediaPlayer::Shutdown();
+	}
+	if (failed)
+		throw ref new COMException(RPC_S_SERVER_UNAVAILABLE);
 }
 
 void BackgroundMediaPlayerClient::DetachMessageListener()
@@ -51,5 +73,35 @@ void BackgroundMediaPlayerClient::SendMessage(Platform::String^ tag, Platform::S
 	valueSet->Insert(L"MessageId", BackgroundMediaPlayerUserMessageKey);
 	valueSet->Insert(L"MessageTag", tag);
 	valueSet->Insert(L"MessageContent", message);
-	Playback::BackgroundMediaPlayer::SendMessageToBackground(valueSet);
+
+	bool failed = true;
+	int retryCount = 2;
+
+	while (--retryCount >= 0)
+	{
+		int hr = S_OK;
+		try
+		{
+			Playback::BackgroundMediaPlayer::SendMessageToBackground(valueSet);
+			failed = false;
+			break;
+		}
+		catch (Exception^ ex)
+		{
+			if (ex->HResult == RPC_S_SERVER_UNAVAILABLE)
+				hr = ex->HResult;
+			else
+				throw;
+		}
+		try
+		{
+			Playback::BackgroundMediaPlayer::Shutdown();
+			AttachMessageListener();
+		}
+		catch (...)
+		{
+		}
+	}
+	if (failed)
+		throw ref new COMException(RPC_S_SERVER_UNAVAILABLE);
 }

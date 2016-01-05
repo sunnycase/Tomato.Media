@@ -171,7 +171,7 @@ Frame D3D11VideoRender::CreateFrame(IMFSample * sample, UINT width, UINT height)
 
 			BYTE* base; LONG pitch;
 			ThrowIfFailed(buffer2d->Lock2D(&base, &pitch));
-			finalizer fin([&] { buffer2d->Unlock2D();});
+			auto fin = make_finalizer([&] { buffer2d->Unlock2D();});
 
 			//width = pitch;
 			height = bufferSize / pitch * 2 / 3;
@@ -261,7 +261,7 @@ void D3D11VideoRender::RenderFrameToSurfaceImageSource(const Frame& frame)
 		}
 		else
 		{
-			finalizer fin([&] {sisNative->EndDraw();});
+			auto fin = make_finalizer([&] {sisNative->EndDraw();});
 
 			ComPtr<ID3D11Texture2D> renderTarget;
 			ThrowIfFailed(surface.As(&renderTarget));

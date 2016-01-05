@@ -2,18 +2,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Media</id>
-    <version>0.0.2-alpha1</version>
+    <version>0.0.2-alpha4</version>
     <authors>SunnyCase</authors>
     <description>Tomato Media Library for media playback and processing.</description>
     <language>Neutral</language>
     <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>1. Add FFmpeg.</releaseNotes>
+    <releaseNotes>1. Fix background task canceled dispose.</releaseNotes>
     <copyright>Copyright (c) 2015 SunnyCase</copyright>
     <tags>WinRT UWP Media Music Video</tags>
     <dependencies>
     	<group>
-    		<dependency id="Tomato.Core" version="0.0.2-alpha1"/>
+    		<dependency id="Tomato.Core" version="0.0.2-alpha4"/>
   		</group>
   	</dependencies>
   </metadata>

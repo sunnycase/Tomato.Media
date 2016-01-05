@@ -9,7 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Image x:Name="img_Video"/>
-        <MediaElement Source="Assets/04.花篝り.APE" MediaFailed="MediaElement_MediaFailed" AudioCategory="Media" IsLooping="True"
-                      MediaOpened="MediaElement_MediaOpened" AreTransportControlsEnabled="True"/>
+        <!--<MediaElement Source="Assets/04.花篝り.APE" MediaFailed="MediaElement_MediaFailed" AudioCategory="Media" IsLooping="True"
+                      MediaOpened="MediaElement_MediaOpened" AreTransportControlsEnabled="True"/>-->
     </Grid>
 </Page>
