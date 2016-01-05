@@ -6,9 +6,10 @@
 // 创建日期 2015-08-04
 #pragma once
 #include "common.h"
-#include "BackgroundMediaPlayer.h"
 
 DEFINE_NS_MEDIA
+
+ref class BackgroundMediaPlayer;
 
 ///<summary>后台媒体播放器处理器</summary>
 [Windows::Foundation::Metadata::WebHostHidden]

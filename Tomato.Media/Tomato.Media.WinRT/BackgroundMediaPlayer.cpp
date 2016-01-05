@@ -91,7 +91,7 @@ void BackgroundMediaPlayer::ActivateHandler()
 		reinterpret_cast<IInspectable**>(&handlerObj)));
 	auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj);
 	audioHandler->OnActivated(this);
-	ThrowIfFailed(WRL::AsWeak(reinterpret_cast<IInspectable*>(handlerObj), &_audioHandler));
+	_audioHandler = audioHandler;
 }
 
 void BackgroundMediaPlayer::AttachMessageHandlers()
@@ -133,12 +133,7 @@ void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^se
 	auto key = (String^)valueSet->Lookup(L"MessageId");
 	if (key == BackgroundMediaPlayerUserMessageKey)
 	{
-		Object^ handlerObj;
-		if (SUCCEEDED(_audioHandler.As(reinterpret_cast<WRL::ComPtr<IInspectable>*>(&handlerObj))))
-		{
-			if (auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj))
-				audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageTag"), (String^)valueSet->Lookup(L"MessageContent"));
-		}
+		_audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageTag"), (String^)valueSet->Lookup(L"MessageContent"));
 	}
 }
 
@@ -192,10 +187,5 @@ void BackgroundMediaPlayer::OnCanceled(Windows::ApplicationModel::Background::IB
 {
 	auto fin(make_finalizer([&] {deferral->Complete();}));
 	Shutdown();
-	Object^ handlerObj;
-	if (SUCCEEDED(_audioHandler.As(reinterpret_cast<WRL::ComPtr<IInspectable>*>(&handlerObj))))
-	{
-		if (auto audioHandler = safe_cast<IBackgroundMediaPlayerHandler^>(handlerObj))
-			audioHandler->OnCanceled();
-	}
+	_audioHandler->OnCanceled();
 }

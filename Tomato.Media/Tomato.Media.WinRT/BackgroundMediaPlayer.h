@@ -7,6 +7,7 @@
 #pragma once
 #include "common.h"
 #include "IMediaPlayer.h"
+#include "IBackgroundMediaPlayerHandler.h"
 
 DEFINE_NS_MEDIA
 
@@ -74,7 +75,7 @@ private:
 	Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
 
-	WRL::WeakRef _audioHandler;
+	IBackgroundMediaPlayerHandler^ _audioHandler;
 	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
 	void OnMediaFailed(Windows::Media::Playback::MediaPlayer ^sender, Windows::Media::Playback::MediaPlayerFailedEventArgs ^args);
 	void OnSeekCompleted(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);
