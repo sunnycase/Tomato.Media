@@ -49,16 +49,15 @@ void FFmpegByteStreamHandler::OnCreateMediaSource(IMFByteStream* byteStream, IMF
 	// Start opening the source. This is an async operation.
 	// When it completes, the source will invoke our callback
 	// and then we will invoke the caller's callback.
-	source->OpenAsync(byteStream).then([](task<void> openTask) -> HRESULT
+	source->OpenAsync(byteStream).then([result](task<void> openTask)
 	{
-		try
+		auto hr = [=] {try
 		{
 			openTask.get();
 			return S_OK;
 		}
 		CATCH_ALL();
-	}).then([result](HRESULT hr)
-	{
+		}();
 		if (hr == E_FAIL)
 			result->SetStatus(MF_E_UNSUPPORTED_BYTESTREAM_TYPE);
 		else

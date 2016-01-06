@@ -6,7 +6,7 @@
 // 创建日期 2015-08-05
 #pragma once
 #include "common.h"
-#include "Utility/MFMediaSourceWrapper.h"
+#include "Utility/MFMediaSourceFactory.h"
 
 DEFINE_NS_MEDIA
 
@@ -17,6 +17,7 @@ public:
 	static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromStream(Windows::Storage::Streams::IRandomAccessStream^ stream);
 	static Windows::Foundation::IAsyncOperation<MediaSource^>^ CreateFromStream(Windows::Storage::Streams::IRandomAccessStream^ stream, Platform::String^ uriHint);
 
+	virtual ~MediaSource();
 	///<summay>加载完整元数据</summay>
 	//Windows::Foundation::IAsyncAction^ InitializeFullMetadatas();
 
@@ -38,7 +39,7 @@ private:
 	MediaSource();
 	concurrency::task<void> OpenAsync(Windows::Storage::Streams::IRandomAccessStream^ stream, Platform::String^ uriHint = nullptr);
 private:
-	MFMediaSourceWrapper mediaSource;
+	MFMediaSourceFactory mediaSource;
 };
 
 END_NS_MEDIA

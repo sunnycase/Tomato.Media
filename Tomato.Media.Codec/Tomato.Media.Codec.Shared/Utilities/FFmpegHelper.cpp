@@ -56,6 +56,11 @@ MFAVIOContext::MFAVIOContext(IMFByteStream * byteStream, size_t bufferSize, bool
 	ThrowIfNot(_ioContext, L"Create MF AVIOContext Failed.");
 }
 
+MFAVIOContext::~MFAVIOContext()
+{
+
+}
+
 AVFormatContextWrapper MFAVIOContext::OpenFormatContext()
 {
 	AVFormatContextWrapper fmtContext(avformat_alloc_context());
@@ -154,6 +159,7 @@ AVIOContextWrapper::AVIOContextWrapper(AVIOContext * context) noexcept
 
 AVIOContextWrapper::~AVIOContextWrapper()
 {
+	av_free(_context->buffer);
 	av_freep(&_context);
 }
 

@@ -401,9 +401,8 @@ task<void> MediaSourceBase::CreatePresentationDescriptor(IMFByteStream* stream)
 			ThrowIfFailed(MF_E_MEDIA_SOURCE_WRONGSTATE);
 	}
 
-	ComPtr<MediaSourceBase> thisGuard(this);
 	return OnCreatePresentationDescriptor(stream)
-		.then([thisGuard, this](ComPtr<IMFPresentationDescriptor> pd)
+		.then([this](ComPtr<IMFPresentationDescriptor> pd)
 	{
 		LOCK_STATE();
 		this->presentDescriptor = pd;
@@ -423,7 +422,9 @@ void MediaSourceBase::QueueAsyncOperation(MediaSourceOperationKind operation)
 
 void MediaSourceBase::OnShutdown()
 {
-
+	eventQueue = nullptr;
+	operationQueue = nullptr;
+	presentDescriptor = nullptr;
 }
 
 void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)

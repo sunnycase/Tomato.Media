@@ -18,6 +18,11 @@ MediaSource::MediaSource()
 
 }
 
+MediaSource::~MediaSource()
+{
+
+}
+
 task<void> MediaSource::OpenAsync(IRandomAccessStream ^ stream, Platform::String^ uriHint)
 {
 	return mediaSource.OpenAsync(stream, uriHint);

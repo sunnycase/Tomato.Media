@@ -6,13 +6,15 @@
 //
 #pragma once
 #include "common.h"
+#include <ppltasks.h>
+#include <mfidl.h>
 
 DEFINE_NS_MEDIA
 
-class MFMediaSourceWrapper : public WRL::ComPtr<IMFMediaSource>
+class MFMediaSourceFactory
 {
 public:
-	MFMediaSourceWrapper();
+	MFMediaSourceFactory();
 
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 	void Open(IStream* stream, const std::wstring& uriHint);
@@ -26,34 +28,37 @@ public:
 
 	void Open(IMFByteStream* byteStream, const std::wstring& uriHint);
 	concurrency::task<void> OpenAsync(IMFByteStream* byteStream, const std::wstring& uriHint);
+	concurrency::task<void> OpenAsync2(IMFByteStream* byteStream, const std::wstring& uriHint);
 
 	void Reset();
+	IMFMediaSource* Get() const noexcept { return _mediaSource.Get(); }
 
 	DEFINE_PROPERTY_GET(Title, std::wstring);
-	std::wstring get_Title() const;
+	std::wstring get_Title();
 
 	DEFINE_PROPERTY_GET(Album, std::wstring);
-	std::wstring get_Album() const;
+	std::wstring get_Album();
 
 	DEFINE_PROPERTY_GET(Artist, std::wstring);
-	std::wstring get_Artist() const;
+	std::wstring get_Artist();
 
 	DEFINE_PROPERTY_GET(AlbumArtist, std::wstring);
-	std::wstring get_AlbumArtist() const;
+	std::wstring get_AlbumArtist();
 
 	DEFINE_PROPERTY_GET(Lyrics, std::wstring);
-	std::wstring get_Lyrics() const;
+	std::wstring get_Lyrics();
 
 	DEFINE_PROPERTY_GET(Duration, MFTIME);
-	MFTIME get_Duration() const;
+	MFTIME get_Duration();
 private:
 	// 载入元数据
-	void EnsureInitializeMetadata() const;
+	void EnsureInitializeMetadata();
 	void CheckOpened() const;
-	std::wstring ReadStringMetadata(LPCWSTR key) const;
+	std::wstring ReadStringMetadata(LPCWSTR key);
 private:
-	mutable WRL::ComPtr<IMFMetadata> metadata;
-	mutable WRL::ComPtr<IMFPresentationDescriptor> pd;
+	WRL::ComPtr<IMFMediaSource> _mediaSource;
+	WRL::ComPtr<IMFMetadata> metadata;
+	WRL::ComPtr<IMFPresentationDescriptor> pd;
 };
 
 END_NS_MEDIA

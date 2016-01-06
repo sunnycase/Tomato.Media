@@ -5,7 +5,7 @@
 // 创建时间：2015-08-05
 //
 #include "pch.h"
-#include "MFMediaSourceWrapper.h"
+#include "MFMediaSourceFactory.h"
 #include "../../include/MFAsyncCallback.h"
 
 using namespace NS_CORE;
@@ -13,14 +13,14 @@ using namespace NS_MEDIA;
 using namespace WRL;
 using namespace concurrency;
 
-MFMediaSourceWrapper::MFMediaSourceWrapper()
+MFMediaSourceFactory::MFMediaSourceFactory()
 {
 
 }
 
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-void MFMediaSourceWrapper::Open(IStream * stream, const std::wstring& uriHint)
+void MFMediaSourceFactory::Open(IStream * stream, const std::wstring& uriHint)
 {
 	Reset();
 
@@ -36,10 +36,9 @@ void MFMediaSourceWrapper::Open(IStream * stream, const std::wstring& uriHint)
 
 using namespace Windows::Storage::Streams;
 
-task<void> MFMediaSourceWrapper::OpenAsync(IRandomAccessStream ^ stream, Platform::String^ uriHint)
+task<void> MFMediaSourceFactory::OpenAsync(IRandomAccessStream ^ stream, Platform::String^ uriHint)
 {
-	InternalRelease();
-	metadata.Reset();
+	Reset();
 
 	ComPtr<IMFByteStream> byteStream;
 	ThrowIfFailed(MFCreateMFByteStreamOnStreamEx(reinterpret_cast<IUnknown*>(stream), &byteStream));
@@ -50,7 +49,7 @@ task<void> MFMediaSourceWrapper::OpenAsync(IRandomAccessStream ^ stream, Platfor
 #endif
 #endif
 
-void MFMediaSourceWrapper::Open(IMFByteStream* byteStream, const std::wstring& uriHint)
+void MFMediaSourceFactory::Open(IMFByteStream* byteStream, const std::wstring& uriHint)
 {
 	Reset();
 
@@ -65,36 +64,54 @@ void MFMediaSourceWrapper::Open(IMFByteStream* byteStream, const std::wstring& u
 	ThrowIfFailed(sourceResolver->CreateObjectFromByteStream(byteStream, uriHint.c_str(), flag, nullptr, &objType, &unkMediaSource));
 	if (objType != MF_OBJECT_MEDIASOURCE)
 		ThrowIfFailed(E_FAIL, L"Cannot create media source.");
-	ThrowIfFailed(unkMediaSource.As(this));
+	ThrowIfFailed(unkMediaSource.As(&_mediaSource));
 }
 
-task<void> MFMediaSourceWrapper::OpenAsync(IMFByteStream* byteStream, const std::wstring& uriHint)
+task<void> MFMediaSourceFactory::OpenAsync(IMFByteStream* byteStream, const std::wstring& uriHint)
 {
-	Reset();
+	//Reset();
 
-	ComPtr<IMFSourceResolver> sourceResolver;
-	ThrowIfFailed(MFCreateSourceResolver(&sourceResolver));
-
-	auto callback = Make<MFAsyncTaskCallback>();
-	ComPtr<IUnknown> cancelCookie;
-	DWORD flag = MF_RESOLUTION_MEDIASOURCE;
-	if (uriHint.empty())
-		flag |= MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE;
-	ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, uriHint.c_str(), flag, nullptr, &cancelCookie, callback.Get(), nullptr));
-
-	return create_task(callback->GetEvent()).then([=](ComPtr<IMFAsyncResult> result)
-	{
-		MF_OBJECT_TYPE objType;
-
-		ComPtr<IUnknown> unkMediaSource;
-		ThrowIfFailed(sourceResolver->EndCreateObjectFromByteStream(result.Get(), &objType, &unkMediaSource));
-		if (objType != MF_OBJECT_MEDIASOURCE)
-			ThrowIfFailed(E_FAIL, L"Cannot create media source.");
-		ThrowIfFailed(unkMediaSource.As(this));
-	});
+	//ComPtr<IMFByteStream> b(byteStream);
+	//return create_task([=]
+	//{
+	//	for (size_t i = 0; i < 2000; i++)
+	//	{
+	//		auto t = OpenAsync2(b.Get(), uriHint);
+	//		t.wait();
+	//	}
+	//});
+	return OpenAsync2(byteStream, uriHint);
 }
 
-void MFMediaSourceWrapper::EnsureInitializeMetadata() const
+task<void> MFMediaSourceFactory::OpenAsync2(IMFByteStream* byteStream, const std::wstring& uriHint)
+{
+	//Reset();
+
+	//ComPtr<IMFSourceResolver> sourceResolver;
+	//ThrowIfFailed(MFCreateSourceResolver(&sourceResolver));
+
+	//auto callback = Make<MFAsyncTaskCallback>();
+	//ComPtr<IUnknown> cancelCookie;
+	//DWORD flag = MF_RESOLUTION_MEDIASOURCE;
+	//if (uriHint.empty())
+	//	flag |= MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE;
+	//ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, uriHint.c_str(), flag, nullptr, &cancelCookie, callback.Get(), nullptr));
+
+	//return create_task(callback->GetEvent()).then([this, sourceResolver](ComPtr<IMFAsyncResult>& result)
+	//{
+	//	MF_OBJECT_TYPE objType;
+
+	//	ComPtr<IUnknown> unkMediaSource;
+	//	ThrowIfFailed(sourceResolver->EndCreateObjectFromByteStream(result.Get(), &objType, &unkMediaSource));
+	//	if (objType != MF_OBJECT_MEDIASOURCE)
+	//		ThrowIfFailed(E_FAIL, L"Cannot create media source.");
+	//	ThrowIfFailed(unkMediaSource.As(&_mediaSource));
+	//});
+	Open(byteStream, uriHint);
+	return task_from_result();
+}
+
+void MFMediaSourceFactory::EnsureInitializeMetadata()
 {
 	if (!metadata)
 	{
@@ -102,19 +119,19 @@ void MFMediaSourceWrapper::EnsureInitializeMetadata() const
 
 		ComPtr<IMFMetadataProvider> provider;
 
-		ThrowIfFailed(ptr_->CreatePresentationDescriptor(&pd));
-		ThrowIfFailed(MFGetService(ptr_, MF_METADATA_PROVIDER_SERVICE, IID_PPV_ARGS(&provider)));
+		ThrowIfFailed(_mediaSource->CreatePresentationDescriptor(&pd));
+		ThrowIfFailed(MFGetService(_mediaSource.Get(), MF_METADATA_PROVIDER_SERVICE, IID_PPV_ARGS(&provider)));
 		ThrowIfFailed(provider->GetMFMetadata(pd.Get(), 0, 0, metadata.ReleaseAndGetAddressOf()));
 	}
 }
 
-void MFMediaSourceWrapper::CheckOpened() const
+void MFMediaSourceFactory::CheckOpened() const
 {
-	if (!ptr_)
+	if (!_mediaSource)
 		ThrowIfFailed(E_NOT_VALID_STATE, L"Must open the media source firstly.");
 }
 
-std::wstring MFMediaSourceWrapper::ReadStringMetadata(LPCWSTR key) const
+std::wstring MFMediaSourceFactory::ReadStringMetadata(LPCWSTR key)
 {
 	EnsureInitializeMetadata();
 
@@ -151,32 +168,32 @@ std::wstring MFMediaSourceWrapper::ReadStringMetadata(LPCWSTR key) const
 	}
 }
 
-std::wstring MFMediaSourceWrapper::get_Title() const
+std::wstring MFMediaSourceFactory::get_Title()
 {
 	return ReadStringMetadata(L"Title");
 }
 
-std::wstring MFMediaSourceWrapper::get_Album() const
+std::wstring MFMediaSourceFactory::get_Album()
 {
 	return ReadStringMetadata(L"WM/AlbumTitle");
 }
 
-std::wstring MFMediaSourceWrapper::get_Artist() const
+std::wstring MFMediaSourceFactory::get_Artist()
 {
 	return ReadStringMetadata(L"Author");
 }
 
-std::wstring MFMediaSourceWrapper::get_AlbumArtist() const
+std::wstring MFMediaSourceFactory::get_AlbumArtist()
 {
 	return ReadStringMetadata(L"WM/AlbumArtist");
 }
 
-std::wstring MFMediaSourceWrapper::get_Lyrics() const
+std::wstring MFMediaSourceFactory::get_Lyrics()
 {
 	return ReadStringMetadata(L"WM/Lyrics");
 }
 
-MFTIME MFMediaSourceWrapper::get_Duration() const
+MFTIME MFMediaSourceFactory::get_Duration()
 {
 	EnsureInitializeMetadata();
 
@@ -186,8 +203,8 @@ MFTIME MFMediaSourceWrapper::get_Duration() const
 	return duration;
 }
 
-void MFMediaSourceWrapper::Reset()
+void MFMediaSourceFactory::Reset()
 {
-	ComPtr::Reset();
+	_mediaSource.Reset();
 	metadata.Reset();
 }

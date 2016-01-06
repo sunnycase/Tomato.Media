@@ -389,9 +389,6 @@ task<ComPtr<IMFPresentationDescriptor>> FFmpegMediaSource::BuildPresentationDesc
 	auto ioContext = std::make_shared<MFAVIOContext>(stream, 4096, false);
 	auto fmtContext(ioContext->OpenFormatContext());
 	ThrowIfNot(avformat_find_stream_info(fmtContext.Get(), nullptr) >= 0, L"Read stream info error.");
-#if _DEBUG
-	av_dump_format(fmtContext.Get(), 0, nullptr, 0);
-#endif
 	_fmtContext = std::make_shared<FFmpeg::Wrappers::AVFormatContextWrapper>(std::move(fmtContext));
 	return task_from_result(MakePresentationDescriptor(_fmtContext->Get()));
 }

@@ -6,7 +6,7 @@
 // 创建时间：2015-03-18
 #include "pch.h"
 #include "MediaMetadata.h"
-#include "Utility/MFMediaSourceWrapper.h"
+#include "Utility/MFMediaSourceFactory.h"
 #include "id3v1.h"
 #include "id3v2.h"
 
@@ -45,7 +45,7 @@ task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(
 		{
 			if (!good)
 			{
-				MFMediaSourceWrapper source;
+				MFMediaSourceFactory source;
 				source.Open(stream.Get(), L"");
 
 				container->Add<DefaultMediaMetadatas::Title>(source.Title);

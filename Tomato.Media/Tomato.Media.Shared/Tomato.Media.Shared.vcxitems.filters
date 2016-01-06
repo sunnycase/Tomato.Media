@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
@@ -126,11 +123,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
       <Filter>头文件\Metadata</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -196,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp">
       <Filter>源文件\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp">
+      <Filter>源文件\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

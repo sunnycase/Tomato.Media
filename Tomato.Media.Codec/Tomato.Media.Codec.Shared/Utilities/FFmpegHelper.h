@@ -79,6 +79,7 @@ namespace FFmpeg
 	{
 	public:
 		MFAVIOContext(IMFByteStream* byteStream, size_t bufferSize, bool canWrite);
+		virtual ~MFAVIOContext();
 
 		Wrappers::AVFormatContextWrapper OpenFormatContext();
 		Wrappers::AVIOContextWrapper& Get() { return _ioContext; }

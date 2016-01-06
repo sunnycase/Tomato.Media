@@ -61,6 +61,11 @@ public:
 
 	}
 
+	STDMETHOD_(ULONG, AddRef)()
+	{
+		return InternalAddRef();
+	}
+
 	STDMETHODIMP_(ULONG) Release(void) override
 	{
 		ULONG ref = InternalRelease();

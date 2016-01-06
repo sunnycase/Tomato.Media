@@ -36,7 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
@@ -64,7 +64,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceWrapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMetadataBuilder.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />

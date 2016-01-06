@@ -29,11 +29,13 @@ namespace HelloWorld
     {
         private BackgroundMediaPlayerClient playerClient;
         private VideoPresenter videoPresenter;
-        private string fileName = new[] {
+
+        private static readonly string[] fileNames = new[]
+        {
             "ms-appx:///Assets/04.花篝り.APE",
-            "ms-appx:///Assets/Ore no Imouto ga Konna ni Kawaii Wake ga Nai Opening.avi",
-            "ms-appx:///Assets/04 - irony -TV Mix-.mp3",
-            "ms-appx:///Assets/bully.ogg" }[2];
+            "ms-appx:///Assets/04 - irony -TV Mix-.mp3"
+        };
+        private string fileName = fileNames[1];
 
         public MainPage()
         {
@@ -44,26 +46,40 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
-            playerClient.MessageReceived += PlayerClient_MessageReceived; ;
+            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
+            //playerClient.MessageReceived += PlayerClient_MessageReceived; ;
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
-            var stream = await file.OpenReadAsync();
-            var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
-            Debug.WriteLine($"Title: {mediaSource.Title}");
-            Debug.WriteLine($"Album: {mediaSource.Album}");
-            Debug.WriteLine($"Artist: {mediaSource.Artist}");
-            Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
-            Debug.WriteLine($"Duration: {mediaSource.Duration}");
-            Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            Debug.WriteLine($"Before: {GC.GetTotalMemory(true)} Bytes.");
+            for (int i = 0; i < 200; i++)
+            {
+                foreach (var fileName in fileNames)
+                {
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
+                    var stream = await file.OpenReadAsync();
+                    var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
+                    //Debug.WriteLine($"Title: {mediaSource.Title}");
+                    //Debug.WriteLine($"Album: {mediaSource.Album}");
+                    //Debug.WriteLine($"Artist: {mediaSource.Artist}");
+                    //Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
+                    //Debug.WriteLine($"Duration: {mediaSource.Duration}");
+                    //Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+                }
+            }
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            Debug.WriteLine($"After: {GC.GetTotalMemory(true)} Bytes.");
 
-            var meta = await MediaMetadataProvider.CreateFromStream(stream, false);
-            Debug.WriteLine($"Title: {meta.Title}");
-            Debug.WriteLine($"Album: {meta.Album}");
-            Debug.WriteLine($"Artist: {meta.Artist}");
-            Debug.WriteLine($"AlbumArtist: {meta.AlbumArtist}");
-            Debug.WriteLine($"Duration: {meta.Duration}");
-            Debug.WriteLine($"Lyrics: {meta.Lyrics}");
+            //var meta = await MediaMetadataProvider.CreateFromStream(stream, false);
+            //Debug.WriteLine($"Title: {meta.Title}");
+            //Debug.WriteLine($"Album: {meta.Album}");
+            //Debug.WriteLine($"Artist: {meta.Artist}");
+            //Debug.WriteLine($"AlbumArtist: {meta.AlbumArtist}");
+            //Debug.WriteLine($"Duration: {meta.Duration}");
+            //Debug.WriteLine($"Lyrics: {meta.Lyrics}");
             //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
             //var stream = await file.OpenReadAsync();
             //var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
