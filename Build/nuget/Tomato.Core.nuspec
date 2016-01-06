@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Core</id>
-    <version>0.0.2-alpha5</version>
+    <version>0.0.2-alpha6</version>
     <authors>SunnyCase</authors>
     <description>Tomato Core Library.</description>
     <language>Neutral</language>

@@ -34,12 +34,12 @@ public:
 	///<summary>¸è´Ê</summary>
 	property Platform::String^ Lyrics {Platform::String^ get(); }
 internal:
-	property IMFMediaSource* MFMediaSource {IMFMediaSource* get() { return mediaSource.Get(); }}
+	property IMFMediaSource* MFMediaSource {IMFMediaSource* get() { return mediaSource->Get(); }}
 private:
 	MediaSource();
 	concurrency::task<void> OpenAsync(Windows::Storage::Streams::IRandomAccessStream^ stream, Platform::String^ uriHint = nullptr);
 private:
-	MFMediaSourceFactory mediaSource;
+	std::shared_ptr<MFMediaSourceFactory> mediaSource;
 };
 
 END_NS_MEDIA

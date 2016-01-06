@@ -408,6 +408,16 @@ void FFmpegMediaSource::EndOfSource()
 
 }
 
+void FFmpegMediaSource::OnShutdown()
+{
+	for (auto&& pair : _streamIdMaps)
+		pair.second->Shutdown();
+	_streamIdMaps.clear();
+	_streamIndexMaps.clear();
+
+	MediaSourceBase::OnShutdown();
+}
+
 void FFmpegMediaSource::AddStream(AVStream* stream, IMFStreamDescriptor* streamDescriptor)
 {
 	auto deliverStream = Make<FFmpegDeliverMediaStream>(stream, AsWeak(), streamDescriptor);

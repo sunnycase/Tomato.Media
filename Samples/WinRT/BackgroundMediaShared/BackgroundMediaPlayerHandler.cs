@@ -20,10 +20,11 @@ namespace BackgroundMediaShared
         private static readonly string[] files = new[]
         {
             "04.花篝り.APE",
-            "04 - irony -TV Mix-.mp3"
+            "04 - irony -TV Mix-.mp3",
+            "08. きらきらエブリディ.mp3"
         };
 
-        public async void OnActivated(BackgroundMediaPlayer mediaPlayer)
+        public void OnActivated(BackgroundMediaPlayer mediaPlayer)
         {
             _codecManager = new CodecManager();
             _codecManager.RegisterDefaultCodecs();
@@ -34,18 +35,27 @@ namespace BackgroundMediaShared
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
             mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
+            Switch();
+        }
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{files[0]}"));
+        private int t = 0;
+        private async void Switch()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            t = t == 0 ? 1 : 0;
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{files[t]}"));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream);
-            Debug.WriteLine($"Title: {mediaSource.Title}");
-            Debug.WriteLine($"Album: {mediaSource.Album}");
-            Debug.WriteLine($"Artist: {mediaSource.Artist}");
-            Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
-            Debug.WriteLine($"Duration: {mediaSource.Duration}");
-            Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+            //Debug.WriteLine($"Title: {mediaSource.Title}");
+            //Debug.WriteLine($"Album: {mediaSource.Album}");
+            //Debug.WriteLine($"Artist: {mediaSource.Artist}");
+            //Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
+            //Debug.WriteLine($"Duration: {mediaSource.Duration}");
+            //Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
 
-            smtc.DisplayUpdater.MusicProperties.Title = mediaSource.Title;
+            smtc.DisplayUpdater.MusicProperties.Title = "ss";
             smtc.DisplayUpdater.Update();
 
             mediaPlayer.SetMediaSource(mediaSource);
@@ -89,6 +99,7 @@ namespace BackgroundMediaShared
             smtc.ButtonPressed += Smtc_ButtonPressed;
             smtc.IsPlayEnabled = smtc.IsPauseEnabled = true;
             smtc.IsEnabled = true;
+            smtc.IsPreviousEnabled = smtc.IsNextEnabled = true;
             smtc.PlaybackStatus = MediaPlaybackStatus.Closed;
             smtc.DisplayUpdater.Type = MediaPlaybackType.Music;
             smtc.DisplayUpdater.Update();
@@ -114,8 +125,10 @@ namespace BackgroundMediaShared
                 case SystemMediaTransportControlsButton.Rewind:
                     break;
                 case SystemMediaTransportControlsButton.Next:
+                    Switch();
                     break;
                 case SystemMediaTransportControlsButton.Previous:
+                    Switch();
                     break;
                 case SystemMediaTransportControlsButton.ChannelUp:
                     break;

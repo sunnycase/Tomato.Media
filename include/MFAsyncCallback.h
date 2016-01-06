@@ -102,47 +102,38 @@ private:
 	const DWORD queueId;
 };
 
+template<class T>
 // Media Foundation 回调
-class MFAsyncTaskCallback : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::RuntimeClassType::ClassicCom>,
-	IMFAsyncCallback>
+class MFAsyncTaskCallback : public MFAsyncCallback<T>
 {
 public:
-	MFAsyncTaskCallback(DWORD queueId = 0)
-		:queueId(queueId)
+	typedef HRESULT(T::*Callback)(IMFAsyncResult *pAsyncResult);
+	MFAsyncTaskCallback(const std::shared_ptr<T>& pParent, Callback callback, DWORD queueId = 0)
+		:MFAsyncCallback<T>(pParent, callback, queueId)
 	{
 	}
 
-	// IMFAsyncCallback methods 
-	STDMETHODIMP GetParameters(DWORD *pdwFlags, DWORD *pdwQueue)
+	MFAsyncTaskCallback(DWORD queueId = 0)
+		:MFAsyncCallback<T>(queueId)
 	{
-		*pdwQueue = queueId;
-		*pdwFlags = 0;
-		return S_OK;
 	}
 
 	STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult)
 	{
-		completionEvent.set(pAsyncResult);
-		return S_OK;
+		auto hr = MFAsyncCallback<T>::Invoke(pAsyncResult);
+		if (SUCCEEDED(hr))
+			completionEvent.set();
+		else
+			completionEvent.set_exception(hr);
+		return hr;
 	}
 
-	DWORD GetQueueId() const noexcept
-	{
-		return queueId;
-	}
-
-	void SetQueueId(DWORD queueId)
-	{
-		this->queueId = queueId;
-	}
-
-	const concurrency::task_completion_event<Microsoft::WRL::ComPtr<IMFAsyncResult>>& GetEvent() const noexcept
+	const concurrency::task_completion_event<void>& GetEvent() const noexcept
 	{
 		return completionEvent;
 	}
 private:
-	concurrency::task_completion_event<Microsoft::WRL::ComPtr<IMFAsyncResult>> completionEvent;
-	DWORD queueId;
+	concurrency::task_completion_event<void> completionEvent;
 };
 
 END_NS_CORE

@@ -139,7 +139,7 @@ void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^se
 
 void BackgroundMediaPlayer::SetMediaSource(MediaSource^ mediaSource)
 {
-	auto coreSource = Make<CoreMediaSource>(mediaSource->MFMediaSource);
+	auto coreSource = Make<CoreMediaSource>(mediaSource);
 	mediaPlayer->SetMediaSource(reinterpret_cast<Windows::Media::Core::IMediaSource^>(coreSource.Get()));
 }
 

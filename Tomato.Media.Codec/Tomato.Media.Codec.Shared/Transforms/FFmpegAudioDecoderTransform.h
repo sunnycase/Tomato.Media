@@ -37,6 +37,7 @@ public:
 	static const DecoderTransformRegisterInfo RegisterInfos[2];
 
 	FFmpegAudioDecoderTransform();
+	virtual ~FFmpegAudioDecoderTransform();
 
 private:
 	virtual void OnValidateInputType(IMFMediaType* type) override;
@@ -75,6 +76,7 @@ private:
 	size_t bytesPerDecodecSample = 0;
 	size_t decodedSamples = 0;
 	MFTIME _sampleTime = -1;
+	bool _opended = false;
 };
 
 END_NS_MEDIA_CODEC

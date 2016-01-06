@@ -14,6 +14,7 @@ using namespace NS_MEDIA;
 using namespace concurrency;
 
 MediaSource::MediaSource()
+	:mediaSource(std::make_shared<MFMediaSourceFactory>())
 {
 
 }
@@ -25,7 +26,7 @@ MediaSource::~MediaSource()
 
 task<void> MediaSource::OpenAsync(IRandomAccessStream ^ stream, Platform::String^ uriHint)
 {
-	return mediaSource.OpenAsync(stream, uriHint);
+	return mediaSource->OpenAsync(stream, uriHint);
 }
 
 IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(IRandomAccessStream ^ stream)
@@ -54,31 +55,31 @@ IAsyncOperation<MediaSource^>^ MediaSource::CreateFromStream(IRandomAccessStream
 
 String^ MediaSource::Title::get()
 {
-	auto title(mediaSource.Title);
+	auto title(mediaSource->Title);
 	return ref new String(title.c_str(), title.length());
 }
 
 String^ MediaSource::AlbumArtist::get()
 {
-	auto albumArtist(mediaSource.AlbumArtist);
+	auto albumArtist(mediaSource->AlbumArtist);
 	return ref new String(albumArtist.c_str(), albumArtist.length());
 }
 
 String^ MediaSource::Artist::get()
 {
-	auto artist(mediaSource.Artist);
+	auto artist(mediaSource->Artist);
 	return ref new String(artist.c_str(), artist.length());
 }
 
 String^ MediaSource::Album::get()
 {
-	auto album(mediaSource.Album);
+	auto album(mediaSource->Album);
 	return ref new String(album.c_str(), album.length());
 }
 
 Platform::IBox<TimeSpan>^ MediaSource::Duration::get()
 {
-	auto duration = mediaSource.Duration;
+	auto duration = mediaSource->Duration;
 	if (duration == -1)
 		return nullptr;
 	return TimeSpan{ duration };
@@ -86,6 +87,6 @@ Platform::IBox<TimeSpan>^ MediaSource::Duration::get()
 
 String^ MediaSource::Lyrics::get()
 {
-	auto lyrics(mediaSource.Lyrics);
+	auto lyrics(mediaSource->Lyrics);
 	return ref new String(lyrics.c_str(), lyrics.length());
 }

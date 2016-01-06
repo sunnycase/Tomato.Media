@@ -41,18 +41,12 @@ MediaSourceBase::~MediaSourceBase()
 
 HRESULT MediaSourceBase::BeginGetEvent(IMFAsyncCallback *pCallback, IUnknown *punkState)
 {
-	LOCK_STATE();
-	if (!HasShutdown())
-		return eventQueue->BeginGetEvent(pCallback, punkState);
-	return MF_E_SHUTDOWN;
+	return eventQueue->BeginGetEvent(pCallback, punkState);
 }
 
 HRESULT MediaSourceBase::EndGetEvent(IMFAsyncResult *pResult, IMFMediaEvent **ppEvent)
 {
-	LOCK_STATE();
-	if (!HasShutdown())
-		return eventQueue->EndGetEvent(pResult, ppEvent);
-	return MF_E_SHUTDOWN;
+	return eventQueue->EndGetEvent(pResult, ppEvent);
 }
 
 HRESULT MediaSourceBase::GetEvent(DWORD dwFlags, IMFMediaEvent **ppEvent)
@@ -66,17 +60,12 @@ HRESULT MediaSourceBase::GetEvent(DWORD dwFlags, IMFMediaEvent **ppEvent)
 		if (!HasShutdown())
 			spQueue = eventQueue;
 	}
-	if (spQueue)
-		return spQueue->GetEvent(dwFlags, ppEvent);
-	return MF_E_SHUTDOWN;
+	return spQueue->GetEvent(dwFlags, ppEvent);
 }
 
 HRESULT MediaSourceBase::QueueEvent(MediaEventType met, REFGUID guidExtendedType, HRESULT hrStatus, const PROPVARIANT *pvValue)
 {
-	LOCK_STATE();
-	if (!HasShutdown())
-		return eventQueue->QueueEventParamVar(met, guidExtendedType, hrStatus, pvValue);
-	return MF_E_SHUTDOWN;
+	return eventQueue->QueueEventParamVar(met, guidExtendedType, hrStatus, pvValue);
 }
 
 //-------------------------------------------------------------------
@@ -143,6 +132,7 @@ HRESULT MediaSourceBase::Shutdown()
 	if (!HasShutdown())
 	{
 		OnShutdown();
+		state = MFMediaSourceState::NotInitialized;
 		return S_OK;
 	}
 	return MF_E_SHUTDOWN;
@@ -258,8 +248,8 @@ HRESULT MediaSourceBase::GetService(_In_ REFGUID guidService, _In_ REFIID riid, 
 	if (!ppvObject)
 		return E_POINTER;
 
-	if (guidService == MF_RATE_CONTROL_SERVICE)
-		return this->QueryInterface(riid, ppvObject);
+	//if (guidService == MF_RATE_CONTROL_SERVICE)
+	//	return this->QueryInterface(riid, ppvObject);
 
 	// 不支持的服务
 	return MF_E_UNSUPPORTED_SERVICE;
@@ -284,7 +274,7 @@ STDMETHODIMP MediaSourceBase::GetFastestRate(MFRATE_DIRECTION eDirection, BOOL f
 STDMETHODIMP MediaSourceBase::IsRateSupported(BOOL fThin, float flRate, float * pflNearestSupportedRate)
 {
 	if (fThin) return MF_E_THINNING_UNSUPPORTED;
-	if(flRate != 1.0f)return MF_E_UNSUPPORTED_RATE;
+	if (flRate != 1.0f)return MF_E_UNSUPPORTED_RATE;
 	return S_OK;
 }
 
@@ -422,9 +412,9 @@ void MediaSourceBase::QueueAsyncOperation(MediaSourceOperationKind operation)
 
 void MediaSourceBase::OnShutdown()
 {
-	eventQueue = nullptr;
-	operationQueue = nullptr;
+	eventQueue->Shutdown();
 	presentDescriptor = nullptr;
+	operationQueue = nullptr;
 }
 
 void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)
@@ -436,7 +426,7 @@ void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)
 
 	PROPVARIANT positionVar;
 	PropVariantInit(&positionVar);
-	auto fin = make_finalizer([&] {PropVariantClear(&positionVar);});
+	auto fin = make_finalizer([&] {PropVariantClear(&positionVar); });
 
 	if (position == -1)
 		positionVar.vt = VT_EMPTY;
@@ -537,10 +527,7 @@ void MediaSourceBase::StopStreams()
 HRESULT MediaSourceBase::QueueEventUnk(MediaEventType met, REFGUID guidExtendedType,
 	HRESULT hrStatus, IUnknown *unk)
 {
-	LOCK_STATE();
-	if (!HasShutdown())
-		return eventQueue->QueueEventParamUnk(met, guidExtendedType, hrStatus, unk);
-	return MF_E_SHUTDOWN;
+	return eventQueue->QueueEventParamUnk(met, guidExtendedType, hrStatus, unk);
 }
 
 void MediaSourceBase::OnEndOfStream()

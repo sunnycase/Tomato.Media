@@ -53,6 +53,7 @@ public:
 	void Pause();
 	void Stop();
 	void EndOfDeliver();
+	void Shutdown();
 protected:
 	void EnqueueSample(IMFSample* sample);
 	void RequestData();

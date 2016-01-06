@@ -159,7 +159,7 @@ AVIOContextWrapper::AVIOContextWrapper(AVIOContext * context) noexcept
 
 AVIOContextWrapper::~AVIOContextWrapper()
 {
-	av_free(_context->buffer);
+	av_freep(&_context->buffer);
 	av_freep(&_context);
 }
 

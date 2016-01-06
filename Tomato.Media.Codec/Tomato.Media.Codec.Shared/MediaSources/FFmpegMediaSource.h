@@ -40,6 +40,7 @@ private:
 	///<remarks>调用前需对状态加锁</remarks>
 	void RegisterWorkThreadIfNeeded();
 
+	virtual void OnShutdown() override;
 	void EndOfSource();
 	void AddStream(AVStream* stream, IMFStreamDescriptor* streamDescriptor);
 private:

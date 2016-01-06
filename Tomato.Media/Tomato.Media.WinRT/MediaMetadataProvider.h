@@ -27,6 +27,8 @@ public:
 	property Platform::IBox<Windows::Foundation::TimeSpan>^ Duration {Platform::IBox<Windows::Foundation::TimeSpan>^ get(); }
 	///<summary>¸è´Ê</summary>
 	property Platform::String^ Lyrics {Platform::String^ get(); }
+
+	virtual ~MediaMetadataProvider();
 private:
 	MediaMetadataProvider();
 	concurrency::task<void> LoadAsync(Windows::Storage::Streams::IRandomAccessStream^ stream, bool brief);

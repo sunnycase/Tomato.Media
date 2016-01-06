@@ -11,7 +11,7 @@
 
 DEFINE_NS_MEDIA
 
-class MFMediaSourceFactory
+class MFMediaSourceFactory : public std::enable_shared_from_this<MFMediaSourceFactory>
 {
 public:
 	MFMediaSourceFactory();
@@ -28,7 +28,6 @@ public:
 
 	void Open(IMFByteStream* byteStream, const std::wstring& uriHint);
 	concurrency::task<void> OpenAsync(IMFByteStream* byteStream, const std::wstring& uriHint);
-	concurrency::task<void> OpenAsync2(IMFByteStream* byteStream, const std::wstring& uriHint);
 
 	void Reset();
 	IMFMediaSource* Get() const noexcept { return _mediaSource.Get(); }
@@ -50,6 +49,8 @@ public:
 
 	DEFINE_PROPERTY_GET(Duration, MFTIME);
 	MFTIME get_Duration();
+
+	HRESULT OpenAsyncCallback(IMFAsyncResult *pAsyncResult);
 private:
 	// 载入元数据
 	void EnsureInitializeMetadata();

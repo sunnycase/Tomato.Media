@@ -46,32 +46,32 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
-            //playerClient.MessageReceived += PlayerClient_MessageReceived; ;
+            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
+            playerClient.MessageReceived += PlayerClient_MessageReceived; ;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Debug.WriteLine($"Before: {GC.GetTotalMemory(true)} Bytes.");
-            for (int i = 0; i < 200; i++)
-            {
-                foreach (var fileName in fileNames)
-                {
-                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
-                    var stream = await file.OpenReadAsync();
-                    var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
-                    //Debug.WriteLine($"Title: {mediaSource.Title}");
-                    //Debug.WriteLine($"Album: {mediaSource.Album}");
-                    //Debug.WriteLine($"Artist: {mediaSource.Artist}");
-                    //Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
-                    //Debug.WriteLine($"Duration: {mediaSource.Duration}");
-                    //Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
-                }
-            }
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Debug.WriteLine($"After: {GC.GetTotalMemory(true)} Bytes.");
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+            //GC.Collect();
+            //Debug.WriteLine($"Before: {GC.GetTotalMemory(true)} Bytes.");
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    foreach (var fileName in fileNames)
+            //    {
+            //        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileName));
+            //        var stream = await file.OpenReadAsync();
+            //        var mediaSource = await MediaSource.CreateFromStream(stream, fileName);
+            //        Debug.WriteLine($"Title: {mediaSource.Title}");
+            //        Debug.WriteLine($"Album: {mediaSource.Album}");
+            //        Debug.WriteLine($"Artist: {mediaSource.Artist}");
+            //        Debug.WriteLine($"AlbumArtist: {mediaSource.AlbumArtist}");
+            //        Debug.WriteLine($"Duration: {mediaSource.Duration}");
+            //        Debug.WriteLine($"Lyrics: {mediaSource.Lyrics}");
+            //    }
+            //}
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+            //GC.Collect();
+            //Debug.WriteLine($"After: {GC.GetTotalMemory(true)} Bytes.");
 
             //var meta = await MediaMetadataProvider.CreateFromStream(stream, false);
             //Debug.WriteLine($"Title: {meta.Title}");

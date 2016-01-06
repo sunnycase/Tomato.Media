@@ -6,7 +6,7 @@
 // 创建日期 2015-08-05
 #pragma once
 #include "common.h"
-#include "Utility/MFMediaSourceWrapper.h"
+#include "Utility/MFMediaSourceFactory.h"
 
 DEFINE_NS_MEDIA
 
@@ -24,7 +24,7 @@ public:
 	STDMETHODIMP get_Album(BSTR * album) override;
 	STDMETHODIMP Open(IStream * pStream) override;
 private:
-	MFMediaSourceWrapper mediaSource;
+	MFMediaSourceFactory mediaSource;
 };
 
 CoCreatableClass(MediaSource);

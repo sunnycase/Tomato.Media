@@ -12,10 +12,14 @@ using namespace Windows::Foundation;
 using namespace Windows::Storage::Streams;
 using namespace NS_MEDIA;
 
-CoreMediaSource::CoreMediaSource(IMFMediaSource* mediaSource)
+CoreMediaSource::CoreMediaSource(MediaSource^ mediaSource)
 	:mediaSource(mediaSource)
 {
 
+}
+
+CoreMediaSource::~CoreMediaSource()
+{
 }
 
 HRESULT CoreMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID * ppvObject)
@@ -24,7 +28,9 @@ HRESULT CoreMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID * p
 	{
 		if (riid == IID_IMFMediaSource)
 		{
-			return mediaSource.CopyTo(reinterpret_cast<IMFMediaSource**>(ppvObject));
+			auto mfSource = mediaSource->MFMediaSource;
+			if (mfSource)
+				return mfSource->QueryInterface(riid, ppvObject);
 		}
 	}
 	return MF_E_UNSUPPORTED_SERVICE;

@@ -38,6 +38,11 @@ public:
 
 	}
 
+	virtual ~MediaSourceOperation()
+	{
+
+	}
+
 	MediaSourceOperation() noexcept
 		: MediaSourceOperation(MediaSourceOperationKind::None)
 	{

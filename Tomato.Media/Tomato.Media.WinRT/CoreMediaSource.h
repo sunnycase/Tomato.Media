@@ -8,6 +8,7 @@
 #include "common.h"
 #include <windows.media.core.h>
 #include <mfidl.h>
+#include "MediaSource.h"
 
 DEFINE_NS_MEDIA
 
@@ -15,12 +16,13 @@ class CoreMediaSource sealed : public WRL::RuntimeClass<WRL::RuntimeClassFlags<W
 	ABI::Windows::Media::Core::IMediaSource, IMFGetService>
 {
 public:
-	CoreMediaSource(IMFMediaSource* mediaSource);
+	CoreMediaSource(MediaSource^ mediaSource);
+	virtual ~CoreMediaSource();
 
 	// Í¨¹ý RuntimeClass ¼Ì³Ð
 	STDMETHODIMP GetService(REFGUID guidService, REFIID riid, LPVOID * ppvObject) override;
 private:
-	WRL::ComPtr<IMFMediaSource> mediaSource;
+	MediaSource^ mediaSource;
 };
 
 END_NS_MEDIA

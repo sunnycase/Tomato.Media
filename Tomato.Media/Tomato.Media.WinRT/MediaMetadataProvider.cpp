@@ -27,6 +27,11 @@ IAsyncOperation<MediaMetadataProvider^>^ MediaMetadataProvider::CreateFromStream
 	});
 }
 
+MediaMetadataProvider::~MediaMetadataProvider()
+{
+
+}
+
 MediaMetadataProvider::MediaMetadataProvider()
 {
 

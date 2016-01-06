@@ -27,6 +27,11 @@ DeliverMediaStreamBase::~DeliverMediaStreamBase()
 {
 }
 
+void DeliverMediaStreamBase::Shutdown()
+{
+	eventQueue->Shutdown();
+}
+
 HRESULT DeliverMediaStreamBase::GetEvent(DWORD dwFlags, IMFMediaEvent ** ppEvent)
 {
 	return eventQueue->GetEvent(dwFlags, ppEvent);

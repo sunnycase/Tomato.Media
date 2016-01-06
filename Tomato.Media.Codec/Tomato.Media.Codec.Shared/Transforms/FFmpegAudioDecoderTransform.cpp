@@ -31,6 +31,12 @@ FFmpegAudioDecoderTransform::FFmpegAudioDecoderTransform()
 {
 }
 
+FFmpegAudioDecoderTransform::~FFmpegAudioDecoderTransform()
+{
+	if (_opended)
+		avcodec_close(_codecContext.get());
+}
+
 void FFmpegAudioDecoderTransform::OnValidateInputType(IMFMediaType * type)
 {
 	GUID majorType, subType;
@@ -251,6 +257,7 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 		_codecContext->extradata_size = (int)size;
 	}
 	ThrowIfNot(avcodec_open2(_codecContext.get(), codec, nullptr) >= 0, L"Cannot open codec context.");
+	_opended = true;
 
 	_frame.reset(av_frame_alloc());
 	ThrowIfNot(_frame, L"Cannot allocate frame.");
