@@ -210,4 +210,51 @@ private:
 	std::wstring description, value;
 };
 
+enum class ID3V2PictureType : byte
+{
+	Other,
+	_32x32FileIcon,
+	OtherFileIcon,
+	Cover_Front,
+	Cover_Back,
+	LeafletPage,
+	Media,
+	LeadArtist,
+	Artist,
+	Conductor,
+	Band,
+	Composer,
+	Lyricist,
+	RecordingLocation,
+	DuringRecording,
+	DuringPerformance,
+	VideoScreenCapture,
+	ABrightColouredFish,
+	Illustration,
+	ArtistLogotype,
+	StudioLogotype,
+	COUNT
+};
+
+// APIC Attached picture
+class ID3V2FrameAPIC : public ID3V2Frame
+{
+public:
+	ID3V2FrameAPIC() {}
+
+	const std::wstring& GetMimeType() const noexcept { return mimeType; }
+	const std::wstring& GetDescription() const noexcept { return description; }
+	ID3V2PictureType GetPictureType() const noexcept { return pictureType; }
+	const std::vector<byte>& GetData() const noexcept { return data; }
+	std::vector<byte>& GetData() noexcept { return data; }
+	virtual const ID3V2FrameKind& GetKind() const noexcept { return ID3V2FrameKinds::APIC; }
+protected:
+	virtual void ReadContent(Core::BinaryReader<byte*>&& reader);
+private:
+	ID3V2TextEncoding encoding;
+	std::wstring mimeType, description;
+	ID3V2PictureType pictureType;
+	std::vector<byte> data;
+};
+
 END_NS_MEDIA_INTERN

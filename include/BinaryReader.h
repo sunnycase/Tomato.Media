@@ -7,7 +7,7 @@
 #pragma once
 #include "common.h"
 #include <vector>
-#include "ring_buffer.h"
+#include "block_buffer.hpp"
 
 DEFINE_NS_CORE
 
@@ -325,7 +325,8 @@ public:
 		ULONG read;
 		auto buffer = std::make_unique<byte[]>(size);
 		ThrowIfFailed(_stream->Read(buffer.get(), size, &read));
-		return _buffer.write(buffer.get(), read);
+		_buffer.write(buffer.get(), read);
+		return size;
 	}
 private:
 	friend class Details::BinaryReaderImpl<BinaryReader>;
@@ -374,7 +375,7 @@ private:
 	}
 private:
 	WRL::ComPtr<IMFByteStream> _stream;
-	ring_buffer<byte> _buffer;
+	block_buffer<byte> _buffer;
 	std::unique_ptr<byte[]> _cache;
 };
 

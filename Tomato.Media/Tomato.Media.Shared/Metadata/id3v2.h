@@ -66,6 +66,19 @@ public:
 		}
 	}
 
+	template<class T>
+	void ForEachFrame(const ID3V2FrameKind& kind, std::function<bool(T*)> handler)
+	{
+		static_assert(std::is_base_of<ID3V2Frame, T>::value, "T 必须是帧类型。");
+
+		auto matches = frames.equal_range(kind);
+		for (auto it = matches.first; it != matches.second; ++it)
+		{
+			if (handler((T*)it->second.get()))
+				break;
+		}
+	}
+
 	const ID3V2FrameSingleText* GetSingleTextFrame(const ID3V2FrameKind& kind) const noexcept
 	{
 		return GetFrame<ID3V2FrameSingleText>(kind);

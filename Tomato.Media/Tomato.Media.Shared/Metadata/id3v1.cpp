@@ -40,7 +40,7 @@ static const std::array<byte, HEADER_LEN> GoodHeader = { 'T', 'A', 'G' };
 
 std::wstring NS_MEDIA_INTERN::to_string(ID3v1Genre value)
 {
-	static constexpr const wchar_t* texts[(size_t)ID3v1Genre::COUNT] =
+	static const wchar_t* texts[(size_t)ID3v1Genre::COUNT] =
 	{
 		L"Blues",
 		L"ClassicRock",

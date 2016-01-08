@@ -15,6 +15,14 @@ DEFINE_NS_MEDIA_INTERN
 static const std::wstring Name; \
 using value_type = valuetype;};
 
+struct Picture
+{
+	std::wstring MimeType;
+	std::wstring Description;
+	std::wstring Type;
+	std::vector<byte> Data;
+};
+
 class DefaultMediaMetadatas
 {
 public:
@@ -34,6 +42,8 @@ public:
 	DECLARE_MEDIAMETA_TYPE(Genre, std::wstring);
 	// 歌词
 	DECLARE_MEDIAMETA_TYPE(Lyrics, std::wstring);
+	// 图片
+	DECLARE_MEDIAMETA_TYPE(Picture, NS_MEDIA_INTERN::Picture);
 };
 
 // 媒体元数据容器
@@ -73,6 +83,16 @@ public:
 		if (Exists<TMeta>())
 			return Get<TMeta>();
 		return defaultValue;
+	}
+
+	template<typename TMeta, typename TCallback>
+	// 获取元数据
+	void ForEach(TCallback&& callback) const
+	{
+		auto range = metadatas.equal_range(TMeta::Name);
+		for (auto it = range.first;it != range.second;++it)
+			if (callback(any_cast<typename TMeta::value_type>(it->second)))
+				break;
 	}
 
 	size_t GetSize() const noexcept

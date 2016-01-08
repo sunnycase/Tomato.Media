@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\any.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h" />

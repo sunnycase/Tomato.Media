@@ -31,6 +31,8 @@ std::string NS_CORE::ws2s(const std::wstring& str, UINT codePage)
 std::wstring NS_CORE::s2ws(const std::string& str)
 {
 	static EncodingDetector encDet;
-
-	return s2ws(str, encDet.DetectCodePage(str));
+	if (str.empty())
+		return{};
+	else
+		return s2ws(str, encDet.DetectCodePage(str));
 }

@@ -10,6 +10,22 @@
 
 DEFINE_NS_MEDIA
 
+public ref class Picture sealed
+{
+internal:
+	Picture(const Internal::Picture& picture);
+public:
+	property Platform::String^ MimeType {Platform::String^ get() { return _mimeType; } }
+	property Platform::String^ Description {Platform::String^ get() { return _description; } }
+	property Platform::String^ PictureType {Platform::String^ get() { return _pictureType; } }
+	property Platform::Array<byte>^ Data {Platform::Array<byte>^ get() { return _data; } }
+private:
+	Platform::String^ _mimeType;
+	Platform::String^ _description;
+	Platform::String^ _pictureType;
+	Platform::Array<byte>^ _data;
+};
+
 public ref class MediaMetadataProvider sealed
 {
 public:
@@ -27,6 +43,8 @@ public:
 	property Platform::IBox<Windows::Foundation::TimeSpan>^ Duration {Platform::IBox<Windows::Foundation::TimeSpan>^ get(); }
 	///<summary>¸è´Ê</summary>
 	property Platform::String^ Lyrics {Platform::String^ get(); }
+	///<summary>Í¼Æ¬</summary>
+	property Windows::Foundation::Collections::IVector<Picture^>^ Pictures {Windows::Foundation::Collections::IVector<Picture^>^ get(); }
 
 	virtual ~MediaMetadataProvider();
 private:

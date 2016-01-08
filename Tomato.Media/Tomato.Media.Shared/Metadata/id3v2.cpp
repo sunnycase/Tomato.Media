@@ -72,6 +72,38 @@ namespace
 	static const std::array<byte, ID_LEN> GoodId = { 'I', 'D', '3' };
 	static const byte V3VERSION = 3;
 	static const byte V4VERSION = 4;
+
+	std::wstring to_string(ID3V2PictureType type)
+	{
+		static const wchar_t* texts[(size_t)ID3V2PictureType::COUNT] =
+		{
+			L"Other",
+			L"32x32 pixels 'file icon' (PNG only)",
+			L"Other file icon",
+			L"Cover(front)",
+			L"Cover(back)",
+			L"Leaflet page",
+			L"Media(e.g.label side of CD)",
+			L"Lead artist / lead performer / soloist",
+			L"Artist / performer",
+			L"Conductor",
+			L"Band / Orchestra",
+			L"Composer",
+			L"Lyricist / text writer",
+			L"Recording Location",
+			L"During recording",
+			L"During performance",
+			L"Movie / video screen capture",
+			L"A bright coloured fish",
+			L"Illustration",
+			L"Band / artist logotype",
+			L"Publisher / Studio logotype"
+		};
+		auto iValue = (size_t)type;
+		if (iValue >= 0 && iValue < (size_t)ID3V2PictureType::COUNT)
+			return texts[iValue];
+		return L"Unknown";
+	}
 }
 
 ID3V2Meta::ID3V2Meta()
@@ -200,7 +232,8 @@ task<bool> ID3V2Meta::ReadExtraMetadata(IMFByteStream * byteStream, std::shared_
 {
 	static std::set<ID3V2FrameKind> extraKinds =
 	{
-		ID3V2FrameKinds::TXXX
+		ID3V2FrameKinds::TXXX,
+		ID3V2FrameKinds::APIC
 	};
 
 	auto meta = std::make_shared<ID3V2Meta>();
@@ -219,6 +252,16 @@ task<bool> ID3V2Meta::ReadExtraMetadata(IMFByteStream * byteStream, std::shared_
 			if ((txxxFrame = pmeta->GetFrame<ID3V2FrameTXXX>(ID3V2FrameKinds::TXXX)) &&
 				txxxFrame->GetDescription() == L"LYRICS")
 				cntner->Add<DefaultMediaMetadatas::Lyrics>(txxxFrame->GetValue());
+			pmeta->ForEachFrame<ID3V2FrameAPIC>(ID3V2FrameKinds::APIC, [&](ID3V2FrameAPIC* frame)
+			{
+				Picture pic;
+				pic.MimeType = frame->GetMimeType();
+				pic.Description = frame->GetDescription();
+				pic.Type = to_string(frame->GetPictureType());
+				pic.Data = std::move(frame->GetData());
+				cntner->Add<DefaultMediaMetadatas::Picture>(std::move(pic));
+				return false;
+			});
 		}
 		return good;
 	});

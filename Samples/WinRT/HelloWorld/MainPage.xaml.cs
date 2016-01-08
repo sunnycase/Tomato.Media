@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
@@ -33,7 +34,8 @@ namespace HelloWorld
         private static readonly string[] fileNames = new[]
         {
             "ms-appx:///Assets/04.花篝り.APE",
-            "ms-appx:///Assets/04 - irony -TV Mix-.mp3"
+            "ms-appx:///Assets/04 - irony -TV Mix-.mp3",
+            "ms-appx:///Assets/08. きらきらエブリディ.mp3"
         };
         private string fileName = fileNames[1];
 
@@ -46,8 +48,24 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
-            playerClient.MessageReceived += PlayerClient_MessageReceived; ;
+            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
+            //playerClient.MessageReceived += PlayerClient_MessageReceived; ;
+
+            //foreach (var fileName in fileNames)
+            //{
+            //    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileNames[2]));
+            //    var stream = await file.OpenReadAsync();
+            //    var metadataProvider = await MediaMetadataProvider.CreateFromStream(stream, false);
+            //    var pics = metadataProvider.Pictures;
+            //}
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileNames[2]));
+            var stream = await file.OpenReadAsync();
+            var metadataProvider = await MediaMetadataProvider.CreateFromStream(stream, false);
+            var pics = metadataProvider.Pictures;
+            var image = new BitmapImage();
+            await image.SetSourceAsync((new MemoryStream(pics[0].Data)).AsRandomAccessStream());
+            img_Video.Source = image;
+            var str = metadataProvider.Lyrics.ToString();
 
             //GC.Collect();
             //GC.WaitForPendingFinalizers();

@@ -48,6 +48,7 @@ namespace
 		DEFINE_FRAME_ACRIVATOR(TYER),
 		DEFINE_FRAME_ACRIVATOR(PRIV),
 		DEFINE_FRAME_ACRIVATOR(TXXX),
+		DEFINE_FRAME_ACRIVATOR(APIC),
 	};
 
 	enum
@@ -104,6 +105,11 @@ namespace
 			hasNullTerm = value;
 		}
 
+		void SetEncoding(ID3V2TextEncoding encoding)
+		{
+			this->encoding = encoding;
+		}
+
 		enum : size_t
 		{
 			UnknownCount = SIZE_MAX
@@ -126,6 +132,7 @@ namespace
 		}
 		// 获取文本
 		const std::wstring& GetText() const noexcept { return text; }
+		std::wstring& GetText() noexcept { return text; }
 	private:
 		size_t GuessCount(const byte* data)
 		{
@@ -246,4 +253,18 @@ void ID3V2FrameTXXX::ReadContent(BinaryReader<byte*> && reader)
 	textReader.SetHasNullTerm(false);
 	textReader.Read(reader.GetCurrentPointer(), reader.GetAvailable());
 	value = textReader.GetText();
+}
+
+void ID3V2FrameAPIC::ReadContent(BinaryReader<byte*>&& reader)
+{
+	encoding = reader.Read<ID3V2TextEncoding>();
+	ID3V2Text textReader(ID3V2TextEncoding::ISO_8859_1, true);
+	reader.Seek(textReader.Read(reader.GetCurrentPointer()), SeekOrigin::Current);
+	mimeType = std::move(textReader.GetText());
+	pictureType = reader.Read<ID3V2PictureType>();
+	textReader.SetEncoding(encoding);
+	reader.Seek(textReader.Read(reader.GetCurrentPointer()), SeekOrigin::Current);
+	description = std::move(textReader.GetText());
+	auto begin = reader.GetCurrentPointer();
+	data.assign(begin, begin + reader.GetAvailable());
 }

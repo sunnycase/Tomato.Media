@@ -9,6 +9,7 @@
 
 using namespace Platform;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::Storage::Streams;
 using namespace NS_MEDIA;
 using namespace NS_MEDIA_INTERN;
@@ -81,4 +82,24 @@ String^ MediaMetadataProvider::Lyrics::get()
 {
 	auto lyrics(_container->GetOrDefault<DefaultMediaMetadatas::Lyrics>());
 	return ref new String(lyrics.c_str(), lyrics.length());
+}
+
+IVector<NS_MEDIA::Picture^>^ MediaMetadataProvider::Pictures::get()
+{
+	std::vector<NS_MEDIA::Picture^> pictures;
+	_container->ForEach<DefaultMediaMetadatas::Picture>([&](const Internal::Picture& picture)
+	{
+		pictures.emplace_back(ref new NS_MEDIA::Picture(picture));
+		return false;
+	});
+	return ref new Platform::Collections::Vector<NS_MEDIA::Picture^>(std::move(pictures));
+}
+
+NS_MEDIA::Picture::Picture(const Internal::Picture& picture)
+	:_mimeType(ref new String(picture.MimeType.c_str(), picture.MimeType.length())),
+	_description(ref new String(picture.Description.c_str(), picture.Description.length())),
+	_pictureType(ref new String(picture.Type.c_str(), picture.Type.length())),
+	_data(ref new Platform::Array<byte>(const_cast<byte*>(picture.Data.data()), picture.Data.size()))
+{
+
 }

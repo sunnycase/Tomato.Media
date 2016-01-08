@@ -23,6 +23,7 @@ DEFINE_MEDIAMETA(Year);
 DEFINE_MEDIAMETA(TrackNumber);
 DEFINE_MEDIAMETA(Genre);
 DEFINE_MEDIAMETA(Lyrics);
+DEFINE_MEDIAMETA(Picture);
 
 task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(IMFByteStream* byteStream, bool brief)
 {
