@@ -111,7 +111,7 @@ void BackgroundMediaPlayer::ConfigureMediaPlayer()
 		this, &BackgroundMediaPlayer::OnMediaOpened);
 	_mediaEndedRegToken = mediaPlayer->MediaEnded += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Object ^>(
 		this, &BackgroundMediaPlayer::OnMediaEnded);
-	_mediaFailedRegToken = mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this, 
+	_mediaFailedRegToken = mediaPlayer->MediaFailed += ref new Windows::Foundation::TypedEventHandler<Playback::MediaPlayer ^, Playback::MediaPlayerFailedEventArgs ^>(this,
 		&BackgroundMediaPlayer::OnMediaFailed);
 	_currentStateChangedRegToken = mediaPlayer->CurrentStateChanged += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnCurrentStateChanged);
 	_seekCompletedRegToken = mediaPlayer->SeekCompleted += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Playback::MediaPlayer ^, Platform::Object ^>(this, &BackgroundMediaPlayer::OnSeekCompleted);
@@ -133,7 +133,8 @@ void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^se
 	auto key = (String^)valueSet->Lookup(L"MessageId");
 	if (key == BackgroundMediaPlayerUserMessageKey)
 	{
-		_audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageTag"), (String^)valueSet->Lookup(L"MessageContent"));
+		if (_audioHandler)
+			_audioHandler->OnReceiveMessage((String^)valueSet->Lookup(L"MessageTag"), (String^)valueSet->Lookup(L"MessageContent"));
 	}
 }
 
@@ -185,7 +186,7 @@ void BackgroundMediaPlayer::OnCompleted(Windows::ApplicationModel::Background::B
 
 void BackgroundMediaPlayer::OnCanceled(Windows::ApplicationModel::Background::IBackgroundTaskInstance ^sender, Windows::ApplicationModel::Background::BackgroundTaskCancellationReason reason)
 {
-	auto fin(make_finalizer([&] {deferral->Complete();}));
+	auto fin(make_finalizer([&] {deferral->Complete(); }));
 	Shutdown();
 	_audioHandler->OnCanceled();
 }

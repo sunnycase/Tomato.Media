@@ -189,9 +189,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\pop_min_max.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp">
