@@ -261,6 +261,7 @@
     <ClInclude Include="BackgroundMediaPlayer.h" />
     <ClInclude Include="BackgroundMediaPlayerClient.h" />
     <ClInclude Include="CoreMediaSource.h" />
+    <ClInclude Include="EffectMediaStreamSource.h" />
     <ClInclude Include="IBackgroundMediaPlayerHandler.h" />
     <ClInclude Include="IMediaPlayer.h" />
     <ClInclude Include="MediaMetadataProvider.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="BackgroundMediaPlayer.cpp" />
     <ClCompile Include="BackgroundMediaPlayerClient.cpp" />
     <ClCompile Include="CoreMediaSource.cpp" />
+    <ClCompile Include="EffectMediaStreamSource.cpp" />
     <ClCompile Include="MediaMetadataProvider.cpp" />
     <ClCompile Include="MediaSource.cpp" />
     <ClCompile Include="pch.cpp">

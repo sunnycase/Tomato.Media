@@ -46,6 +46,7 @@
     <ClCompile Include="MediaMetadataProvider.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="EffectMediaStreamSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationDataHelper.h">
@@ -79,6 +80,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MediaMetadataProvider.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectMediaStreamSource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
