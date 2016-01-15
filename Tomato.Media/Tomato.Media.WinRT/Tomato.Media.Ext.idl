@@ -1,0 +1,20 @@
+#include <sdkddkver.h>
+#define DEFINE_NS_ONLY
+#include "../Tomato.Media.Shared/common.h"
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "inspectable.idl";
+import "Windows.Media.idl";
+
+DEFINE_NS_MEDIA
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass XAudioEffectTransform
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
+END_NS_MEDIA

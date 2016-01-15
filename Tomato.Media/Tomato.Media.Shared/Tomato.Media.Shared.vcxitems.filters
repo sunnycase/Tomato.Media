@@ -22,6 +22,12 @@
     <Filter Include="源文件\Metadata">
       <UniqueIdentifier>{2309ac3b-8f25-4b31-bffa-69ee5380c39e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Transforms">
+      <UniqueIdentifier>{860dda41-df56-4f4c-926d-d10cbd039902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Transforms">
+      <UniqueIdentifier>{b5fb73a3-96b4-4ad0-a1b0-906bea3a2102}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h">
@@ -108,6 +114,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp">
@@ -178,6 +190,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp">
       <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

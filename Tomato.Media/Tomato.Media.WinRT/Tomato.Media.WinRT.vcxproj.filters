@@ -46,7 +46,9 @@
     <ClCompile Include="MediaMetadataProvider.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="EffectMediaStreamSource.cpp" />
+    <ClCompile Include="EffectMediaStreamSource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationDataHelper.h">
@@ -85,8 +87,16 @@
     <ClInclude Include="EffectMediaStreamSource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Tomato.Media_i.h">
+      <Filter>生成的文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <MidlRT Include="Tomato.Media.Ext.idl">
+      <Filter>源文件</Filter>
+    </MidlRT>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 import "oaidl.idl";
 import "ocidl.idl";
+import "mfidl.idl";
 
 [
 	uuid(EAB2ACB5-E326-4816-B22C-56A4BCF9CF1D),
@@ -29,5 +30,11 @@ library TomatoMediaLib
 	coclass MediaSource
 	{
 		[default] interface IMediaSource;
+	};
+
+	[uuid(818ABFC1-0681-4EE6-9539-E473CA3CEB72)]
+	coclass XAudioEffectTransform
+	{
+		[default] interface IMFTransform;
 	};
 }

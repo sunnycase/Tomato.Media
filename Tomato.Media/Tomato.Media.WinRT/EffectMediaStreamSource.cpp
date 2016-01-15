@@ -8,6 +8,7 @@
 #include "EffectMediaStreamSource.h"
 #include "Utility/MFSourceReaderCallback.h"
 #include "../../include/Wrappers.h"
+#include "Transforms/XAudioEffectTransform.h"
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -63,6 +64,8 @@ void EffectMediaStreamSource::ConfigureSourceReader(IMFMediaSource * mediaSource
 
 void EffectMediaStreamSource::InstallEffects()
 {
+	auto effect = Make<XAudioEffectTransform>();
+	ThrowIfFailed(_sourceReader->AddTransformForStream(MF_SOURCE_READER_FIRST_AUDIO_STREAM, static_cast<IMFTransform*>(effect.Get())));
 }
 
 void EffectMediaStreamSource::ConfigureMSS()

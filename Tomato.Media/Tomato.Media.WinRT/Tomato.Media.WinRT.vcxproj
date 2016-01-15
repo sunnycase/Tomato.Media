@@ -151,6 +151,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -171,6 +172,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -191,6 +193,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -211,6 +214,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -231,6 +235,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
@@ -251,11 +256,31 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>mf.lib;Mfplat.lib;Mfuuid.lib;Mfreadwrite.lib;Mmdevapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <WindowsMetadataFile>$(OutDir)$(RootNamespace).winmd</WindowsMetadataFile>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(TargetDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
+  <PropertyGroup Label="Configuration">
+    <UnmergedWinmdDirectory>$(IntDir)UnmergedWinMD</UnmergedWinmdDirectory>
+    <MergedWinmdDirectory>$(IntDir)MergedWinMD</MergedWinmdDirectory>
+    <IdlHeaderDirectory>$(MSBuildProjectDirectory)</IdlHeaderDirectory>
+  </PropertyGroup>
+  <Target Name="mdmerge" AfterTargets="AfterLink" Outputs="$(OutDir)$(RootNamespace).winmd">
+    <PropertyGroup>
+      <MdMergeExe>"$(WindowsSdkDir)\bin\$(PreferredToolArchitecture)\mdmerge.exe"</MdMergeExe>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '8.1'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '10.0'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)\..\unionmetadata" />
+    </ItemGroup>
+    <Exec Command="copy /y &quot;$(OutDir)$(RootNamespace).winmd&quot; &quot;$(UnmergedWinmdDirectory)&quot;" />
+    <Exec Command="$(MdMergeExe) -v @(MetaDataDir -> '-metadata_dir &quot;%(Identity)&quot;', ' ') -o &quot;$(MergedWinmdDirectory)&quot; -i &quot;$(UnmergedWinmdDirectory)&quot; -partial" />
+    <Exec Command="copy /y &quot;$(MergedWinmdDirectory)\*&quot; &quot;$(OutDir)&quot;" />
+  </Target>
   <ItemGroup>
     <ClInclude Include="ApplicationDataHelper.h" />
     <ClInclude Include="BackgroundMediaPlayer.h" />
@@ -267,6 +292,7 @@
     <ClInclude Include="MediaMetadataProvider.h" />
     <ClInclude Include="MediaSource.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Tomato.Media_i.h" />
     <ClInclude Include="VideoPresenter.h" />
     <ClInclude Include="XAudioSessionRT.h" />
   </ItemGroup>
@@ -298,10 +324,16 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <MidlRT Include="Tomato.Media.Ext.idl">
+      <RenameHeaderTo>Tomato.Media_i.h</RenameHeaderTo>
+    </MidlRT>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\packages\directxtk_uwp.2015.11.30.1\build\native\directxtk_uwp.targets" Condition="Exists('..\..\packages\directxtk_uwp.2015.11.30.1\build\native\directxtk_uwp.targets')" />
   </ImportGroup>
+  <Import Project="$(MSBuildThisFileDir)..\..\Build\midlrt.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>此项目引用这台计算机上缺少的 NuGet 程序包。使用 NuGet 程序包还原可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
