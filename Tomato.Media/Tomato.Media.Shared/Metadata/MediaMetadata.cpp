@@ -58,17 +58,14 @@ task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(
 				//container->Add<DefaultMediaMetadatas::Genre>(frame->GetText());
 			}
 		});
-	}).then([=]
-	{
-		return container;
-	}).then([](task<std::shared_ptr<MediaMetadataContainer>> t)
+	}).then([=](task<void> t)
 		-> std::shared_ptr<MediaMetadataContainer>
 	{
 		try
 		{
-			return t.get();
+			t.get();
 		}
 		catch (...) {}
-		return nullptr;
+		return container;
 	});
 }
