@@ -11,8 +11,9 @@ using namespace NS_MEDIA;
 using namespace concurrency;
 using namespace WRL;
 
-MFSourceReaderCallback::MFSourceReaderCallback(std::function<void(HRESULT, DWORD, DWORD, LONGLONG, IMFSample*)> sampleCallback)
-	:sampleCallback(std::move(sampleCallback))
+MFSourceReaderCallback::MFSourceReaderCallback(std::function<void(HRESULT, DWORD, DWORD, LONGLONG, IMFSample*)>&& sampleCallback,
+	std::function<void(DWORD)>&& flushCallback)
+	:sampleCallback(std::move(sampleCallback)), flushCallback(std::move(flushCallback))
 {
 }
 
@@ -20,16 +21,19 @@ HRESULT MFSourceReaderCallback::OnReadSample(HRESULT hrStatus, DWORD dwStreamInd
 {
 	try
 	{
-		if (sampleCallback)
-			sampleCallback(hrStatus, dwStreamIndex, dwStreamFlags, llTimestamp, pSample);
+		sampleCallback(hrStatus, dwStreamIndex, dwStreamFlags, llTimestamp, pSample);
 	}
 	CATCH_ALL();
-
 	return S_OK;
 }
 
 HRESULT MFSourceReaderCallback::OnFlush(DWORD dwStreamIndex)
 {
+	try
+	{
+		flushCallback(dwStreamIndex);
+	}
+	CATCH_ALL();
 	return S_OK;
 }
 

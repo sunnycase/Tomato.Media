@@ -25,7 +25,7 @@ FFmpegDeliverMediaStream::FFmpegDeliverMediaStream(AVStream* stream, NS_CORE::We
 {
 }
 
-void FFmpegDeliverMediaStream::DeliverPacket(AVPacket& packet)
+void FFmpegDeliverMediaStream::DeliverPacket(AVPacketRAII&& packet)
 {
 	{
 		LOCK_STATE();
@@ -34,30 +34,23 @@ void FFmpegDeliverMediaStream::DeliverPacket(AVPacket& packet)
 			return;
 	}
 	LOCK_STREAM();
-	QueuePacket(packet);
+	QueuePacket(std::move(packet));
 }
 
-void FFmpegDeliverMediaStream::QueuePacket(AVPacket& packet)
+void FFmpegDeliverMediaStream::QueuePacket(AVPacketRAII&& packet)
 {
 	try
 	{
 		if (packet.buf)
 		{
-			ComPtr<IMFMediaBuffer> mediaBuffer;
-			ThrowIfFailed(MFCreateAlignedMemoryBuffer(packet.size, FF_INPUT_BUFFER_PADDING_SIZE, &mediaBuffer));
-			{
-				MFBufferLocker locker(mediaBuffer.Get());
-				BYTE* data;
-				locker.Lock(data, nullptr, nullptr);
-				ThrowIfNot(memcpy_s(data, packet.size, packet.data, packet.size) == 0, L"Cannot copy data.");
-			}
-
 			ComPtr<IMFSample> sample;
 			ThrowIfFailed(MFCreateSample(sample.GetAddressOf()));
-			ThrowIfFailed(mediaBuffer->SetCurrentLength(packet.size));
-			ThrowIfFailed(sample->AddBuffer(mediaBuffer.Get()));
 			if (packet.pts != AV_NOPTS_VALUE)
 				ThrowIfFailed(sample->SetSampleTime(dt2hns(packet.pts, _stream)));
+
+			ComPtr<IMFMediaBuffer> mediaBuffer;
+			CreateMFMediaBufferOnAVPacket(std::move(packet), &mediaBuffer);
+			ThrowIfFailed(sample->AddBuffer(mediaBuffer.Get()));
 			EnqueueSample(sample.Get());
 		}
 		else

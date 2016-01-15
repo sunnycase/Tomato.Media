@@ -139,8 +139,8 @@ void BackgroundMediaPlayer::OnMessageReceivedFromForeground(Platform::Object ^se
 
 void BackgroundMediaPlayer::SetMediaSource(MediaSource^ mediaSource)
 {
-	auto coreSource = Make<CoreMediaSource>(mediaSource);
-	mediaPlayer->SetMediaSource(reinterpret_cast<Windows::Media::Core::IMediaSource^>(coreSource.Get()));
+	auto mss = _mss = ref new EffectMediaStreamSource(mediaSource);
+	mediaPlayer->SetMediaSource(mss->Source);
 }
 
 void BackgroundMediaPlayer::Play()

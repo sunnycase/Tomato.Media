@@ -34,6 +34,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zconf.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zlib.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\BinaryReader.h" />
@@ -72,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp" />

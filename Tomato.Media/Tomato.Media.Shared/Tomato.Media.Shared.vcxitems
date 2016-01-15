@@ -32,22 +32,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)XAudioSession.h" />
   </ItemGroup>
   <ItemGroup>

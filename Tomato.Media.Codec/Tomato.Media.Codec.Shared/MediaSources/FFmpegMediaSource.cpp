@@ -242,7 +242,7 @@ HRESULT FFmpegMediaSource::GetService(REFGUID guidService, REFIID riid, LPVOID *
 	{
 		if (guidService == MF_METADATA_PROVIDER_SERVICE)
 		{
-			if(!_metadataProvider)
+			if (!_metadataProvider)
 				_metadataProvider = Make<MetadataProvider>(_fmtContext);
 			return _metadataProvider.CopyTo(riid, ppvObject);
 		}
@@ -301,41 +301,31 @@ concurrency::task<void> FFmpegMediaSource::OnStreamsRequestData(IMFMediaStream* 
 		auto desiredStreamIdx = deliverStream->GetIndex();
 		auto fmtctx = _fmtContext->Get();
 
-		AVPacket packet{ 0 };
-		av_init_packet(&packet);
-
 		bool got = false;
 		while (!got)
 		{
+			AVPacketRAII packet;
 			auto ret = av_read_frame(fmtctx, &packet);
-			try
+			if (ret < 0)
 			{
-				if (ret < 0)
+				if ((ret == AVERROR_EOF || avio_feof(fmtctx->pb)) ||
+					(fmtctx->pb && fmtctx->pb->error))
 				{
-					if ((ret == AVERROR_EOF || avio_feof(fmtctx->pb)) ||
-						(fmtctx->pb && fmtctx->pb->error))
-					{
-						deliverStream->EndOfDeliver();
-					}
-					return task_from_result();
+					deliverStream->EndOfDeliver();
 				}
-				else
-				{
-					auto streamIt = _streamIndexMaps.find(packet.stream_index);
-					if (streamIt != _streamIndexMaps.end())
-					{
-						auto toDeliverStream = streamIt->second.Get();
-						toDeliverStream->DeliverPacket(packet);
-						if(packet.stream_index == desiredStreamIdx)
-							got = true;
-					}
-				}
-				av_free_packet(&packet);
+				return task_from_result();
 			}
-			catch (...)
+			else
 			{
-				av_free_packet(&packet);
-				throw;
+				auto packetStreamIdx = packet.stream_index;
+				auto streamIt = _streamIndexMaps.find(packetStreamIdx);
+				if (streamIt != _streamIndexMaps.end())
+				{
+					auto toDeliverStream = streamIt->second.Get();
+					toDeliverStream->DeliverPacket(std::move(packet));
+					if (packetStreamIdx == desiredStreamIdx)
+						got = true;
+				}
 			}
 		}
 	}

@@ -192,6 +192,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp">
@@ -306,6 +309,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -69,19 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h">

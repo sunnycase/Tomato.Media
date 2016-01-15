@@ -14,6 +14,7 @@ extern "C" {
 }
 #endif
 #include <mutex>
+#include "Utilities/FFmpegHelper.h"
 
 DEFINE_NS_MEDIA_CODEC
 
@@ -22,11 +23,11 @@ class FFmpegDeliverMediaStream : public DeliverMediaStreamBase
 public:
 	FFmpegDeliverMediaStream(AVStream* stream, Core::WeakRef<MediaSourceBase> mediaSource, IMFStreamDescriptor* streamDescriptor);
 
-	void DeliverPacket(AVPacket& packet);
+	void DeliverPacket(FFmpeg::AVPacketRAII&& packet);
 	int GetIndex() const noexcept { return _stream->index; }
 	int GetId() const noexcept { return _stream->id; }
 private:
-	void QueuePacket(AVPacket& packet);
+	void QueuePacket(FFmpeg::AVPacketRAII&& packet);
 	virtual void OnResetStream() override;
 private:
 	AVStream* _stream;

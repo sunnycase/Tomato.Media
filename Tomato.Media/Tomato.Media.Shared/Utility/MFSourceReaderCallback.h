@@ -15,7 +15,8 @@ DEFINE_NS_MEDIA
 class MFSourceReaderCallback : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFSourceReaderCallback>
 {
 public:
-	MFSourceReaderCallback(std::function<void(HRESULT, DWORD, DWORD, LONGLONG, IMFSample*)> sampleCallback);
+	MFSourceReaderCallback(std::function<void(HRESULT, DWORD, DWORD, LONGLONG, IMFSample*)>&& sampleCallback,
+		std::function<void(DWORD)>&& flushCallback);
 
 	// Í¨¹ý RuntimeClass ¼Ì³Ð
 	STDMETHODIMP OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample) override;
@@ -23,6 +24,7 @@ public:
 	STDMETHODIMP OnEvent(DWORD dwStreamIndex, IMFMediaEvent * pEvent) override;
 private:
 	std::function<void(HRESULT, DWORD, DWORD, LONGLONG, IMFSample*)> sampleCallback;
+	std::function<void(DWORD)> flushCallback;
 };
 
 END_NS_MEDIA

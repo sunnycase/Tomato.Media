@@ -137,6 +137,16 @@ namespace FFmpeg
 		void operator()(SwrContext* handle) const noexcept;
 	};
 	using unique_swrcontext = std::unique_ptr<SwrContext, swrcontext_deleter>;
+
+	struct AVPacketRAII : public AVPacket, NonCopyable
+	{
+		AVPacketRAII();
+		~AVPacketRAII();
+		AVPacketRAII(AVPacketRAII&& other) noexcept;
+		AVPacketRAII& operator=(AVPacketRAII&& other) noexcept;
+	};
+
+	void CreateMFMediaBufferOnAVPacket(AVPacketRAII&& packet, IMFMediaBuffer** mediaBuffer);
 }
 
 END_NS_MEDIA_CODEC

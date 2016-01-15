@@ -8,6 +8,7 @@
 #include "common.h"
 #include "IMediaPlayer.h"
 #include "IBackgroundMediaPlayerHandler.h"
+#include "EffectMediaStreamSource.h"
 
 DEFINE_NS_MEDIA
 
@@ -74,6 +75,7 @@ private:
 private:
 	Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
+	EffectMediaStreamSource^ _mss;
 
 	IBackgroundMediaPlayerHandler^ _audioHandler;
 	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);

@@ -1,5 +1,3 @@
-#include "pch.h"
-#include "EffectMediaStreamSource.h"
 //
 // Tomato Media
 // 支持 Effect 的 MediaStreamSource
@@ -8,15 +6,21 @@
 //
 #include "pch.h"
 #include "EffectMediaStreamSource.h"
+#include "Utility/MFSourceReaderCallback.h"
+#include "../../include/Wrappers.h"
 
 using namespace Platform;
+using namespace Windows::Foundation;
 using namespace Windows::Media;
 using namespace Windows::Media::Core;
 using namespace Windows::Media::MediaProperties;
+using namespace Windows::Storage::Streams;
+using namespace NS_CORE;
 using namespace NS_MEDIA;
 using namespace WRL;
+using namespace concurrency;
 
-EffectMediaStreamSource::EffectMediaStreamSource(MediaSource ^ mediaSource)
+EffectMediaStreamSource::EffectMediaStreamSource(::NS_MEDIA::MediaSource ^ mediaSource)
 {
 	ConfigureSourceReader(mediaSource->MFMediaSource);
 	ConfigureMSS();
@@ -27,7 +31,17 @@ void EffectMediaStreamSource::ConfigureSourceReader(IMFMediaSource * mediaSource
 	ComPtr<IMFAttributes> attributes;
 	ThrowIfFailed(MFCreateAttributes(&attributes, 3));
 	// 设置 Callback
-	ThrowIfFailed(attributes->SetUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, this));
+	WeakReference weak(this);
+	auto callback = Make<MFSourceReaderCallback>([weak](HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample)
+	{
+		if (auto me = weak.Resolve<EffectMediaStreamSource>())
+			me->OnReadSample(hrStatus, dwStreamIndex, dwStreamFlags, llTimestamp, pSample);
+	}, [weak](DWORD dwStreamIndex)
+	{
+		if (auto me = weak.Resolve<EffectMediaStreamSource>())
+			me->OnFlush(dwStreamIndex);
+	});
+	ThrowIfFailed(attributes->SetUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, callback.Get()));
 	ThrowIfFailed(attributes->SetString(MF_READWRITE_MMCSS_CLASS_AUDIO, L"Audio"));
 	ThrowIfFailed(attributes->SetUINT32(MF_READWRITE_MMCSS_PRIORITY_AUDIO, 4));
 
@@ -61,19 +75,160 @@ void EffectMediaStreamSource::ConfigureMSS()
 	encProps->Subtype = L"Float";
 	auto streamDesc = ref new AudioStreamDescriptor(encProps);
 	_mss = ref new MediaStreamSource(streamDesc);
+
+	PROPVARIANT duration;
+	PropVariantInit(&duration);
+	auto fin = make_finalizer([&] {PropVariantClear(&duration);});
+	if (SUCCEEDED(_sourceReader->GetPresentationAttribute(MF_SOURCE_READER_MEDIASOURCE, MF_PD_DURATION, &duration)))
+		_mss->Duration = TimeSpan{ duration.hVal.QuadPart };
+	_mss->CanSeek = true;
+	_mss->Starting += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Core::MediaStreamSource ^, Windows::Media::Core::MediaStreamSourceStartingEventArgs ^>(this, &EffectMediaStreamSource::OnStarting);
+	_mss->SampleRequested += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Core::MediaStreamSource ^, Windows::Media::Core::MediaStreamSourceSampleRequestedEventArgs ^>(this, &EffectMediaStreamSource::OnSampleRequested);
+	_mss->Closed += ref new Windows::Foundation::TypedEventHandler<Windows::Media::Core::MediaStreamSource ^, Windows::Media::Core::MediaStreamSourceClosedEventArgs ^>(this, &EffectMediaStreamSource::OnClosed);
 }
 
-HRESULT EffectMediaStreamSource::OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample)
+void EffectMediaStreamSource::OnReadSample(HRESULT hrStatus, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp, IMFSample * pSample)
 {
-	return E_NOTIMPL;
+	if (SUCCEEDED(hrStatus))
+	{
+		if (dwStreamFlags & MF_SOURCE_READERF_ERROR ||
+			dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)
+			_endOfStream.store(true, std::memory_order_release);
+
+		if (pSample)
+		{
+			std::lock_guard<decltype(_sampleCacheMutex)> sampleLocker(_sampleCacheMutex);
+			_sampleCache.emplace(pSample);
+		}
+		DispatchSampleRequests();
+	}
+	else
+		_mss->NotifyError(MediaStreamSourceErrorStatus::DecodeError);
 }
 
-HRESULT EffectMediaStreamSource::OnFlush(DWORD dwStreamIndex)
+void EffectMediaStreamSource::OnFlush(DWORD dwStreamIndex)
 {
-	return E_NOTIMPL;
+	std::lock_guard<decltype(_flushOperationsMutex)> locker(_flushOperationsMutex);
+	if (!_flushOperations.empty())
+	{
+		auto operation = std::move(_flushOperations.front());
+		_flushOperations.pop();
+		operation.set();
+	}
 }
 
-HRESULT EffectMediaStreamSource::OnEvent(DWORD dwStreamIndex, IMFMediaEvent * pEvent)
+void EffectMediaStreamSource::DispatchSampleRequests()
 {
-	return E_NOTIMPL;
+	bool needMore = false;
+	{
+		std::unique_lock<decltype(_requestCacheMutex)> requestLocker(_requestCacheMutex, std::defer_lock);
+		std::unique_lock<decltype(_sampleCacheMutex)> sampleLocker(_sampleCacheMutex, std::defer_lock);
+		std::lock(requestLocker, sampleLocker);
+
+		while (!_requestCache.empty() && !_sampleCache.empty())
+		{
+			auto mfSample = _sampleCache.front();
+			auto request = std::move(_requestCache.front());
+			MFTIME timestamp = -1, duration = 0;
+			mfSample->GetSampleTime(&timestamp);
+			mfSample->GetSampleDuration(&duration);
+
+			ComPtr<IMFMediaBuffer> buffer;
+			ThrowIfFailed(mfSample->ConvertToContiguousBuffer(&buffer));
+			ComPtr<ABI::Windows::Storage::Streams::IBuffer> rtBuffer;
+			CreateBufferOnMFMediaBuffer(buffer.Get(), &rtBuffer);
+			auto sample = MediaStreamSample::CreateFromBuffer(reinterpret_cast<IBuffer^>(rtBuffer.Get()), TimeSpan{ timestamp });
+			sample->Duration = TimeSpan{ duration };
+			sample->KeyFrame = true;
+			request.Request->Sample = std::move(sample);
+			request.Deferral->Complete();
+			_sampleCache.pop();
+			_requestCache.pop();
+		}
+		if (!_requestCache.empty())
+		{
+			if(_endOfStream.load(std::memory_order_acquire))
+			{
+				auto request = std::move(_requestCache.front());
+				request.Deferral->Complete();
+				_requestCache.pop();
+			}
+			else
+				needMore = true;
+		}
+	}
+	if (needMore)
+		ThrowIfFailed(_sourceReader->ReadSample(MF_SOURCE_READER_ANY_STREAM, 0, nullptr, nullptr, nullptr, nullptr));
+}
+
+void EffectMediaStreamSource::ClearSampleAndRequestQueue()
+{
+	std::unique_lock<decltype(_requestCacheMutex)> requestLocker(_requestCacheMutex, std::defer_lock);
+	std::unique_lock<decltype(_sampleCacheMutex)> sampleLocker(_sampleCacheMutex, std::defer_lock);
+	std::lock(requestLocker, sampleLocker);
+
+	_requestCache.swap(decltype(_requestCache)());
+	_sampleCache.swap(decltype(_sampleCache)());
+}
+
+void EffectMediaStreamSource::OnStarting(Windows::Media::Core::MediaStreamSource ^sender, Windows::Media::Core::MediaStreamSourceStartingEventArgs ^args)
+{
+	auto request = args->Request;
+	MFTIME startPosition = 0;
+	if (request->StartPosition)
+		startPosition = request->StartPosition->Value.Duration;
+	try
+	{
+		task_completion_event<void> flushOp;
+		{
+			std::lock_guard<decltype(_flushOperationsMutex)> locker(_flushOperationsMutex);
+			_flushOperations.swap(decltype(_flushOperations)());
+			_flushOperations.emplace(flushOp);
+		}
+
+		Platform::Agile<MediaStreamSourceStartingRequestDeferral> deferral(request->GetDeferral());
+		create_task(flushOp).then([this, startPosition, request]
+		{
+			PROPVARIANT propStartPosition;
+			propStartPosition.vt = VT_I8;
+			propStartPosition.hVal.QuadPart = startPosition;
+
+			ThrowIfFailed(_sourceReader->SetCurrentPosition(GUID_NULL, propStartPosition));
+			request->SetActualStartPosition(TimeSpan{ startPosition });
+			ClearSampleAndRequestQueue();
+			_endOfStream.store(false, std::memory_order_release);
+		}).then([this, deferral](task<void> t)
+		{
+			try
+			{
+				t.get();
+			}
+			catch (...)
+			{
+				_mss->NotifyError(MediaStreamSourceErrorStatus::FailedToOpenFile);
+			}
+			deferral->Complete();
+		});
+		ThrowIfFailed(_sourceReader->Flush(MF_SOURCE_READER_ALL_STREAMS));
+	}
+	catch (...)
+	{
+		_mss->NotifyError(MediaStreamSourceErrorStatus::FailedToOpenFile);
+		request->GetDeferral()->Complete();
+	}
+}
+
+void EffectMediaStreamSource::OnSampleRequested(Windows::Media::Core::MediaStreamSource ^sender, Windows::Media::Core::MediaStreamSourceSampleRequestedEventArgs ^args)
+{
+	{
+		std::lock_guard<decltype(_requestCacheMutex)> locker(_requestCacheMutex);
+		_requestCache.emplace(args->Request, args->Request->GetDeferral());
+	}
+	DispatchSampleRequests();
+}
+
+
+void EffectMediaStreamSource::OnClosed(Windows::Media::Core::MediaStreamSource ^sender, Windows::Media::Core::MediaStreamSourceClosedEventArgs ^args)
+{
+
 }

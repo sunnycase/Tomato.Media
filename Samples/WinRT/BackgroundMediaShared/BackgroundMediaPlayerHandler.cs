@@ -44,10 +44,11 @@ namespace BackgroundMediaShared
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
-            t = t == 0 ? 1 : 0;
+            t = t == 0 ? 0 : 0;
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{files[t]}"));
             var stream = await file.OpenReadAsync();
             var mediaSource = await MediaSource.CreateFromStream(stream);
+            var duration = mediaSource.Duration;
             //Debug.WriteLine($"Title: {mediaSource.Title}");
             //Debug.WriteLine($"Album: {mediaSource.Album}");
             //Debug.WriteLine($"Artist: {mediaSource.Artist}");
@@ -143,6 +144,7 @@ namespace BackgroundMediaShared
         {
             if (message == "Play")
             {
+                mediaPlayer.Position = TimeSpan.FromSeconds(285);
                 mediaPlayer.Play();
                 mediaPlayer.SendMessage("M", "Playing");
             }

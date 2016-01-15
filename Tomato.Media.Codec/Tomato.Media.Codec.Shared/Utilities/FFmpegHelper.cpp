@@ -42,11 +42,69 @@ namespace
 #endif
 		}
 	};
+
+	class MFMediaBufferOnAVPacket : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IMFMediaBuffer>
+	{
+	public:
+		MFMediaBufferOnAVPacket(AVPacketRAII && packet)
+			:_packet(std::move(packet)), _currentLength(_packet.size)
+		{
+
+		}
+
+		// Í¨¹ý RuntimeClass ¼Ì³Ð
+		STDMETHODIMP Lock(BYTE ** ppbBuffer, DWORD * pcbMaxLength, DWORD * pcbCurrentLength) override
+		{
+			*ppbBuffer = _packet.data;
+			if (pcbMaxLength)
+				*pcbMaxLength = _packet.size;
+			if (pcbCurrentLength)
+				*pcbCurrentLength = _currentLength;
+			return S_OK;
+		}
+
+		STDMETHODIMP Unlock(void) override
+		{
+			return S_OK;
+		}
+
+		STDMETHODIMP GetCurrentLength(DWORD * pcbCurrentLength) override
+		{
+			*pcbCurrentLength = _currentLength;
+			return S_OK;
+		}
+
+		STDMETHODIMP SetCurrentLength(DWORD cbCurrentLength) override
+		{
+			if (cbCurrentLength <= _packet.size)
+			{
+				_currentLength = cbCurrentLength;
+				return S_OK;
+			}
+			return E_INVALIDARG;
+		}
+		
+		STDMETHODIMP GetMaxLength(DWORD * pcbMaxLength) override
+		{
+			*pcbMaxLength = _packet.size;
+			return S_OK;
+		}
+	private:
+		AVPacketRAII _packet;
+		DWORD _currentLength;
+	};
 }
 
 void FFmpeg::Initialize()
 {
 	static FFmpegInitializer init;
+}
+
+void FFmpeg::CreateMFMediaBufferOnAVPacket(AVPacketRAII && packet, IMFMediaBuffer** mediaBuffer)
+{
+	if (!mediaBuffer) ThrowIfFailed(E_POINTER);
+	auto buffer = Make<MFMediaBufferOnAVPacket>(std::move(packet));
+	*mediaBuffer = buffer.Detach();
 }
 
 MFAVIOContext::MFAVIOContext(IMFByteStream * byteStream, size_t bufferSize, bool canWrite)
@@ -283,4 +341,28 @@ void avframe_deleter::operator()(AVFrame* handle) const noexcept
 void swrcontext_deleter::operator()(SwrContext* handle) const noexcept
 {
 	swr_free(&handle);
+}
+
+FFmpeg::AVPacketRAII::AVPacketRAII()
+{
+	ZeroMemory(this, sizeof(AVPacketRAII));
+}
+
+FFmpeg::AVPacketRAII::~AVPacketRAII()
+{
+	av_free_packet(this);
+}
+
+FFmpeg::AVPacketRAII::AVPacketRAII(AVPacketRAII && other) noexcept
+{
+	*static_cast<AVPacket*>(this) = other;
+	ZeroMemory(&other, sizeof(other));
+}
+
+AVPacketRAII & FFmpeg::AVPacketRAII::operator=(AVPacketRAII && other) noexcept
+{
+	av_free_packet(this);
+	*static_cast<AVPacket*>(this) = other;
+	ZeroMemory(&other, sizeof(other));
+	return *this;
 }

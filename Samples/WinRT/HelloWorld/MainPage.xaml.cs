@@ -30,6 +30,7 @@ namespace HelloWorld
     {
         private BackgroundMediaPlayerClient playerClient;
         private VideoPresenter videoPresenter;
+        private EffectMediaStreamSource streamSource;
 
         private static readonly string[] fileNames = new[]
         {
@@ -48,8 +49,8 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
-            //playerClient.MessageReceived += PlayerClient_MessageReceived; ;
+            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
+            playerClient.MessageReceived += PlayerClient_MessageReceived;
 
             //foreach (var fileName in fileNames)
             //{
@@ -58,15 +59,21 @@ namespace HelloWorld
             //    var metadataProvider = await MediaMetadataProvider.CreateFromStream(stream, false);
             //    var pics = metadataProvider.Pictures;
             //}
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileNames[2]));
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileNames[0]));
             var stream = await file.OpenReadAsync();
             var metadataProvider = await MediaMetadataProvider.CreateFromStream(stream, false);
             var pics = metadataProvider.Pictures;
-            var image = new BitmapImage();
-            await image.SetSourceAsync((new MemoryStream(pics[0].Data)).AsRandomAccessStream());
-            img_Video.Source = image;
+            if(pics.Any())
+            {
+                var image = new BitmapImage();
+                await image.SetSourceAsync((new MemoryStream(pics[0].Data)).AsRandomAccessStream());
+                img_Video.Source = image;
+            }
             var str = metadataProvider.Lyrics.ToString();
 
+            //var mediaSource = await MediaSource.CreateFromStream(stream, file.Path);
+            //streamSource = new EffectMediaStreamSource(mediaSource);
+            //Media.SetMediaStreamSource(streamSource.Source);
             //GC.Collect();
             //GC.WaitForPendingFinalizers();
             //GC.Collect();
