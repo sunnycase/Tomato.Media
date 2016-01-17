@@ -18,6 +18,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\MFMetadataBuilder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\BiQuadFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
@@ -33,20 +35,27 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)XAudioSession.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
@@ -59,7 +68,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp" />

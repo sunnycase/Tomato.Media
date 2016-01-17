@@ -49,8 +49,8 @@ namespace HelloWorld
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
-            playerClient.MessageReceived += PlayerClient_MessageReceived;
+            //playerClient = new BackgroundMediaPlayerClient(typeof(BackgroundMediaPlayerHandler));
+            //playerClient.MessageReceived += PlayerClient_MessageReceived;
 
             //foreach (var fileName in fileNames)
             //{
@@ -71,9 +71,9 @@ namespace HelloWorld
             }
             var str = metadataProvider.Lyrics.ToString();
 
-            //var mediaSource = await MediaSource.CreateFromStream(stream, file.Path);
-            //streamSource = new EffectMediaStreamSource(mediaSource);
-            //Media.SetMediaStreamSource(streamSource.Source);
+            var mediaSource = await MediaSource.CreateFromStream(stream, file.Path);
+            streamSource = new EffectMediaStreamSource(mediaSource);
+            Media.SetMediaStreamSource(streamSource.Source);
             //GC.Collect();
             //GC.WaitForPendingFinalizers();
             //GC.Collect();

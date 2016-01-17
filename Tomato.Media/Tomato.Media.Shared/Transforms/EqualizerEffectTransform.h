@@ -1,6 +1,6 @@
 //
 // Tomato Media
-// XAudio 音效 for MFTransform
+// 均衡器 MFTransform
 // 
 // 作者：SunnyCase 
 // 创建日期 2015-01-15
@@ -10,22 +10,20 @@
 #include "Tomato.Media_i.h"
 #endif
 #include "../../include/media/Transforms/EffectTransformBase.h"
-#include <XAudio2.h>
-#include <XAudio2fx.h>
-#include "../../include/XAudio2RAII.h"
+#include "Algorithms/EqualizerFilter.h"
 
 DEFINE_NS_MEDIA
 #if WINAPI_FAMILY!=WINAPI_FAMILY_APP
 #include "Tomato.Media_i.h"
 #endif
 
-class XAudioEffectTransform : public EffectTransformBase
+class EqualizerEffectTransform : public EffectTransformBase
 {
 #if (WINAPI_FAMILY==WINAPI_FAMILY_APP)
-	InspectableClass(RuntimeClass_Tomato_Media_XAudioEffectTransform, BaseTrust)
+	InspectableClass(RuntimeClass_Tomato_Media_EqualizerEffectTransform, BaseTrust)
 #endif
 public:
-	XAudioEffectTransform();
+	EqualizerEffectTransform();
 protected:
 	virtual void OnValidateInputType(IMFMediaType* type) override;
 	virtual void OnValidateOutputType(IMFMediaType* type) override;
@@ -38,29 +36,25 @@ protected:
 	// 接收输入
 	virtual bool OnReceiveInput(IMFSample* sample) override;
 	virtual void OnProduceOutput(MFT_OUTPUT_DATA_BUFFER& output) override;
+	virtual WRL::ComPtr<IMFMediaType> OnGetInputAvailableType(DWORD index) noexcept override;
 	virtual WRL::ComPtr<IMFMediaType> OnGetOutputAvailableType(DWORD index) noexcept override;
 	virtual void BeginStreaming() override;
 
-	void InitializeXAudio();
-	void InitializeAvailableOutputTypes();
-	void InitializeSourceVoice(IMFMediaType* inputType);
+	void InitializeAvailableOutputTypes(IMFMediaType * inputType);
 	void InitializeEffectChain(IMFMediaType* outputType);
 	//bool FeedBodyPacket(ogg_packet& packet);
-	DWORD FillFrame(IMFMediaBuffer* buffer, BYTE* data, DWORD maxLength);
-	bool DecodeOneFrame();
+	DWORD FillFrame(BYTE* source, DWORD sourceSize, BYTE* dest, DWORD destSize);
 private:
-	WRL::ComPtr<IXAudio2> _xAudio;
 	std::vector<WRL::ComPtr<IMFMediaType>> availableOutputTypes;
 	WRL::ComPtr<IMFMediaBuffer> _inputBuffer;
-	std::unique_ptr<IXAudio2SourceVoice, Core::xaudio2_voice_deleter> _sourceVoice;
-	std::unique_ptr<IXAudio2SubmixVoice, Core::xaudio2_voice_deleter> _submixVoice;
+	std::vector<Internal::MultiBandEqualizerFilter> _channelFilters;
 
 	UINT32 _outputChannels;
 	UINT32 _outputSampleRate;
 	UINT32 _outputBlockAlign;
-	size_t bytesPerDecodecSample = 0;
-	size_t decodedSamples = 0;
+	DWORD _inputSize = 0;
 	MFTIME _sampleTime = -1;
+	MFTIME _sampleDuration = -1;
 };
 
 END_NS_MEDIA

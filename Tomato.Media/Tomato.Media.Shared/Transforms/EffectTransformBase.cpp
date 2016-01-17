@@ -243,12 +243,23 @@ HRESULT EffectTransformBase::AddInputStreams(
 //-------------------------------------------------------------------
 
 HRESULT EffectTransformBase::GetInputAvailableType(
-	DWORD           /*dwInputStreamID*/,
-	DWORD           /*dwTypeIndex*/,
-	IMFMediaType    ** /*ppType*/
+	DWORD           dwInputStreamID,
+	DWORD           dwTypeIndex,
+	IMFMediaType    ** ppType
 	)
 {
-	return MF_E_NO_MORE_TYPES;
+	if (!ppType)return E_INVALIDARG;
+
+	if (!IsValidInputStream(dwInputStreamID)) return MF_E_INVALIDSTREAMNUMBER;
+
+	auto inputType = OnGetInputAvailableType(dwTypeIndex);
+	if (inputType)
+	{
+		*ppType = inputType.Detach();
+		return S_OK;
+	}
+	else
+		return MF_E_NO_MORE_TYPES;
 }
 
 //-------------------------------------------------------------------
@@ -333,7 +344,8 @@ HRESULT EffectTransformBase::SetOutputType(
 		if (!(dwFlags & MFT_SET_TYPE_TEST_ONLY))
 		{
 			outputMediaType = OnSetOutputType(pType);
-			state = TransformState::WaitingInput;
+			if (pType)
+				state = TransformState::WaitingInput;
 		}
 	}
 	CATCH_ALL();
@@ -595,6 +607,11 @@ HRESULT EffectTransformBase::ProcessOutput(
 	}
 	CATCH_ALL();
 	return S_OK;
+}
+
+WRL::ComPtr<IMFMediaType> EffectTransformBase::OnGetInputAvailableType(DWORD index) noexcept
+{
+	return nullptr;
 }
 
 void EffectTransformBase::BeginStreaming()

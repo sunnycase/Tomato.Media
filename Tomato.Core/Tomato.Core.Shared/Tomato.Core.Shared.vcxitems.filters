@@ -311,7 +311,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Wrappers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

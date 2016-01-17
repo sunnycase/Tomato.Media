@@ -12,7 +12,7 @@ DEFINE_NS_MEDIA
 [version(NTDDI_WIN8)]
 [activatable(NTDDI_WIN8)]
 [marshaling_behavior(agile)]
-runtimeclass XAudioEffectTransform
+runtimeclass EqualizerEffectTransform
 {
 	[default] interface Windows.Media.IMediaExtension;
 }

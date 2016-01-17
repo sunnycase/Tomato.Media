@@ -168,6 +168,7 @@ protected:
 	// 返回值：是否可以输出采样
 	virtual bool OnReceiveInput(IMFSample* sample) = 0;
 	virtual void OnProduceOutput(MFT_OUTPUT_DATA_BUFFER& output) = 0;
+	virtual WRL::ComPtr<IMFMediaType> OnGetInputAvailableType(DWORD index) noexcept;
 	virtual WRL::ComPtr<IMFMediaType> OnGetOutputAvailableType(DWORD index) noexcept = 0;
 	// 开始流水
 	TOMATO_MEDIA_API virtual void BeginStreaming();

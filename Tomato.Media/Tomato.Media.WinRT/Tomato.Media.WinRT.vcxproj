@@ -267,7 +267,7 @@
     <MergedWinmdDirectory>$(IntDir)MergedWinMD</MergedWinmdDirectory>
     <IdlHeaderDirectory>$(MSBuildProjectDirectory)</IdlHeaderDirectory>
   </PropertyGroup>
-  <Target Name="mdmerge" AfterTargets="AfterLink" Outputs="$(OutDir)$(RootNamespace).winmd">
+  <Target Name="CopyLinkWinMD" AfterTargets="AfterLink" Outputs="$(IntDir)$(RootNamespace).winmd" Condition="'$(GenerateBuildCompilePassWinMD)' == 'true'">
     <PropertyGroup>
       <MdMergeExe>"$(WindowsSdkDir)\bin\$(PreferredToolArchitecture)\mdmerge.exe"</MdMergeExe>
     </PropertyGroup>
@@ -277,7 +277,21 @@
     <ItemGroup Condition="'$(ApplicationTypeRevision)' == '10.0'">
       <MetaDataDir Include="$(WindowsSDK_MetadataPath)\..\unionmetadata" />
     </ItemGroup>
-    <Exec Command="copy /y &quot;$(OutDir)$(RootNamespace).winmd&quot; &quot;$(UnmergedWinmdDirectory)&quot;" />
+    <Exec Command="copy /y &quot;$(IntDir)$(RootNamespace).winmd&quot; &quot;$(UnmergedWinmdDirectory)&quot;" />
+    <Exec Command="$(MdMergeExe) -v @(MetaDataDir -> '-metadata_dir &quot;%(Identity)&quot;', ' ') -o &quot;$(MergedWinmdDirectory)&quot; -i &quot;$(UnmergedWinmdDirectory)&quot; -partial" />
+    <Exec Command="copy /y &quot;$(MergedWinmdDirectory)\*&quot; &quot;$(OutDir)&quot;" />
+  </Target>
+  <Target Name="mdmerge" AfterTargets="CopyLinkWinMD" Outputs="$(OutDir)$(RootNamespace).winmd">
+    <PropertyGroup>
+      <MdMergeExe>"$(WindowsSdkDir)\bin\$(PreferredToolArchitecture)\mdmerge.exe"</MdMergeExe>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '8.1'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(ApplicationTypeRevision)' == '10.0'">
+      <MetaDataDir Include="$(WindowsSDK_MetadataPath)\..\unionmetadata" />
+    </ItemGroup>
+    <Exec Command="copy /y &quot;$(IntDir)$(RootNamespace).winmd&quot; &quot;$(UnmergedWinmdDirectory)&quot;" />
     <Exec Command="$(MdMergeExe) -v @(MetaDataDir -> '-metadata_dir &quot;%(Identity)&quot;', ' ') -o &quot;$(MergedWinmdDirectory)&quot; -i &quot;$(UnmergedWinmdDirectory)&quot; -partial" />
     <Exec Command="copy /y &quot;$(MergedWinmdDirectory)\*&quot; &quot;$(OutDir)&quot;" />
   </Target>

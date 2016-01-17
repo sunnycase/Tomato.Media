@@ -73,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp" />
@@ -141,6 +140,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PackageFile.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Wrappers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)zlib\adler32.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>

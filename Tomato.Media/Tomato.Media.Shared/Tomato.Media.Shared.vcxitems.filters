@@ -28,6 +28,12 @@
     <Filter Include="头文件\Transforms">
       <UniqueIdentifier>{b5fb73a3-96b4-4ad0-a1b0-906bea3a2102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Algorithms">
+      <UniqueIdentifier>{494f6171-f366-4f6d-b020-384ed775f7cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Algorithms">
+      <UniqueIdentifier>{a4bbe7de-5452-4371-844e-52dda82a6f34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h">
@@ -114,11 +120,23 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h">
       <Filter>头文件\Transforms</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.h">
       <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\BiQuadFilter.h">
+      <Filter>头文件\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.h">
+      <Filter>头文件\Algorithms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +212,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp">
       <Filter>源文件\Transforms</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.cpp">
       <Filter>源文件\Transforms</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
