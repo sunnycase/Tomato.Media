@@ -1,5 +1,5 @@
 //
-// Tomato Media
+// Tomato Media Effect
 // BiQuad 滤波器
 // 作者：SunnyCase
 // 创建时间：2016-01-16
@@ -8,7 +8,7 @@
 #include "common.h"
 #include <cmath>
 
-DEFINE_NS_MEDIA_INTERN
+DEFINE_NS_MEDIA_EFFECT
 
 template<typename T = float>
 struct BiQuadFilter
@@ -58,4 +58,4 @@ struct BiQuadFilter
 	}
 };
 
-END_NS_MEDIA_INTERN
+END_NS_MEDIA_EFFECT

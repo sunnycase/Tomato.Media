@@ -537,7 +537,7 @@ HRESULT EffectTransformBase::ProcessInput(
 	DWORD               dwFlags
 	)
 {
-	ComPtr<EffectTransformBase> thisGuard(this);
+	ComPtr<IUnknown> thisGuard(this->CastToUnknown());
 	if (!pSample) return E_INVALIDARG;
 
 	if (!IsValidInputStream(dwInputStreamID))
@@ -591,7 +591,7 @@ HRESULT EffectTransformBase::ProcessOutput(
 	if (cOutputBufferCount != 1)
 		return E_INVALIDARG;
 
-	ComPtr<EffectTransformBase> thisGuard(this);
+	ComPtr<IUnknown> thisGuard(this->CastToUnknown());
 	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
 	// If we don't have an input sample, we need some input before
 	// we can generate any output.

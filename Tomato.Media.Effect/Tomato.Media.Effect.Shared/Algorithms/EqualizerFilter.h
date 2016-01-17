@@ -1,5 +1,5 @@
 //
-// Tomato Media
+// Tomato Media Effect
 // 均衡器
 // 作者：SunnyCase
 // 创建时间：2016-01-17
@@ -7,8 +7,9 @@
 #pragma once
 #include "common.h"
 #include "BiQuadFilter.h"
+#include <vector>
 
-DEFINE_NS_MEDIA_INTERN
+DEFINE_NS_MEDIA_EFFECT
 
 class EqualizerFilter
 {
@@ -38,4 +39,4 @@ private:
 	const uint32_t _sampleRate;
 };
 
-END_NS_MEDIA_INTERN
+END_NS_MEDIA_EFFECT

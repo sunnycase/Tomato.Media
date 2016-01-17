@@ -12,7 +12,7 @@
 
 DEFINE_NS_MEDIA
 
-class CoreMediaSource sealed : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::RuntimeClassType::WinRtClassicComMix>,
+class CoreMediaSource : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::RuntimeClassType::WinRtClassicComMix>,
 	ABI::Windows::Media::Core::IMediaSource, IMFGetService>
 {
 public:
@@ -21,6 +21,8 @@ public:
 
 	// Í¨¹ý RuntimeClass ¼Ì³Ð
 	STDMETHODIMP GetService(REFGUID guidService, REFIID riid, LPVOID * ppvObject) override;
+
+	ABI::Windows::Media::Core::IMediaSource* AsMediaSource() noexcept { return this; }
 private:
 	MediaSource^ mediaSource;
 };

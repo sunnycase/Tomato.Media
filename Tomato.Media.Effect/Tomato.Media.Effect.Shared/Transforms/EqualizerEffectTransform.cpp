@@ -9,7 +9,7 @@
 #include "../../include/MFRAII.h"
 
 using namespace NS_MEDIA;
-using namespace NS_MEDIA_INTERN;
+using namespace NS_MEDIA_EFFECT;
 using namespace concurrency;
 using namespace WRL;
 
@@ -21,6 +21,25 @@ CoCreatableClass(EqualizerEffectTransform);
 
 EqualizerEffectTransform::EqualizerEffectTransform()
 {
+
+}
+
+STDMETHODIMP EqualizerEffectTransform::AddOrUpdateFilter(FLOAT frequency, FLOAT bandWidth, FLOAT gain)
+{
+	std::lock_guard<decltype(_filtersMutex)> locker(_filtersMutex);
+	_filterConfigs[frequency] = FilterConfig{ frequency, bandWidth, gain };
+	_filtersConfigsDirty = true;
+	return S_OK;
+}
+
+STDMETHODIMP EqualizerEffectTransform::RemoveFilter(FLOAT frequency)
+{
+	std::lock_guard<decltype(_filtersMutex)> locker(_filtersMutex);
+	auto it = _filterConfigs.find(frequency);
+	if (it != _filterConfigs.end())
+		_filterConfigs.erase(frequency);
+	_filtersConfigsDirty = true;
+	return S_OK;
 }
 
 void EqualizerEffectTransform::OnValidateInputType(IMFMediaType * type)
@@ -94,7 +113,7 @@ WRL::ComPtr<IMFMediaType> EqualizerEffectTransform::OnSetOutputType(IMFMediaType
 		ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, &_outputSampleRate));
 		ThrowIfFailed(type->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, &_outputChannels));
 
-		InitializeEffectChain(type);
+		InitializeEffectChain();
 	}
 	return type;
 }
@@ -173,10 +192,24 @@ void EqualizerEffectTransform::InitializeAvailableOutputTypes(IMFMediaType * inp
 	availableOutputTypes.emplace_back(inputType);
 }
 
-void EqualizerEffectTransform::InitializeEffectChain(IMFMediaType* outputType)
+void EqualizerEffectTransform::InitializeEffectChain()
 {
+	MultiBandEqualizerFilter filter(_outputSampleRate);
+	std::lock_guard<decltype(_filtersMutex)> locker(_filtersMutex);
+	for (auto&& configPair : _filterConfigs)
+	{
+		const auto& config = configPair.second;
+		try
+		{
+			filter.Add(config.frequency, config.bandWidth, config.gain);
+		}
+		catch (...) {}
+	}
+
+	_channelFilters.clear();
 	for (size_t i = 0; i < _outputChannels; i++)
-		_channelFilters.emplace_back(tenBandEqualizer, _outputSampleRate, 18.f, 10.f);
+		_channelFilters.emplace_back(filter);
+	_filtersConfigsDirty = false;
 }
 
 DWORD EqualizerEffectTransform::FillFrame(BYTE* source, DWORD sourceSize, BYTE* dest, DWORD destSize)
@@ -185,9 +218,16 @@ DWORD EqualizerEffectTransform::FillFrame(BYTE* source, DWORD sourceSize, BYTE* 
 	const auto channels = size_t(_outputChannels);
 	auto pSrc = reinterpret_cast<float*>(source);
 	auto pDst = reinterpret_cast<float*>(dest);
-	for (size_t i = 0; i < samples; i++)
-		for (size_t nCh = 0; nCh < channels; nCh++)
-			*pDst++ = _channelFilters[nCh].Process(*pSrc++);
+
+	{
+		std::lock_guard<decltype(_filtersMutex)> locker(_filtersMutex);
+		if (_filtersConfigsDirty)
+			InitializeEffectChain();
+
+		for (size_t i = 0; i < samples; i++)
+			for (size_t nCh = 0; nCh < channels; nCh++)
+				*pDst++ = _channelFilters[nCh].Process(*pSrc++);
+	}
 
 	const auto totalSamples = samples * channels;
 	pDst = reinterpret_cast<float*>(dest);

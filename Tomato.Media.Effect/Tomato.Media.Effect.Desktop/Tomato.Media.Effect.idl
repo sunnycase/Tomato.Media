@@ -1,0 +1,28 @@
+import "oaidl.idl";
+import "ocidl.idl";
+import "mfidl.idl";
+
+[
+	uuid(DFC6F70B-BD21-47B9-ACA1-951F1C0E1B42),
+	version(1.0)
+]
+interface IEqualizerEffectProps : IUnknown
+{
+	HRESULT AddOrUpdateFilter([in]FLOAT frequency, [in]FLOAT bandWidth, [in]FLOAT gain);
+	HRESULT RemoveFilter([in]FLOAT frequency);
+};
+
+[
+	uuid(6AC38805-481E-4C54-B856-FE2A1411DFAC),
+	helpstring("Tomato Media Effect Type Library"),
+	version(1.0)
+]
+library TomatoMediaEffectLib
+{
+	[uuid(818ABFC1-0681-4EE6-9539-E473CA3CEB72)]
+	coclass EqualizerEffectTransform
+	{
+		[default] interface IMFTransform;
+		interface IEqualizerEffectProps;
+	};
+}

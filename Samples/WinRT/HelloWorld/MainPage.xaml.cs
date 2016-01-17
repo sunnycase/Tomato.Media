@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Tomato.Media.Effect;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -63,7 +64,7 @@ namespace HelloWorld
             var stream = await file.OpenReadAsync();
             var metadataProvider = await MediaMetadataProvider.CreateFromStream(stream, false);
             var pics = metadataProvider.Pictures;
-            if(pics.Any())
+            if (pics.Any())
             {
                 var image = new BitmapImage();
                 await image.SetSourceAsync((new MemoryStream(pics[0].Data)).AsRandomAccessStream());
@@ -73,6 +74,19 @@ namespace HelloWorld
 
             var mediaSource = await MediaSource.CreateFromStream(stream, file.Path);
             streamSource = new EffectMediaStreamSource(mediaSource);
+            var equalizer = new EqualizerEffectTransform();
+            
+            equalizer.AddOrUpdateFilter(31, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(62, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(125, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(250, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(500, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(1000, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(2000, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(4000, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(8000, 18, 2.0f);
+            equalizer.AddOrUpdateFilter(16000, 18, 2.0f);
+            streamSource.AddTransform(equalizer);
             Media.SetMediaStreamSource(streamSource.Source);
             //GC.Collect();
             //GC.WaitForPendingFinalizers();

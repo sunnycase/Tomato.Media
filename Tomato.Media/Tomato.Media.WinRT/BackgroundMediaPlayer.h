@@ -30,6 +30,7 @@ public:
 
 	// Í¨¹ý IMediaPlayer ¼Ì³Ð
 	virtual void SetMediaSource(MediaSource^ mediaSource);
+	virtual void SetMediaStreamSource(Windows::Media::Core::MediaStreamSource^ streamSource);
 	virtual void Play();
 	virtual void Pause();
 
@@ -75,7 +76,6 @@ private:
 private:
 	Platform::Agile<Windows::ApplicationModel::Background::BackgroundTaskDeferral> deferral;
 	Windows::Media::Playback::MediaPlayer^ mediaPlayer;
-	EffectMediaStreamSource^ _mss;
 
 	IBackgroundMediaPlayerHandler^ _audioHandler;
 	void OnMediaEnded(Windows::Media::Playback::MediaPlayer ^sender, Platform::Object ^args);

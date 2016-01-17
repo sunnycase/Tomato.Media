@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{67dd8758-64af-45c8-9bb0-834e5bc58a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{6f050dc0-f576-4f41-a6e2-73797acd4964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Transforms">
+      <UniqueIdentifier>{0883e78d-2906-4dec-b227-bb44672ae90f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Transforms">
+      <UniqueIdentifier>{12631862-f5a2-4703-945c-7e4b105d3654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Algorithms">
+      <UniqueIdentifier>{88976a64-cae1-4caa-84c2-d35701f5b5f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Algorithms">
+      <UniqueIdentifier>{67e85300-fd88-43da-aeea-3061a27bba7b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\BiQuadFilter.h">
+      <Filter>头文件\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.h">
+      <Filter>头文件\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Algorithms\EqualizerFilter.cpp">
+      <Filter>源文件\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EqualizerEffectTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

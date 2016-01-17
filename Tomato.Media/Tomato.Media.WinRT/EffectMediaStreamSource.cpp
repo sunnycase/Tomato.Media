@@ -8,7 +8,6 @@
 #include "EffectMediaStreamSource.h"
 #include "Utility/MFSourceReaderCallback.h"
 #include "../../include/Wrappers.h"
-#include "Transforms/EqualizerEffectTransform.h"
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -25,6 +24,37 @@ EffectMediaStreamSource::EffectMediaStreamSource(::NS_MEDIA::MediaSource ^ media
 {
 	ConfigureSourceReader(mediaSource->MFMediaSource);
 	ConfigureMSS();
+}
+
+void EffectMediaStreamSource::AddTransform(Windows::Media::IMediaExtension ^ transform)
+{
+	auto obj = reinterpret_cast<IInspectable*>(static_cast<Object^>(transform));
+	ComPtr<IMFTransform> mfTrans;
+	ThrowIfFailed(obj->QueryInterface(IID_PPV_ARGS(&mfTrans)));
+	task_completion_event<void> flushOp;
+	{
+		std::lock_guard<decltype(_flushOperationsMutex)> locker(_flushOperationsMutex);
+		_flushOperations.emplace(flushOp);
+	}
+	create_task(flushOp).then([this, mfTrans]
+	{
+		_sourceReader->AddTransformForStream(MF_SOURCE_READER_FIRST_AUDIO_STREAM, mfTrans.Get());
+	});
+	ThrowIfFailed(_sourceReader->Flush(MF_SOURCE_READER_FIRST_AUDIO_STREAM));
+}
+
+void EffectMediaStreamSource::RemoveAllTransform()
+{
+	task_completion_event<void> flushOp;
+	{
+		std::lock_guard<decltype(_flushOperationsMutex)> locker(_flushOperationsMutex);
+		_flushOperations.emplace(flushOp);
+	}
+	create_task(flushOp).then([this]
+	{
+		_sourceReader->RemoveAllTransformsForStream(MF_SOURCE_READER_FIRST_AUDIO_STREAM);
+	});
+	ThrowIfFailed(_sourceReader->Flush(MF_SOURCE_READER_FIRST_AUDIO_STREAM));
 }
 
 void EffectMediaStreamSource::ConfigureSourceReader(IMFMediaSource * mediaSource)
@@ -64,8 +94,6 @@ void EffectMediaStreamSource::ConfigureSourceReader(IMFMediaSource * mediaSource
 
 void EffectMediaStreamSource::InstallEffects()
 {
-	auto effect = Make<EqualizerEffectTransform>();
-	ThrowIfFailed(_sourceReader->AddTransformForStream(MF_SOURCE_READER_FIRST_AUDIO_STREAM, static_cast<IMFTransform*>(effect.Get())));
 }
 
 void EffectMediaStreamSource::ConfigureMSS()

@@ -8,7 +8,7 @@
 #include "EqualizerFilter.h"
 
 using namespace NS_MEDIA;
-using namespace NS_MEDIA_INTERN;
+using namespace NS_MEDIA_EFFECT;
 
 EqualizerFilter::EqualizerFilter(uint32_t sampleRate, float centerFreq, float bandWidth, float gain)
 {
