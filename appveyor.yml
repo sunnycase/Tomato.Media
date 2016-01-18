@@ -1,7 +1,7 @@
 version: 1.0.{build}-dev
 os: Windows Server 2012 R2
 configuration: Debug
-platform: x86
+platform: Win32
 environment:
   AppxPackage: false
   GenerateAppxPackageOnBuild: false
