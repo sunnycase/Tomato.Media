@@ -14,6 +14,7 @@ DEFINE_NS_MEDIA
 public interface class IMediaPlayer
 {
 	void SetMediaSource(MediaSource^ mediaSource);
+	void SetMediaStreamSource(Windows::Media::Core::MediaStreamSource^ streamSource);
 	void Play();
 	void Pause();
 

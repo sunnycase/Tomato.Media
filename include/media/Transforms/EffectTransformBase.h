@@ -7,10 +7,13 @@
 #pragma once
 #include "common.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4251)
+
 DEFINE_NS_MEDIA
 
-class EffectTransformBase : public WRL::RuntimeClass<WRL::RuntimeClassFlags<
-#if (NTDDI_VERSION >= NTDDI_WIN8)
+class TOMATO_MEDIA_API EffectTransformBase : public WRL::Implements<WRL::RuntimeClassFlags<
+#if (WINAPI_FAMILY==WINAPI_FAMILY_APP)
 	WRL::WinRtClassicComMix>,
 	ABI::Windows::Media::IMediaExtension,
 #else
@@ -27,9 +30,9 @@ public:
 		PendingOutput
 	};
 
-	TOMATO_MEDIA_API virtual ~EffectTransformBase();
+	virtual ~EffectTransformBase();
 
-#if (NTDDI_VERSION >= NTDDI_WIN8)
+#if (WINAPI_FAMILY==WINAPI_FAMILY_APP)
 	// IMediaExtension
 	IFACEMETHOD(SetProperties) (ABI::Windows::Foundation::Collections::IPropertySet *pConfiguration) override;
 #endif
@@ -152,12 +155,12 @@ public:
 		DWORD                   *pdwStatus
 		);
 protected:
-	TOMATO_MEDIA_API EffectTransformBase();
+	EffectTransformBase();
 	// 验证输入类型
 	virtual void OnValidateInputType(IMFMediaType* type) = 0;
 	// 验证输出类型
 	virtual void OnValidateOutputType(IMFMediaType* type) = 0;
-	TOMATO_MEDIA_API virtual DWORD OnGetOutputStreamFlags() const noexcept;
+	virtual DWORD OnGetOutputStreamFlags() const noexcept;
 	// 获取输出帧大小
 	virtual DWORD OnGetOutputFrameSize() const noexcept = 0;
 	// 设置输入类型
@@ -168,11 +171,12 @@ protected:
 	// 返回值：是否可以输出采样
 	virtual bool OnReceiveInput(IMFSample* sample) = 0;
 	virtual void OnProduceOutput(MFT_OUTPUT_DATA_BUFFER& output) = 0;
+	virtual WRL::ComPtr<IMFMediaType> OnGetInputAvailableType(DWORD index) noexcept;
 	virtual WRL::ComPtr<IMFMediaType> OnGetOutputAvailableType(DWORD index) noexcept = 0;
 	// 开始流水
-	TOMATO_MEDIA_API virtual void BeginStreaming();
+	virtual void BeginStreaming();
 	// 停止流水
-	TOMATO_MEDIA_API virtual void EndStreaming();
+	virtual void EndStreaming();
 private:
 	// 验证是否有效的输入流 Id
 	bool IsValidInputStream(DWORD inputStreamId) const noexcept;
@@ -190,3 +194,5 @@ protected:
 };
 
 END_NS_MEDIA
+
+#pragma warning(pop)

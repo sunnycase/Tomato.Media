@@ -1,13 +1,13 @@
 #include <sdkddkver.h>
 #define DEFINE_NS_ONLY
-#include "../Tomato.Media.Shared/common.h"
+#include "../Tomato.Media.Effect.Shared/common.h"
 
 import "oaidl.idl";
 import "ocidl.idl";
 import "inspectable.idl";
 import "Windows.Media.idl";
 
-DEFINE_NS_MEDIA
+DEFINE_NS_MEDIA_EFFECT
 
 [uuid(DFC6F70B-BD21-47B9-ACA1-951F1C0E1B42)]
 [version(1.0)]
@@ -23,7 +23,7 @@ interface IEqualizerEffectProps : IInspectable
 runtimeclass EqualizerEffectTransform
 {
 	[default] interface Windows.Media.IMediaExtension;
-	interface IEqualizerEffectProps;
+interface IEqualizerEffectProps;
 }
 
-END_NS_MEDIA
+END_NS_MEDIA_EFFECT

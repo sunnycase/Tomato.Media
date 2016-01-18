@@ -31,10 +31,4 @@ library TomatoMediaLib
 	{
 		[default] interface IMediaSource;
 	};
-
-	[uuid(818ABFC1-0681-4EE6-9539-E473CA3CEB72)]
-	coclass XAudioEffectTransform
-	{
-		[default] interface IMFTransform;
-	};
 }

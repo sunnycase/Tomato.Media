@@ -114,10 +114,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h">
-      <Filter>头文件\Transforms</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.h">
       <Filter>头文件\Transforms</Filter>
     </ClInclude>
   </ItemGroup>
@@ -192,9 +195,6 @@
       <Filter>源文件\Utility</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp">
-      <Filter>源文件\Transforms</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\XAudioEffectTransform.cpp">
       <Filter>源文件\Transforms</Filter>
     </ClCompile>
   </ItemGroup>

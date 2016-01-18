@@ -26,7 +26,7 @@ public:
 			buffer->Unlock();
 	}
 
-	void Lock(_Outptr_result_bytebuffer_to_(*maxLength, *currentLength) BYTE*& data,
+	void Lock(_Outref_result_bytebuffer_to_(*maxLength, *currentLength) BYTE*& data,
 		_Outptr_opt_ DWORD* maxLength, _Outptr_opt_ DWORD* currentLength)
 	{
 		ThrowIfFailed(buffer->Lock(&data, maxLength, currentLength));

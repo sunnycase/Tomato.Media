@@ -34,6 +34,9 @@ public:
 	{
 		Windows::Media::Core::MediaStreamSource^ get() { return _mss; }
 	}
+
+	void AddTransform(Windows::Media::IMediaExtension^ transform);
+	void RemoveAllTransform();
 private:
 	void ConfigureSourceReader(IMFMediaSource* mediaSource);
 	void InstallEffects();

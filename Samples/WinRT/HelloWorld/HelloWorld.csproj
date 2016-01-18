@@ -91,7 +91,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
@@ -146,6 +146,10 @@
     <ProjectReference Include="..\..\..\Tomato.Media.Codec\Tomato.Media.Codec.WinRT\Tomato.Media.Codec.WinRT.vcxproj">
       <Project>{74d2757e-89fa-4545-8b64-b13d426741a0}</Project>
       <Name>Tomato.Media.Codec.WinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tomato.Media.Effect\Tomato.Media.Effect.WinRT\Tomato.Media.Effect.WinRT.vcxproj">
+      <Project>{108d2133-bd4e-4f6c-8455-a72c77efbd48}</Project>
+      <Name>Tomato.Media.Effect.WinRT</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Tomato.Media\Tomato.Media.WinRT\Tomato.Media.WinRT.vcxproj">
       <Project>{f5a28f95-fc11-43ce-a2b6-9a8649ac606b}</Project>
