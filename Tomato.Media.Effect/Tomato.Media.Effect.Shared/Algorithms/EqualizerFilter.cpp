@@ -52,7 +52,23 @@ void MultiBandEqualizerFilter::Add(float centerFreq, float bandWidth, float gain
 
 float MultiBandEqualizerFilter::Process(float input)
 {
-	for (auto&& filter : _filters)
-		input = filter.Process(input);
+	if (_filters.size() == 10)
+	{
+		input = _filters[0].Process(input);
+		input = _filters[1].Process(input);
+		input = _filters[2].Process(input);
+		input = _filters[3].Process(input);
+		input = _filters[4].Process(input);
+		input = _filters[5].Process(input);
+		input = _filters[6].Process(input);
+		input = _filters[7].Process(input);
+		input = _filters[8].Process(input);
+		input = _filters[9].Process(input);
+	}
+	else
+	{
+		for (auto&& filter : _filters)
+			input = filter.Process(input);
+	}
 	return input;
 }

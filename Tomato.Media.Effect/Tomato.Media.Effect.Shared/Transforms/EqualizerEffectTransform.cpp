@@ -223,7 +223,23 @@ DWORD EqualizerEffectTransform::FillFrame(BYTE* source, DWORD sourceSize, BYTE* 
 		std::lock_guard<decltype(_filtersMutex)> locker(_filtersMutex);
 		if (_filtersConfigsDirty)
 			InitializeEffectChain();
+	}
 
+	if (channels == 2)
+	{
+		for (size_t i = 0; i < samples; i++)
+		{
+			*pDst++ = _channelFilters[0].Process(*pSrc++);
+			*pDst++ = _channelFilters[1].Process(*pSrc++);
+		}
+	}
+	else if (channels == 1)
+	{
+		for (size_t i = 0; i < samples; i++)
+			*pDst++ = _channelFilters[0].Process(*pSrc++);
+	}
+	else
+	{
 		for (size_t i = 0; i < samples; i++)
 			for (size_t nCh = 0; nCh < channels; nCh++)
 				*pDst++ = _channelFilters[nCh].Process(*pSrc++);
