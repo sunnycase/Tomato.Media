@@ -94,9 +94,4 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <MidlRT Include="Tomato.Media.Ext.idl">
-      <Filter>源文件</Filter>
-    </MidlRT>
-  </ItemGroup>
 </Project>

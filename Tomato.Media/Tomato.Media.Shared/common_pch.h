@@ -11,6 +11,7 @@
 #include <sstream>
 #include <ppltasks.h>
 #include <ppl.h>
+#include <pplawait.h>
 #include <mfidl.h>
 #include <mfapi.h>
 #include <Mferror.h>

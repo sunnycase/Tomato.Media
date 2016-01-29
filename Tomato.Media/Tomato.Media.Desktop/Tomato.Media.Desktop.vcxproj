@@ -109,10 +109,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;TOMATO_MEDIA_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm122 /await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,10 +144,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;TOMATO_MEDIA_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm122 /await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,7 +183,7 @@
       <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;TOMATO_MEDIA_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm122 /await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -219,7 +221,7 @@
       <PreprocessorDefinitions>__WRL_CLASSIC_COM_STRICT__;TOMATO_MEDIA_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;TOMATOMEDIADESKTOP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm122 /await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

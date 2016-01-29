@@ -28,44 +28,28 @@ DEFINE_MEDIAMETA(Picture);
 task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(IMFByteStream* byteStream, bool brief)
 {
 	auto container = std::make_shared<MediaMetadataContainer>();
-	WRL::ComPtr<IMFByteStream> stream(byteStream);
-	// ID3V2
-	return ID3V2Meta::ReadBriefMetadata(stream.Get(), container)
-		.then([=](bool good)
+	try
 	{
-		if (good && container->GetSize() >= 3)
+		do
 		{
-			if (!brief)
-				return ID3V2Meta::ReadExtraMetadata(stream.Get(), container)
-				.then([](bool) {});
-			return task_from_result();
-		}
-		// ID3V1
-		return ID3V1Meta::ReadMetadata(stream.Get(), container)
-			.then([=](bool good)
-		{
-			if (!good)
+			if (await ID3V2Meta::ReadBriefMetadata(byteStream, container) && container->GetSize() >= 3)
 			{
-				MFMediaSourceFactory source;
-				source.Open(stream.Get(), L"");
-
-				container->Add<DefaultMediaMetadatas::Title>(source.Title);
-				container->Add<DefaultMediaMetadatas::Album>(source.Album);
-				container->Add<DefaultMediaMetadatas::Artist>(source.Artist);
-				container->Add<DefaultMediaMetadatas::AlbumArtist>(source.AlbumArtist);
-				//container->Add<DefaultMediaMetadatas::Year>(_wtoi(source));
-				//container->Add<DefaultMediaMetadatas::TrackNumber>(frame->GetText());
-				//container->Add<DefaultMediaMetadatas::Genre>(frame->GetText());
+				if (!brief)
+					await ID3V2Meta::ReadExtraMetadata(byteStream, container);
+				break;
 			}
-		});
-	}).then([=](task<void> t)
-		-> std::shared_ptr<MediaMetadataContainer>
-	{
-		try
-		{
-			t.get();
-		}
-		catch (...) {}
-		return container;
-	});
+			if (await ID3V1Meta::ReadMetadata(byteStream, container))
+				break;
+
+			MFMediaSourceFactory source;
+			source.Open(byteStream, L"");
+
+			container->Add<DefaultMediaMetadatas::Title>(source.Title);
+			container->Add<DefaultMediaMetadatas::Album>(source.Album);
+			container->Add<DefaultMediaMetadatas::Artist>(source.Artist);
+			container->Add<DefaultMediaMetadatas::AlbumArtist>(source.AlbumArtist);
+		} while (false);
+	}
+	catch(...){}
+	return container;
 }
