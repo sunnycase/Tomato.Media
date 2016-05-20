@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Tomato.Media.Gaming</id>
+    <version>0.0.1-alpha1</version>
+    <authors>SunnyCase</authors>
+    <description>Tomato Media Game Library for game developing.</description>
+    <language>Neutral</language>
+    <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2015 SunnyCase</copyright>
+    <tags>WinRT UWP Game</tags>
+    <dependencies>
+    	<group>
+    		<dependency id="Tomato.Core" version="0.0.4-alpha5"/>
+    		<dependency id="Tomato.Media" version="0.0.4-alpha5"/>
+    		<dependency id="Win2D.uwp" version="1.10.0"/>
+  		</group>
+  	</dependencies>
+  </metadata>
+
+  <files>
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Gaming.winmd" target="lib\uap10.0\Tomato.Media.Gaming.winmd" />
+
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Gaming.dll" target="runtimes\win10-x86\native\Tomato.Media.Gaming.dll" />
+    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Media.Gaming.pri" target="runtimes\win10-x86\native\Tomato.Media.Gaming.pri" />
+
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.Gaming.dll" target="runtimes\win10-x64\native\Tomato.Media.Gaming.dll" />
+    <file src="..\..\bin\WinRT\Release\x64\Tomato.Media.Gaming.pri" target="runtimes\win10-x64\native\Tomato.Media.Gaming.pri" />
+
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.Gaming.dll" target="runtimes\win10-arm\native\Tomato.Media.Gaming.dll" />
+    <file src="..\..\bin\WinRT\Release\arm\Tomato.Media.Gaming.pri" target="runtimes\win10-arm\native\Tomato.Media.Gaming.pri" />
+</files>
+</package>

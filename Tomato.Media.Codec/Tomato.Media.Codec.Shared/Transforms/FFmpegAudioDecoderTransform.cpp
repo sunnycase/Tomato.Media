@@ -50,7 +50,7 @@ void FFmpegAudioDecoderTransform::OnValidateInputType(IMFMediaType * type)
 		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
 	// —È÷§ Options
 	ComPtr<IUnknown> optionsUnk;
-	if (FAILED(type->GetUnknown(MF_MT_LIBAV_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk))))
+	if (FAILED(type->GetUnknown(MF_MT_LIBAV_AUDIO_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk))))
 		ThrowIfFailed(MF_E_INVALIDMEDIATYPE);
 }
 
@@ -247,8 +247,8 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 	_codecContext->flags2 = _waveFormat->Flags2;
 
 	ComPtr<IUnknown> optionsUnk;
-	ThrowIfFailed(inputType->GetUnknown(MF_MT_LIBAV_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk)));
-	auto options = static_cast<LibAVCodecOptions*>(optionsUnk.Get());
+	ThrowIfFailed(inputType->GetUnknown(MF_MT_LIBAV_AUDIO_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk)));
+	auto options = static_cast<LibAVAudioCodecOptions*>(optionsUnk.Get());
 	if (!options->ExtraData.empty())
 	{
 		auto size = options->ExtraData.size();

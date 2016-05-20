@@ -594,7 +594,12 @@ HRESULT DecoderTransformBase::ProcessOutput(
 		if (!(pOutputSamples[0].dwStatus & MFT_OUTPUT_DATA_BUFFER_INCOMPLETE))
 			state = TransformState::WaitingInput;
 	}
-	CATCH_ALL();
+	// ºöÂÔ´íÎó
+	catch(...)
+	{
+		state = TransformState::WaitingInput;
+		return MF_E_TRANSFORM_NEED_MORE_INPUT;
+	}
 	return S_OK;
 }
 
