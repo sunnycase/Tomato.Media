@@ -19,23 +19,35 @@ namespace Tomato.TileSetEditor.Models
     {
         public TileUnit TileUnit { get; private set; }
         public ImageSource Output { get; private set; }
-        
+
         public string Category
         {
             get { return TileUnit.Category; }
             set { TileUnit.Category = value; }
         }
 
-        public int TileCount { get { return TileUnit.Tiles.Length / TileUnit.Size.Count; } }
+        public TileUnitSize Size => TileUnit.Size;
 
         private List<DrawingOperation> _imageDrawingOperations = new List<DrawingOperation>();
         private List<DrawingOperation> _extraImageDrawingOperations = new List<DrawingOperation>();
         private Rect _boundingRect;
         private bool _isDirty = true;
 
+        public TileUnitElementModel[] Elements { get; }
+
         public TileUnitModel(TileUnit tileUnit)
         {
             TileUnit = tileUnit;
+            Elements = tileUnit.Tiles.Select((o, i) => new TileUnitElementModel(tileUnit.Tiles, i)).ToArray();
+            foreach (var item in Elements)
+                item.Updated += Item_Updated;
+            Draw();
+        }
+
+        private void Item_Updated()
+        {
+            _isDirty = true;
+            Draw();
         }
 
         public void Draw()
@@ -49,9 +61,8 @@ namespace Tomato.TileSetEditor.Models
             var drawing = new DrawingVisual();
             using (var context = drawing.RenderOpen())
             {
-                var tileSetService = this.GetDependencyResolver().Resolve<ITileSetContextService>();
-                DrawImageOperations(context, _imageDrawingOperations, tileSetService.Image);
-                DrawImageOperations(context, _extraImageDrawingOperations, tileSetService.ExtraImage);
+                DrawImageOperations(context, _imageDrawingOperations);
+                DrawImageOperations(context, _extraImageDrawingOperations);
             }
             var output = new RenderTargetBitmap((int)_boundingRect.Width, (int)_boundingRect.Height, 96, 96, PixelFormats.Pbgra32);
             output.Render(drawing);
@@ -59,16 +70,11 @@ namespace Tomato.TileSetEditor.Models
             Output = output;
         }
 
-        private void DrawImageOperations(DrawingContext drawingContext, IEnumerable<DrawingOperation> opeations, ImageSource imageSource)
+        private void DrawImageOperations(DrawingContext drawingContext, IEnumerable<DrawingOperation> opeations)
         {
-            if (imageSource != null)
+            foreach (var oper in opeations)
             {
-                foreach (var oper in opeations)
-                {
-                    drawingContext.PushClip(oper.Clip);
-                    drawingContext.DrawImage(imageSource, oper.DestRect);
-                    drawingContext.Pop();
-                }
+                drawingContext.DrawImage(oper.Image, oper.DestRect);
             }
         }
 
@@ -84,8 +90,8 @@ namespace Tomato.TileSetEditor.Models
                 if (TileUnit.Tiles.Length != totalTileCount)
                     throw new ArgumentException("Invalid tiles count in tileunit.");
 
-                var tileSetService = this.GetDependencyResolver().Resolve<ITileSetContextService>();
-                var tileSize = tileSetService.TileSize;
+                var tileSetService = this.GetDependencyResolver().Resolve<ITileService>();
+                var tileSize = this.GetDependencyResolver().Resolve<ITileSetContextService>().TileSize;
                 // 每次 z 坐标移动 1 格时的位移
                 var zMoveVec = new Vector(tileSize.Width / 2.0, -tileSize.Height / 2.0);
                 // 每次 x 坐标移动 1 格时的位移
@@ -95,45 +101,41 @@ namespace Tomato.TileSetEditor.Models
 
                 var boundingRect = Rect.Empty;
                 int tileIdx = 0;
-                var zLineBasePos = new Point();
                 for (int cntX = 0; cntX < tileUnitSize.XLength; cntX++)
                 {
-                    var xLineBasePos = zLineBasePos;
                     for (int cntZ = 0; cntZ < tileUnitSize.ZLength; cntZ++)
                     {
-                        if (TileUnit.Tiles[tileIdx].HasValue)
+                        if (TileUnit.Tiles[tileIdx] != null)
                         {
-                            var tileUnitElem = TileUnit.Tiles[tileIdx].Value;
-                            var tile = tileSetService.FindTile(tileUnitElem.Tile);
+                            var tileUnitElem = TileUnit.Tiles[tileIdx];
+                            var tile = tileSetService.GetTileByTileId(tileUnitElem.Tile);
 
                             // 绘制 tile
-                            var tileRect = Rect.Offset(new Rect(tileSize), yMoveVec * tileUnitElem.Height);
+                            var tileRect = Rect.Offset(new Rect(tileSize), yMoveVec * tileUnitElem.Height + xMoveVec * cntX + zMoveVec * cntZ);
                             boundingRect.Union(tileRect);
                             _imageDrawingOperations.Add(new DrawingOperation
                             {
-                                Clip = tileSetService.GetImageClip(tileUnitElem.Tile),
+                                Image = tile.TileImage,
                                 DestRect = tileRect
                             });
 
                             // 绘制 extra image
-                            if (tile.ExtraImage.HasValue)
+                            if (tile.ExtraImage != null)
                             {
-                                var extraImageRef = tile.ExtraImage.Value;
-                                var extraImage = tileSetService.FindExtraImage(extraImageRef.ExtraImage);
-                                var extraRect = new Rect(extraImageRef.Offset.X, extraImageRef.Offset.Y, extraImage.Width, extraImage.Height);
+                                var extraImageRef = tile.ExtraImage;
+                                var extraImage = extraImageRef.ImageSource;
+                                var extraRect = new Rect(tile.ExtraImageOffset.X, tile.ExtraImageOffset.Y, extraImage.Width, extraImage.Height);
                                 extraRect.Offset((Vector)tileRect.Location);
                                 boundingRect.Union(extraRect);
                                 _extraImageDrawingOperations.Add(new DrawingOperation
                                 {
-                                    Clip = tileSetService.GetExtraImageClip(extraImageRef.ExtraImage),
+                                    Image = extraImage,
                                     DestRect = extraRect
                                 });
                             }
                         }
                         tileIdx++;
-                        xLineBasePos += zMoveVec;
                     }
-                    zLineBasePos += xMoveVec;
                 }
                 // 修正 boudingRect
                 var offset = new Vector(-boundingRect.Left, -boundingRect.Top);
@@ -153,7 +155,7 @@ namespace Tomato.TileSetEditor.Models
 
         private class DrawingOperation
         {
-            public RectangleGeometry Clip { get; set; }
+            public ImageSource Image { get; set; }
             public Rect DestRect { get; set; }
         }
     }

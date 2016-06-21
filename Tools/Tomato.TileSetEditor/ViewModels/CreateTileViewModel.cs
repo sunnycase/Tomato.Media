@@ -13,6 +13,7 @@ using Catel.Services;
 using Tomato.TileSetEditor.Models;
 using Tomato.TileSetEditor.Services;
 using Tomato.Tools.Common.Gaming;
+using System.Windows.Media;
 
 namespace Tomato.TileSetEditor.ViewModels
 {
@@ -28,7 +29,7 @@ namespace Tomato.TileSetEditor.ViewModels
         public Point ExtraImageOffset { get; set; }
 
         [ViewModelToModel("Model")]
-        public BitmapImage TileImageSource { get; set; }
+        public ImageSource TileImageSource { get; set; }
 
         [ValidationToViewModel]
         public IValidationSummary ValidationSummary { get; private set; }
@@ -73,14 +74,22 @@ namespace Tomato.TileSetEditor.ViewModels
                 {
                     var messageService = this.GetDependencyResolver().Resolve<IMessageService>();
                     messageService.ShowWarningAsync($"图片分辨率必须为 {Model.TileWidth}x{Model.TileHeight}。");
+                    return;
                 }
-                //else if(imageSource.DpiX != 96 || imageSource.DpiY != 96)
-                //{
-                //    var messageService = this.GetDependencyResolver().Resolve<IMessageService>();
-                //    messageService.ShowWarningAsync($"图片 Dpi 必须为 96。");
-                //}
-                else
+                if (imageSource.DpiX != 96 || imageSource.DpiY != 96)
+                {
+                    var drawing = new DrawingVisual();
+                    using (var context = drawing.RenderOpen())
+                    {
+                        context.DrawImage(imageSource, new Rect(0, 0, 60, 30));
+                    }
+                    var bitmap = new RenderTargetBitmap(60, 30, 96, 96, PixelFormats.Pbgra32);
+                    bitmap.Render(drawing);
                     TileImageSource = imageSource;
+                    return;
+                }
+
+                TileImageSource = imageSource;
             }
         }
 

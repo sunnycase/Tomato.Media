@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="Tomato.TileSetEditor.Views.PickAnyTileUnitsEditorView"
+﻿<catel:UserControl x:Class="Tomato.TileSetEditor.Views.TileUnitsEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -36,7 +36,7 @@
                     </Style>
                 </ToolBar.Resources>
             </ToolBar>
-            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding TileUnits}">
+            <ListView x:Name="pickAnyListView" Grid.Row="1" ItemsSource="{Binding TileUnits}" SelectionMode="Single" SelectedItem="{Binding SelectedTileUnit,Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -44,7 +44,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <views:TilePresenterView VerticalAlignment="Center" HorizontalAlignment="Center" DataContext="{Binding FirstTile}"/>
+                            <!--<views:TilePresenterView VerticalAlignment="Center" HorizontalAlignment="Center" DataContext="{Binding FirstTile}"/>-->
                             <Grid Grid.Column="1" Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -56,8 +56,8 @@
                                 </Grid.RowDefinitions>
                                 <TextBlock>类别</TextBlock>
                                 <TextBox Grid.Column="1" Text="{Binding Category}" Foreground="Green"/>
-                                <TextBlock Grid.Row="1">数量</TextBlock>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Tiles.Count}" Foreground="Green"/>
+                                <TextBlock Grid.Row="1">大小</TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Size}" Foreground="Green"/>
                                 <Grid.Resources>
                                     <Style TargetType="Button">
                                         <Setter Property="Padding" Value="10,2"/>
@@ -77,8 +77,8 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <Grid Grid.Column="1">
-            <views:PickAnyTileUnitEditorView DataContext="{Binding SelectedItem, ElementName=pickAnyListView}"/>
+        <Grid Grid.Column="1" DataContext="{Binding SelectedItem, ElementName=pickAnyListView}">
+            <views:TileUnitEditorView/>
         </Grid>
     </Grid>
 </catel:UserControl>

@@ -14,7 +14,7 @@ using Tomato.Tools.Common.Gaming;
 
 namespace Tomato.TileSetEditor.Models
 {
-    class TilesEditorModel : ModelBase, ITileService
+    class TilesEditorModel : ModelBase, ITileService, ITileSetContextService
     {
         private readonly TileSetModel _tileSetModel;
 
@@ -26,6 +26,24 @@ namespace Tomato.TileSetEditor.Models
 
         public int TileWidth { get; private set; }
         public int TileHeight { get; private set; }
+
+        public ImageSource Image
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public ImageSource ExtraImage
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public Size TileSize => new Size(TileWidth, TileHeight);
 
         public TilesEditorModel(TileSetModel tileSetModel, BitmapSource tileImage)
         {
@@ -39,6 +57,7 @@ namespace Tomato.TileSetEditor.Models
             _tiles.CollectionChanged += _tiles_CollectionChanged;
 
             this.GetServiceLocator().RegisterInstance<ITileService>(this);
+            this.GetServiceLocator().RegisterInstance<ITileSetContextService>(this);
         }
 
         public void AddTile(ImageSource tileImage, ExtraImageModel extraImage, Point extraImageOffset)
@@ -126,6 +145,26 @@ namespace Tomato.TileSetEditor.Models
         public IEnumerable<TileModel> GetAllTiles()
         {
             return _tiles;
+        }
+
+        public Tile FindTile(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ExtraImage FindExtraImage(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RectangleGeometry GetImageClip(int tileId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RectangleGeometry GetExtraImageClip(int extraImageId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

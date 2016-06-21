@@ -40,6 +40,10 @@
       <HintPath>..\..\packages\Catel.Core.4.4.0\lib\net45\Catel.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Catel.Extensions.Controls, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Catel.Extensions.Controls.4.4.0\lib\net45\Catel.Extensions.Controls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Catel.Fody.Attributes, Version=2.12.0.0, Culture=neutral, PublicKeyToken=1c8163524cbe02e6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Catel.Fody.2.12.0\lib\portable-net4+sl4+wp7+win8+wpa81+MonoAndroid14+MonoTouch40\Catel.Fody.Attributes.dll</HintPath>
       <Private>True</Private>
@@ -92,6 +96,8 @@
     <Compile Include="Models\ExtraImageModel.cs" />
     <Compile Include="Models\ExtraImagesEditorModel.cs" />
     <Compile Include="Models\PickAnyTileUnitModel.cs" />
+    <Compile Include="Models\TileUnitElementModel.cs" />
+    <Compile Include="Models\TileUnitsEditorModel.cs" />
     <Compile Include="Models\PickAnyTileUnitsEditorModel.cs" />
     <Compile Include="Models\TileModel.cs" />
     <Compile Include="Models\TilesEditorModel.cs" />
@@ -103,6 +109,7 @@
     <Compile Include="Services\ITileSetContextService.cs" />
     <Compile Include="ViewModels\AddTileUnitViewModel.cs" />
     <Compile Include="ViewModels\CreateExtraImageViewModel.cs" />
+    <Compile Include="ViewModels\CreateTileUnitViewModel.cs" />
     <Compile Include="ViewModels\CreatePickAnyTileUnitViewModel.cs" />
     <Compile Include="ViewModels\CreateTileSetViewModel.cs" />
     <Compile Include="ViewModels\CreateTileViewModel.cs" />
@@ -110,13 +117,19 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NonPickAnyTileUnitEditViewModel.cs" />
     <Compile Include="ViewModels\PickAnyTileUnitEditorViewModel.cs" />
+    <Compile Include="ViewModels\SelectTileWithHeightViewModel.cs" />
+    <Compile Include="ViewModels\TileUnitElementEditorViewModel.cs" />
+    <Compile Include="ViewModels\TileUnitsEditorViewModel.cs" />
     <Compile Include="ViewModels\PickAnyTileUnitsEditorViewModel.cs" />
     <Compile Include="ViewModels\SelectExtraImageViewModel.cs" />
     <Compile Include="ViewModels\SelectTilesViewModel.cs" />
     <Compile Include="ViewModels\TilePresenterViewModel.cs" />
     <Compile Include="ViewModels\TilesEditorViewModel.cs" />
-    <Compile Include="ViewModels\TileUnitViewModel.cs" />
+    <Compile Include="ViewModels\TileUnitEditorViewModel.cs" />
     <Compile Include="Views\AutoSizeCanvas.cs" />
+    <Compile Include="Views\CreateTileUnitWindow.xaml.cs">
+      <DependentUpon>CreateTileUnitWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CreatePickAnyTileUnitWindow.xaml.cs">
       <DependentUpon>CreatePickAnyTileUnitWindow.xaml</DependentUpon>
     </Compile>
@@ -136,11 +149,23 @@
     <Compile Include="Views\NonPickAnyTileUnitEditView.xaml.cs">
       <DependentUpon>NonPickAnyTileUnitEditView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SelectTileWithHeightWindow.xaml.cs">
+      <DependentUpon>SelectTileWithHeightWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TileUnitEditorView.xaml.cs">
+      <DependentUpon>TileUnitEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PickAnyTileUnitEditorView.xaml.cs">
       <DependentUpon>PickAnyTileUnitEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExtraImagesEditorView.xaml.cs">
       <DependentUpon>ExtraImagesEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TileUnitElementEditorView.xaml.cs">
+      <DependentUpon>TileUnitElementEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TileUnitsEditorView.xaml.cs">
+      <DependentUpon>TileUnitsEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PickAnyTileUnitsEditorView.xaml.cs">
       <DependentUpon>PickAnyTileUnitsEditorView.xaml</DependentUpon>
@@ -172,6 +197,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CreateTileUnitWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\CreatePickAnyTileUnitWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -196,11 +225,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SelectTileWithHeightWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TileUnitEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\PickAnyTileUnitEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ExtraImagesEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TileUnitElementEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TileUnitsEditorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

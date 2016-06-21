@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Catel.Data;
 using Tomato.Tools.Common.Gaming;
+using System.Windows.Media;
 
 namespace Tomato.TileSetEditor.Models
 {
@@ -18,7 +19,7 @@ namespace Tomato.TileSetEditor.Models
         public Point ExtraImageOffset { get; set; }
 
         [Required]
-        public BitmapImage TileImageSource { get; set; }
+        public ImageSource TileImageSource { get; set; }
 
         public int TileWidth { get; private set; }
 

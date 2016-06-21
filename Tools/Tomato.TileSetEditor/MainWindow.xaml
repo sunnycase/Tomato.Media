@@ -64,58 +64,20 @@
                     </Style>
                 </Grid.Resources>
             </Grid>
-            <TabControl Grid.Row="2" Margin="5">
-                <TabItem Header="Tile">
-                    <views:TilesEditorView DataContext="{Binding TileSet.TilesEditor}"/>
+            <catel:TabControl Grid.Row="2" Margin="5" LoadTabItems="LazyLoading">
+                <TabItem Header="Tile" DataContext="{Binding TileSet.TilesEditor}">
+                    <views:TilesEditorView/>
                 </TabItem>
-                <TabItem Header="ExtraImage">
-                    <views:ExtraImagesEditorView DataContext="{Binding TileSet.ExtraImagesEditor}"/>
+                <TabItem Header="ExtraImage" DataContext="{Binding TileSet.ExtraImagesEditor}">
+                    <views:ExtraImagesEditorView/>
                 </TabItem>
-                <TabItem Header="PickAnyTileUnit">
-                    <views:PickAnyTileUnitsEditorView DataContext="{Binding TileSet.PickAnyTileUnitsEditor}"/>
+                <TabItem Header="PickAnyTileUnit" DataContext="{Binding TileSet.PickAnyTileUnitsEditor}">
+                    <views:PickAnyTileUnitsEditorView/>
                 </TabItem>
-                <TabItem Header="TileUnit">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="200"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <GridSplitter Width="5" HorizontalAlignment="Right"/>
-                        <Grid Margin="0,0,5,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <ToolBar>
-                                <Button Command="{Binding AddTileUnitCommand}">
-                                    <fa:ImageAwesome Icon="Plus"/>
-                                </Button>
-                                <Button>
-                                    <fa:ImageAwesome Icon="Minus"/>
-                                </Button>
-                                <ToolBar.Resources>
-                                    <Style TargetType="fa:ImageAwesome">
-                                        <Setter Property="Width" Value="12"/>
-                                    </Style>
-                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
-                                        <Setter Property="Padding" Value="3"/>
-                                    </Style>
-                                </ToolBar.Resources>
-                            </ToolBar>
-                            <ListView x:Name="nonPickAnyListView" Grid.Row="1" ItemsSource="{Binding TileSet.TileSet.TileUnits}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <views:TileUnitView DataContext="{Binding}"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <views:NonPickAnyTileUnitEditView DataContext="{Binding SelectedItem, ElementName=nonPickAnyListView}"/>
-                        </Grid>
-                    </Grid>
+                <TabItem Header="TileUnit" DataContext="{Binding TileSet.TileUnitsEditor}">
+                    <views:TileUnitsEditorView/>
                 </TabItem>
-            </TabControl>
+            </catel:TabControl>
         </Grid>
     </Grid>
     <catel:Window.CommandBindings>

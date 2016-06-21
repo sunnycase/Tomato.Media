@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using Catel.MVVM;
 using Tomato.TileSetEditor.Models;
 using Tomato.Tools.Common.Gaming;
+using System.Windows.Media;
 
 namespace Tomato.TileSetEditor.ViewModels
 {
-    class TileUnitViewModel : ViewModelBase
+    class TileUnitEditorViewModel : ViewModelBase
     {
         [Model]
         public TileUnitModel TileUnit { get; private set; }
@@ -18,11 +19,11 @@ namespace Tomato.TileSetEditor.ViewModels
         public string Category { get; set; }
 
         [ViewModelToModel("TileUnit")]
-        public int TileCount { get; set; }
+        public ImageSource Output { get; set; }
 
-        public TileUnitViewModel(TileUnit tileUnit)
+        public TileUnitEditorViewModel(TileUnitModel tileUnit)
         {
-            TileUnit = new TileUnitModel(tileUnit);
+            TileUnit = tileUnit;
         }
     }
 }

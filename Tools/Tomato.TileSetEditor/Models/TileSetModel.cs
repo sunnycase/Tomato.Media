@@ -28,6 +28,7 @@ namespace Tomato.TileSetEditor.Models
         public ExtraImagesEditorModel ExtraImagesEditor { get; private set; }
         public TilesEditorModel TilesEditor { get; private set; }
         public PickAnyTileUnitsEditorModel PickAnyTileUnitsEditor { get; private set; }
+        public TileUnitsEditorModel TileUnitsEditor { get; private set; }
 
         public TileSetModel([NotNull]TileSet tileSet, string fileName, BitmapSource image, BitmapSource extraImage)
         {
@@ -39,6 +40,7 @@ namespace Tomato.TileSetEditor.Models
             ExtraImagesEditor = new ExtraImagesEditorModel(this, extraImage);
             TilesEditor = new TilesEditorModel(this, image);
             PickAnyTileUnitsEditor = new PickAnyTileUnitsEditorModel(this);
+            TileUnitsEditor = new TileUnitsEditorModel(this);
         }
 
         private void OnNameChanged()
