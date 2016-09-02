@@ -3,8 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}</ItemsProjectGuid>
-    <ItemsRootNamespace>Tomato.Media</ItemsRootNamespace>
+    <ItemsProjectGuid>{BB296E6B-3CE9-4C0A-8954-9B52E379EDCD}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -15,74 +14,48 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\MFMetadataBuilder.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IAudioRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MetadataReader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)XAudioSession.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CodecManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMetadataBuilder.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)XAudioSession.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MFMetadataBuilder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMediaSourceFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">
-      <ShaderType>Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
-      <ShaderType>Vertex</ShaderType>
-    </FxCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\CodecManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MediaMetadata.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFAsyncCallback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFMetadataBuilder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFRAII.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFWorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\Tomato.Media.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)constants.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegVideoDecoderTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMediaSourceFactory.h" />
   </ItemGroup>
 </Project>

@@ -6,11 +6,10 @@
 // 创建时间：2015-04-03
 #include "pch.h"
 #include "ID3V2Frame.h"
-#include "../../include/encoding.h"
+#include <Tomato.Core/encoding.h>
 
 using namespace NS_CORE;
 using namespace NS_MEDIA;
-using namespace NS_MEDIA_INTERN;
 using namespace concurrency;
 
 const ID3V2FrameKind ID3V2FrameKinds::Padding = { 0, 0, 0, 0 };

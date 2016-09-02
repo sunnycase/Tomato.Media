@@ -9,7 +9,6 @@
 
 using namespace NS_CORE;
 using namespace NS_MEDIA;
-using namespace NS_MEDIA_INTERN;
 using namespace concurrency;
 
 namespace
@@ -183,7 +182,7 @@ task<bool> ID3V2Meta::Read(IMFByteStream* byteStream, const std::function<bool(c
 	return task_from_result(ret);
 }
 
-task<bool> ID3V2Meta::ReadBriefMetadata(IMFByteStream* byteStream, std::shared_ptr<MediaMetadataContainer> container)
+task<bool> ID3V2Meta::ReadBriefMetadata(IMFByteStream* byteStream, MediaMetadataContainer& container)
 {
 	static std::set<ID3V2FrameKind> briefKinds =
 	{
@@ -196,39 +195,34 @@ task<bool> ID3V2Meta::ReadBriefMetadata(IMFByteStream* byteStream, std::shared_p
 		ID3V2FrameKinds::TRCK
 	};
 
-	auto meta = std::make_shared<ID3V2Meta>();
-
-	return meta->Read(byteStream, [&](const ID3V2FrameKind& kind)
+	ID3V2Meta meta;
+	auto good = await meta.Read(byteStream, [&](const ID3V2FrameKind& kind)
 	{
 		return briefKinds.find(kind) != briefKinds.end();
-	}).then([=](bool good)
-	{
-		if (good)
-		{
-			auto pmeta = meta.get();
-			auto cntner = container.get();
-			const ID3V2FrameSingleText* frame = nullptr;
-
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TIT2))
-				cntner->Add<DefaultMediaMetadatas::Title>(frame->GetText());
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TALB))
-				cntner->Add<DefaultMediaMetadatas::Album>(frame->GetText());
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TPE1))
-				cntner->Add<DefaultMediaMetadatas::Artist>(frame->GetText());
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TPE2))
-				cntner->Add<DefaultMediaMetadatas::AlbumArtist>(frame->GetText());
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TYER))
-				cntner->Add<DefaultMediaMetadatas::Year>(_wtoi(frame->GetText().c_str()));
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TRCK))
-				cntner->Add<DefaultMediaMetadatas::TrackNumber>(frame->GetText());
-			if (frame = pmeta->GetSingleTextFrame(ID3V2FrameKinds::TCON))
-				cntner->Add<DefaultMediaMetadatas::Genre>(frame->GetText());
-		}
-		return good;
 	});
+	if (good)
+	{
+		const ID3V2FrameSingleText* frame = nullptr;
+
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TIT2))
+			container.Add<DefaultMediaMetadatas::Title>(frame->GetText());
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TALB))
+			container.Add<DefaultMediaMetadatas::Album>(frame->GetText());
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TPE1))
+			container.Add<DefaultMediaMetadatas::Artist>(frame->GetText());
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TPE2))
+			container.Add<DefaultMediaMetadatas::AlbumArtist>(frame->GetText());
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TYER))
+			container.Add<DefaultMediaMetadatas::Year>(_wtoi(frame->GetText().c_str()));
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TRCK))
+			container.Add<DefaultMediaMetadatas::TrackNumber>(frame->GetText());
+		if (frame = meta.GetSingleTextFrame(ID3V2FrameKinds::TCON))
+			container.Add<DefaultMediaMetadatas::Genre>(frame->GetText());
+	}
+	return good;
 }
 
-task<bool> ID3V2Meta::ReadExtraMetadata(IMFByteStream * byteStream, std::shared_ptr<MediaMetadataContainer> container)
+task<bool> ID3V2Meta::ReadExtraMetadata(IMFByteStream * byteStream, MediaMetadataContainer& container)
 {
 	static std::set<ID3V2FrameKind> extraKinds =
 	{
@@ -236,35 +230,30 @@ task<bool> ID3V2Meta::ReadExtraMetadata(IMFByteStream * byteStream, std::shared_
 		ID3V2FrameKinds::APIC
 	};
 
-	auto meta = std::make_shared<ID3V2Meta>();
-
-	return meta->Read(byteStream, [&](const ID3V2FrameKind& kind)
+	ID3V2Meta meta;
+	auto good = await meta.Read(byteStream, [&](const ID3V2FrameKind& kind)
 	{
 		return extraKinds.find(kind) != extraKinds.end();
-	}).then([=](bool good)
-	{
-		if (good)
-		{
-			auto pmeta = meta.get();
-			auto cntner = container.get();
-			const ID3V2FrameTXXX* txxxFrame = nullptr;
-
-			if ((txxxFrame = pmeta->GetFrame<ID3V2FrameTXXX>(ID3V2FrameKinds::TXXX)) &&
-				txxxFrame->GetDescription() == L"LYRICS")
-				cntner->Add<DefaultMediaMetadatas::Lyrics>(txxxFrame->GetValue());
-			pmeta->ForEachFrame<ID3V2FrameAPIC>(ID3V2FrameKinds::APIC, [&](ID3V2FrameAPIC* frame)
-			{
-				Picture pic;
-				pic.MimeType = frame->GetMimeType();
-				pic.Description = frame->GetDescription();
-				pic.Type = to_string(frame->GetPictureType());
-				pic.Data = std::move(frame->GetData());
-				cntner->Add<DefaultMediaMetadatas::Picture>(std::move(pic));
-				return false;
-			});
-		}
-		return good;
 	});
+	if (good)
+	{
+		const ID3V2FrameTXXX* txxxFrame = nullptr;
+
+		if ((txxxFrame = meta.GetFrame<ID3V2FrameTXXX>(ID3V2FrameKinds::TXXX)) &&
+			txxxFrame->GetDescription() == L"LYRICS")
+			container.Add<DefaultMediaMetadatas::Lyrics>(txxxFrame->GetValue());
+		meta.ForEachFrame<ID3V2FrameAPIC>(ID3V2FrameKinds::APIC, [&](ID3V2FrameAPIC* frame)
+		{
+			Picture pic;
+			pic.MimeType = frame->GetMimeType();
+			pic.Description = frame->GetDescription();
+			pic.Type = to_string(frame->GetPictureType());
+			pic.Data = std::move(frame->GetData());
+			container.Add<DefaultMediaMetadatas::Picture>(std::move(pic));
+			return false;
+		});
+	}
+	return good;
 }
 
 bool ID3V2Meta::ReadFrame(BinaryReader<byte*>& reader, const std::function<bool(const ID3V2FrameKind&)>& framePredicate)

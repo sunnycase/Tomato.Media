@@ -5,11 +5,11 @@
 // 作者：SunnyCase 
 // 创建时间：2015-04-03
 #pragma once
-#include "MediaMetadata.h"
+#include <Tomato.Media/MediaMetadata.h>
 #include <ppltasks.h>
 #include <mfidl.h>
 
-DEFINE_NS_MEDIA_INTERN
+DEFINE_NS_MEDIA
 
 ///<summary>ID3v1 流派</summary>
 enum class ID3v1Genre
@@ -38,7 +38,7 @@ public:
 	///<return>是否读取成功</return>
 	concurrency::task<bool> Read(IMFByteStream* byteStream);
 	///<summary>读取附加信息</summary>
-	static concurrency::task<bool> ReadMetadata(IMFByteStream* byteStream, std::shared_ptr<MediaMetadataContainer> container);
+	static concurrency::task<bool> ReadMetadata(IMFByteStream* byteStream, MediaMetadataContainer& container);
 private:
 	bool valid;						// 读取成功
 	std::wstring title;				// 标题
@@ -50,4 +50,4 @@ private:
 	ID3v1Genre genre;				// 流派
 };
 
-END_NS_MEDIA_INTERN
+END_NS_MEDIA

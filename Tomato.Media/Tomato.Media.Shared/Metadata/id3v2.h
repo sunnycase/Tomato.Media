@@ -5,12 +5,12 @@
 // 作者：SunnyCase 
 // 创建时间：2015-04-03
 #pragma once
-#include "MediaMetadata.h"
+#include <Tomato.Media/MediaMetadata.h>
 #include "ID3V2Frame.h"
 #include <ppltasks.h>
 #include <mfidl.h>
 
-DEFINE_NS_MEDIA_INTERN
+DEFINE_NS_MEDIA
 
 ///<summary>ID3v2 标志</summary>
 enum class ID3V2Flags : byte
@@ -38,9 +38,9 @@ public:
 	///<return>是否读取成功</return>
 	concurrency::task<bool> Read(IMFByteStream* byteStream, const std::function<bool(const ID3V2FrameKind&)>& framePredicate = [](const ID3V2FrameKind&) {return true; });
 	///<summary>读取简明附加信息</summary>
-	static concurrency::task<bool> ReadBriefMetadata(IMFByteStream* byteStream, std::shared_ptr<MediaMetadataContainer> container);
+	static concurrency::task<bool> ReadBriefMetadata(IMFByteStream* byteStream, MediaMetadataContainer& container);
 	///<summary>读取额外附加信息</summary>
-	static concurrency::task<bool> ReadExtraMetadata(IMFByteStream* byteStream, std::shared_ptr<MediaMetadataContainer> container);
+	static concurrency::task<bool> ReadExtraMetadata(IMFByteStream* byteStream, MediaMetadataContainer& container);
 
 	template<class T>
 	const T* GetFrame(const ID3V2FrameKind& kind) const noexcept
@@ -103,4 +103,4 @@ private:
 	std::unordered_multimap<ID3V2FrameKind, std::unique_ptr<ID3V2Frame>> frames;	// 帧
 };
 
-END_NS_MEDIA_INTERN
+END_NS_MEDIA

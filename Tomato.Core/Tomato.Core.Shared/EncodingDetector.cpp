@@ -5,7 +5,7 @@
 // 创建时间：2015-12-31
 //
 #include "pch.h"
-#include "..\..\include\EncodingDetector.h"
+#include "EncodingDetector.h"
 
 using namespace NS_CORE;
 

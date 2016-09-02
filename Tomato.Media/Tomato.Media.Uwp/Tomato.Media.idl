@@ -1,0 +1,36 @@
+#include <sdkddkver.h>
+#define DEFINE_NS_ONLY
+#include "../../include/Tomato.Media/Tomato.Media.h"
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "inspectable.idl";
+import "Windows.Media.idl";
+
+DEFINE_NS_MEDIA_CODEC
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass FFmpegByteStreamHandler
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass FFmpegAudioDecoderTransform
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
+[version(NTDDI_WIN8)]
+[activatable(NTDDI_WIN8)]
+[marshaling_behavior(agile)]
+runtimeclass FFmpegVideoDecoderTransform
+{
+	[default] interface Windows.Media.IMediaExtension;
+}
+
+END_NS_MEDIA_CODEC

@@ -2,317 +2,62 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="头文件">
-      <UniqueIdentifier>{af97a039-611d-45fe-b415-627191f79c67}</UniqueIdentifier>
+      <UniqueIdentifier>{f880790d-3c07-4658-b63d-2a0f6fa5d4e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件">
-      <UniqueIdentifier>{94adab37-45a5-4065-8a7b-d0ca3d43299b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\zlib">
-      <UniqueIdentifier>{d2bbc571-fb77-4b19-9b32-1c6dd18ae27d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\zlib">
-      <UniqueIdentifier>{b7a01623-70d6-451d-be40-cee7bd9bdd85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\minizip">
-      <UniqueIdentifier>{4aa09592-c376-42cf-94df-abfc13c1b306}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\minizip">
-      <UniqueIdentifier>{14bc566a-c695-42c1-b564-e262b5843abd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\minizip\aes">
-      <UniqueIdentifier>{54a1a44e-2871-412b-8ffd-1aeda58e147e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\minizip\aes">
-      <UniqueIdentifier>{1d3bb800-40bb-4fa4-bc89-a73a43d96e72}</UniqueIdentifier>
+      <UniqueIdentifier>{d92d1d37-e601-41af-943b-a0043eaa0726}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Logger.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)IAppender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)LoggingConfiguration.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DebuggerAppender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFOperationQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFWorkerQueueProvider.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerQueueProvider.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerThread.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\NonCopyable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFRAII.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\riff.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zconf.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zlib.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\crc32.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\deflate.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\gzguts.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inffast.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inffixed.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inflate.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inftrees.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\trees.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\zutil.h">
-      <Filter>头文件\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\ioapi.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\unzip.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\zip.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\crypt.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\ioapi_buf.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\ioapi_mem.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\iowin32.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aes.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aes_via_ace.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aesopt.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aestab.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\brg_endian.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\brg_types.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\entropy.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\fileenc.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\hmac.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\prng.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\pwd2key.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\sha1.h">
-      <Filter>头文件\minizip\aes</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)PackageFile.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\minizip_raii.h">
-      <Filter>头文件\minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\any.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\BinaryReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\ring_buffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\push_undef_minmax.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\pop_min_max.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\adler32.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\compress.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\crc32.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\deflate.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzclose.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzlib.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzread.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzwrite.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\infback.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inffast.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inflate.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inftrees.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\trees.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\uncompr.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\zutil.c">
-      <Filter>源文件\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi_buf.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi_mem.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\iowin32.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\unzip.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\zip.c">
-      <Filter>源文件\minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aescrypt.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aeskey.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aestab.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\entropy.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\fileenc.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\hmac.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\prng.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\pwd2key.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\sha1.c">
-      <Filter>源文件\minizip\aes</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)PackageFile.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)PropVariant.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Wrappers.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)WorkThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\encoding.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\Tomato.Core.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EncodingDetector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\PropVariant.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\NonCopyable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WeakReferenceBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\OperationQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WorkerQueueProvider.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WorkerThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\any.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\BinaryReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\block_buffer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

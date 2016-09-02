@@ -5,8 +5,8 @@
 // (c) SunnyCase 
 // 创建日期 2015-03-18
 #include "pch.h"
-#include "..\..\include\Encoding.h"
-#include "../../include/EncodingDetector.h"
+#include "Tomato.Core\Encoding.h"
+#include "EncodingDetector.h"
 
 using namespace NS_CORE;
 

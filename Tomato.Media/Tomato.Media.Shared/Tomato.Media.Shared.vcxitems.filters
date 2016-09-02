@@ -2,185 +2,87 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="头文件">
-      <UniqueIdentifier>{8c48d985-59da-4e03-9b13-7a014988df2a}</UniqueIdentifier>
+      <UniqueIdentifier>{0c52ec23-9922-4cb4-9bf4-703cc17b7554}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件">
-      <UniqueIdentifier>{f69a010e-76dd-4086-b593-bf81346fa6b1}</UniqueIdentifier>
+      <UniqueIdentifier>{16fc8d73-fa40-4f0b-ab14-26b73321a154}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Utility">
-      <UniqueIdentifier>{f657855d-581b-4420-b3d6-5ec7ad592bac}</UniqueIdentifier>
+    <Filter Include="源文件\Utilities">
+      <UniqueIdentifier>{f627d6a2-1bdf-46e5-a80d-6e63e387682d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\Utility">
-      <UniqueIdentifier>{d0ac9e5a-70a5-41a2-9c83-7187be1c1a40}</UniqueIdentifier>
+    <Filter Include="头文件\Utilities">
+      <UniqueIdentifier>{4386e5db-5bef-47e1-a05c-d9e75117005c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{cfcad880-5c55-4b0d-8dd2-9256f9dec496}</UniqueIdentifier>
+    <Filter Include="头文件\MediaSources">
+      <UniqueIdentifier>{90858ab2-845a-40db-b3b4-b4d3e7bb5c54}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Metadata">
-      <UniqueIdentifier>{aca4c20c-094c-4359-9065-ba69d3676946}</UniqueIdentifier>
+    <Filter Include="源文件\MediaSources">
+      <UniqueIdentifier>{c6c423a6-c850-452a-864d-c3e4501171c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\Metadata">
-      <UniqueIdentifier>{2309ac3b-8f25-4b31-bffa-69ee5380c39e}</UniqueIdentifier>
+    <Filter Include="源文件\MediaStreams">
+      <UniqueIdentifier>{0e9cd26c-6ec4-4bc2-b695-ecd8bfe749e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\MediaStreams">
+      <UniqueIdentifier>{3b9d6aeb-dfed-43eb-9340-3fe9c11bb42a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ByteStreamHandlers">
+      <UniqueIdentifier>{f16aac85-29e1-487e-a743-7807f1c30361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ByteStreamHandlers">
+      <UniqueIdentifier>{a25604cb-c62b-4eab-bc38-4ea5bb7386d4}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Transforms">
-      <UniqueIdentifier>{860dda41-df56-4f4c-926d-d10cbd039902}</UniqueIdentifier>
+      <UniqueIdentifier>{1ab598b8-1164-431f-ac28-2f20e1b611ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\Transforms">
-      <UniqueIdentifier>{b5fb73a3-96b4-4ad0-a1b0-906bea3a2102}</UniqueIdentifier>
+      <UniqueIdentifier>{18ccf0e2-ebc2-4f50-b462-371ca27beeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Metadata">
+      <UniqueIdentifier>{51b80120-24bb-4e58-9b4c-4aaf959df51e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Metadata">
+      <UniqueIdentifier>{c406702c-d013-49be-9cb5-e06dc5bc1752}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SourceReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaEngine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)PresentationClock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MediaRenderSink.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)IVideoRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)D3D11VideoRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MediaClock.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WICHelper.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)IAudioRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)AudioPlayer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)XAudioSession.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\TextureLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\MFMetadataBuilder.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MetadataReader.h">
-      <Filter>头文件\Metadata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.h">
-      <Filter>头文件\Metadata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h">
-      <Filter>头文件\Metadata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h">
-      <Filter>头文件\Metadata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
-      <Filter>头文件\Metadata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.h">
-      <Filter>头文件\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\CoreMediaSource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFAsyncCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\MFWorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utility\WorkerThread.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeakReferenceBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\media\Transforms\EffectTransformBase.h">
-      <Filter>头文件\Transforms</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\SourceReader.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)MFMetadataBuilder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Lifetime.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)constants.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaEngineNotify.cpp">
-      <Filter>源文件\Utility</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.cpp">
+      <Filter>源文件\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaEngine.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.cpp">
+      <Filter>源文件\MediaSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.cpp">
+      <Filter>源文件\MediaSources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.cpp">
+      <Filter>源文件\MediaStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.cpp">
+      <Filter>源文件\MediaStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.cpp">
+      <Filter>源文件\ByteStreamHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.cpp">
+      <Filter>源文件\ByteStreamHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.cpp">
+      <Filter>源文件\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)PresentationClock.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)CodecManager.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MediaRenderSink.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)VideoStreamRenderSink.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)D3D11VideoRender.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFSourceReaderCallback.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MediaClock.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFPresentationTimeSource.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)StreamRenderSinkBase.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\WICHelper.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WASAPIAudioRender.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AudioPlayer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)XAudioSession.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMetadataBuilder.cpp">
-      <Filter>源文件\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.cpp">
-      <Filter>源文件\Metadata</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\id3v1.cpp">
       <Filter>源文件\Metadata</Filter>
@@ -191,19 +93,82 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.cpp">
       <Filter>源文件\Metadata</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utility\MFMediaSourceFactory.cpp">
-      <Filter>源文件\Utility</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Metadata\MediaMetadata.cpp">
+      <Filter>源文件\Metadata</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Transforms\EffectTransformBase.cpp">
-      <Filter>源文件\Transforms</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utilities\MFMediaSourceFactory.cpp">
+      <Filter>源文件\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)DefaultVideoPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFMetadataBuilder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\Tomato.Media.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)constants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\FFmpegHelper.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceBase.h">
+      <Filter>头文件\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\MediaSourceOperation.h">
+      <Filter>头文件\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaSources\FFmpegMediaSource.h">
+      <Filter>头文件\MediaSources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\DeliverMediaStreamBase.h">
+      <Filter>头文件\MediaStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaStreams\FFmpegDeliverMediaStream.h">
+      <Filter>头文件\MediaStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\ByteStreamHandlerBase.h">
+      <Filter>头文件\ByteStreamHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteStreamHandlers\FFmpegByteStreamHandler.h">
+      <Filter>头文件\ByteStreamHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\DecoderTransformBase.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegAudioDecoderTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transforms\FFmpegVideoDecoderTransform.h">
+      <Filter>头文件\Transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFWorkerQueueProvider.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFAsyncCallback.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MFRAII.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\CodecManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v1.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\id3v2.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Metadata\ID3V2Frame.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Media\MediaMetadata.h">
+      <Filter>头文件\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities\MFMediaSourceFactory.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

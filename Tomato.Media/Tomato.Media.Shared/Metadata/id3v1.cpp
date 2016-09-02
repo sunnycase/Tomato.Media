@@ -6,12 +6,12 @@
 // 创建时间：2015-04-03
 #include "pch.h"
 #include "id3v1.h"
-#include "../../include/BinaryReader.h"
-#include "../../include/encoding.h"
+#include <Tomato.Core/BinaryReader.h>
+#include <Tomato.Core/encoding.h>
+#include <array>
 
 using namespace NS_CORE;
 using namespace NS_MEDIA;
-using namespace NS_MEDIA_INTERN;
 using namespace concurrency;
 
 enum
@@ -38,7 +38,7 @@ enum
 
 static const std::array<byte, HEADER_LEN> GoodHeader = { 'T', 'A', 'G' };
 
-std::wstring NS_MEDIA_INTERN::to_string(ID3v1Genre value)
+std::wstring NS_MEDIA::to_string(ID3v1Genre value)
 {
 	static const wchar_t* texts[(size_t)ID3v1Genre::COUNT] =
 	{
@@ -88,25 +88,20 @@ bool ID3V1Meta::IsGood() const noexcept
 	return valid;
 }
 
-task<bool> ID3V1Meta::ReadMetadata(IMFByteStream* byteStream, std::shared_ptr<MediaMetadataContainer> container)
+task<bool> ID3V1Meta::ReadMetadata(IMFByteStream* byteStream, MediaMetadataContainer& container)
 {
-	auto meta = std::make_shared<ID3V1Meta>();
-
-	return meta->Read(byteStream).then([=](bool good)
+	ID3V1Meta meta;
+	auto good = await meta.Read(byteStream);
+	if (good)
 	{
-		if (good)
-		{
-			auto pmeta = meta.get();
-			auto cntner = container.get();
-			cntner->Add<DefaultMediaMetadatas::Title>(pmeta->title);
-			cntner->Add<DefaultMediaMetadatas::Album>(pmeta->album);
-			cntner->Add<DefaultMediaMetadatas::Artist>(pmeta->artist);
-			cntner->Add<DefaultMediaMetadatas::Year>(pmeta->year);
-			cntner->Add<DefaultMediaMetadatas::TrackNumber>(std::to_wstring(pmeta->track));
-			cntner->Add<DefaultMediaMetadatas::Genre>(to_string(pmeta->genre));
-		}
-		return good;
-	});
+		container.Add<DefaultMediaMetadatas::Title>(meta.title);
+		container.Add<DefaultMediaMetadatas::Album>(meta.album);
+		container.Add<DefaultMediaMetadatas::Artist>(meta.artist);
+		container.Add<DefaultMediaMetadatas::Year>(meta.year);
+		container.Add<DefaultMediaMetadatas::TrackNumber>(std::to_wstring(meta.track));
+		container.Add<DefaultMediaMetadatas::Genre>(to_string(meta.genre));
+	}
+	return good;
 }
 
 task<bool> ID3V1Meta::Read(IMFByteStream* byteStream)

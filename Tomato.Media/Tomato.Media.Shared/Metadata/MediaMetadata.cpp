@@ -5,12 +5,12 @@
 // 作者：SunnyCase 
 // 创建时间：2015-03-18
 #include "pch.h"
-#include "MediaMetadata.h"
-#include "Utility/MFMediaSourceFactory.h"
+#include <Tomato.Media/MediaMetadata.h>
+#include "../Utilities/MFMediaSourceFactory.h"
 #include "id3v1.h"
 #include "id3v2.h"
 
-using namespace NS_MEDIA_INTERN;
+using namespace NS_MEDIA;
 using namespace concurrency;
 
 #define DEFINE_MEDIAMETA(name) const std::wstring DefaultMediaMetadatas:: ## name ## ::Name = L#name
@@ -25,14 +25,14 @@ DEFINE_MEDIAMETA(Genre);
 DEFINE_MEDIAMETA(Lyrics);
 DEFINE_MEDIAMETA(Picture);
 
-task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(IMFByteStream* byteStream, bool brief)
+task<void> NS_MEDIA::TryGetMediaMetadata(MediaMetadataContainer& container, IMFByteStream* byteStream, const std::wstring& uriHint, bool brief)
 {
-	auto container = std::make_shared<MediaMetadataContainer>();
 	try
 	{
 		do
 		{
-			if (await ID3V2Meta::ReadBriefMetadata(byteStream, container) && container->GetSize() >= 3)
+			WRL::ComPtr<IMFByteStream> byteStreamHolder(byteStream);
+			if (await ID3V2Meta::ReadBriefMetadata(byteStream, container) && container.GetSize() >= 3)
 			{
 				if (!brief)
 					await ID3V2Meta::ReadExtraMetadata(byteStream, container);
@@ -42,14 +42,13 @@ task<std::shared_ptr<MediaMetadataContainer>> NS_MEDIA_INTERN::GetMediaMetadata(
 				break;
 
 			MFMediaSourceFactory source;
-			source.Open(byteStream, L"");
+			await source.OpenAsync(byteStream, uriHint);
 
-			container->Add<DefaultMediaMetadatas::Title>(source.Title);
-			container->Add<DefaultMediaMetadatas::Album>(source.Album);
-			container->Add<DefaultMediaMetadatas::Artist>(source.Artist);
-			container->Add<DefaultMediaMetadatas::AlbumArtist>(source.AlbumArtist);
+			container.Add<DefaultMediaMetadatas::Title>(source.Title);
+			container.Add<DefaultMediaMetadatas::Album>(source.Album);
+			container.Add<DefaultMediaMetadatas::Artist>(source.Artist);
+			container.Add<DefaultMediaMetadatas::AlbumArtist>(source.AlbumArtist);
 		} while (false);
 	}
 	catch(...){}
-	return container;
 }

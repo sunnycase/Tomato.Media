@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{04820629-78F0-49AF-837C-B5AC02E8C0E2}</ItemsProjectGuid>
+    <ItemsProjectGuid>{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -14,192 +14,23 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\any.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\block_buffer.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\encoding.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\EncodingDetector.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFAsyncCallback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFOperationQueue.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFRAII.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\MFWorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\ioapi.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\minizip_raii.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\unzip.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\minizip\zip.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\NonCopyable.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\pop_min_max.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\push_undef_minmax.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\riff.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\ring_buffer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WeakReferenceBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerQueueProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\WorkerThread.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Wrappers.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zconf.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\zlib\zlib.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\BinaryReader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)common_pch.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DebuggerAppender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IAppender.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Logger.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)LoggingConfiguration.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aes.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aesopt.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aestab.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\aes_via_ace.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\brg_endian.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\brg_types.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\entropy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\fileenc.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\hmac.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\prng.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\pwd2key.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\aes\sha1.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\crypt.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\ioapi_buf.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\ioapi_mem.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)minizip\iowin32.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)PackageFile.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\crc32.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\deflate.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\gzguts.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inffast.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inffixed.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inflate.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\inftrees.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\trees.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)zlib\zutil.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\include\riff.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DebuggerAppender.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Encoding.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EncodingDetector.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MFWorkerQueueProvider.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aescrypt.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aeskey.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\aestab.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\entropy.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\fileenc.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\hmac.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\prng.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\pwd2key.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\aes\sha1.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi_buf.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\ioapi_mem.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\iowin32.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\unzip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)minizip\zip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)PackageFile.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Wrappers.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\adler32.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\compress.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\crc32.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\deflate.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzclose.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzlib.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzread.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\gzwrite.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\infback.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inffast.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inflate.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\inftrees.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\trees.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\uncompr.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)zlib\zutil.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PropVariant.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WorkThread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\any.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\BinaryReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\block_buffer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\encoding.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\NonCopyable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\OperationQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\PropVariant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\Tomato.Core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WeakReferenceBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WorkerQueueProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\include\Tomato.Core\WorkerThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EncodingDetector.h" />
   </ItemGroup>
 </Project>

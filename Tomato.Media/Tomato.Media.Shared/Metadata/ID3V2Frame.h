@@ -5,8 +5,8 @@
 // 作者：SunnyCase 
 // 创建时间：2015-04-03
 #pragma once
-#include "common.h"
-#include "../../include/BinaryReader.h"
+#include <Tomato.Media/Tomato.Media.h>
+#include <Tomato.Core/BinaryReader.h>
 #include <array>
 #include <set>
 #include <unordered_map>
@@ -26,7 +26,7 @@ namespace std
 	};
 }
 
-DEFINE_NS_MEDIA_INTERN
+DEFINE_NS_MEDIA
 
 typedef std::array<byte, 4> ID3V2FrameKind;
 
@@ -257,4 +257,4 @@ private:
 	std::vector<byte> data;
 };
 
-END_NS_MEDIA_INTERN
+END_NS_MEDIA
