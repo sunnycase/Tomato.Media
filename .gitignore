@@ -190,3 +190,4 @@ ModelManifest.xml
 /Tomato.Media.Test/Tomato.Media.Test.WindowsPhone/Package.StoreAssociation.xml
 *.cso
 *.nupkg
+project.lock.json
