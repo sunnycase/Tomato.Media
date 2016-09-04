@@ -125,6 +125,8 @@ void DeliverMediaStreamBase::Start(const PROPVARIANT & position)
 		auto met = IsActive() ? MEStreamSeeked : MEStreamStarted;
 		streamState = Started;
 		endOfDeliver.store(false, std::memory_order_release);
+		if (met == MEStreamSeeked)
+			_discontinuity.store(true, std::memory_order_relaxed);
 		ThrowIfFailed(eventQueue->QueueEventParamVar(met, GUID_NULL, S_OK, &position));
 	}
 	DispatchSampleRequests();
@@ -174,6 +176,8 @@ void DeliverMediaStreamBase::EnqueueSample(IMFSample* sample)
 	}
 	if (SUCCEEDED(sample->GetSampleDuration(&duration)))
 		cachedDuration += duration;
+	if (_discontinuity.exchange(false, std::memory_order_relaxed))
+		ThrowIfFailed(sample->SetUINT32(MFSampleExtension_Discontinuity, TRUE));
 	DispatchSampleRequests();
 }
 

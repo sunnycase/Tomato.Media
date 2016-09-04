@@ -191,3 +191,6 @@ ModelManifest.xml
 *.cso
 *.nupkg
 project.lock.json
+/Tomato.Media.VC.VC.opendb
+/Tomato.Media.VC.db
+/.vs/config

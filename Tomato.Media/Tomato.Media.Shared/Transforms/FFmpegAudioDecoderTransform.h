@@ -51,6 +51,7 @@ private:
 	virtual void OnProduceOutput(MFT_OUTPUT_DATA_BUFFER& output) override;
 	virtual WRL::ComPtr<IMFMediaType> OnGetOutputAvailableType(DWORD index) noexcept override;
 	virtual void BeginStreaming() override;
+	virtual void OnFlushOverride() override;
 
 	void InitializeAvailableOutputTypes();
 	void InitializeDecoder(IMFMediaType* inputType);

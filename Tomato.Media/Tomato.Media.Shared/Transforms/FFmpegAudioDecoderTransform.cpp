@@ -129,26 +129,26 @@ WRL::ComPtr<IMFMediaType> FFmpegAudioDecoderTransform::OnSetOutputType(IMFMediaT
 	return type;
 }
 
-namespace
-{
-	void InitPacket(AVPacket& packet, BYTE* data, DWORD length)
-	{
-		av_init_packet(&packet);
-		packet.dts = packet.pts = AV_NOPTS_VALUE;
-		packet.data = data;
-		packet.size = static_cast<int>(length);
-	}
-}
-
 bool FFmpegAudioDecoderTransform::OnReceiveInput(IMFSample * sample)
 {
+	ThrowIfFailed(sample->ConvertToContiguousBuffer(&_inputBuffer));
+	auto buffer = static_cast<MFMediaBufferOnAVPacket*>(_inputBuffer.Get());
 	if (FAILED(sample->GetSampleTime(&_sampleTime)))
 		_sampleTime = -1;
-	ThrowIfFailed(sample->ConvertToContiguousBuffer(&_inputBuffer));
-	BYTE* data; DWORD length;
-	ThrowIfFailed(_inputBuffer->Lock(&data, nullptr, &length));
-	InitPacket(_inputPacket, data, length);
+	_inputPacket = buffer->GetPacket();
 	return DecodeOneFrame();
+}
+
+void FFmpegAudioDecoderTransform::OnFlushOverride()
+{
+	avcodec_flush_buffers(_codecContext.get());
+	if (_inputBuffer)
+	{
+		_inputBuffer->Unlock();
+		_inputBuffer.Reset();
+	}
+	av_frame_unref(_frame.get());
+	decodedSamples = 0;
 }
 
 void FFmpegAudioDecoderTransform::OnProduceOutput(MFT_OUTPUT_DATA_BUFFER & output)
@@ -173,6 +173,7 @@ void FFmpegAudioDecoderTransform::OnProduceOutput(MFT_OUTPUT_DATA_BUFFER & outpu
 		ThrowIfFailed(output.pSample->SetSampleTime(_sampleTime));
 		_sampleTime += duration;
 	}
+
 	if (DecodeOneFrame())
 		output.dwStatus = MFT_OUTPUT_DATA_BUFFER_INCOMPLETE;
 }
@@ -245,6 +246,8 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 	_codecContext->bits_per_coded_sample = _waveFormat->BitsPerCodedSample;
 	_codecContext->flags = _waveFormat->Flags;
 	_codecContext->flags2 = _waveFormat->Flags2;
+	_codecContext->channel_layout = _waveFormat->ChannelLayout;
+	av_codec_set_pkt_timebase(_codecContext.get(), _waveFormat->TimeBase);
 
 	ComPtr<IUnknown> optionsUnk;
 	ThrowIfFailed(inputType->GetUnknown(MF_MT_LIBAV_AUDIO_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk)));
@@ -258,7 +261,7 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 	}
 	ThrowIfNot(avcodec_open2(_codecContext.get(), codec, nullptr) >= 0, L"Cannot open codec context.");
 	_opended = true;
-
+	
 	_frame.reset(av_frame_alloc());
 	ThrowIfNot(_frame, L"Cannot allocate frame.");
 }

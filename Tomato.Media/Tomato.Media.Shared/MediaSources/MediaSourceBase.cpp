@@ -422,7 +422,8 @@ void MediaSourceBase::DoStart(MediaSourceStartOperation* operation)
 	auto pd = operation->GetPresentationDescriptor();
 	auto position = operation->GetPosition();
 
-	OnSeekSource(position);
+	if (position != -1)
+		OnSeekSource(position);
 
 	PROPVARIANT positionVar;
 	PropVariantInit(&positionVar);

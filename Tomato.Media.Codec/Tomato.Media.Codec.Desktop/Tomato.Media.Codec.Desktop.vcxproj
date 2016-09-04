@@ -196,14 +196,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Tomato.Core\Tomato.Core.Desktop\Tomato.Core.Desktop.vcxproj">
-      <Project>{bf81d298-1345-45de-b04e-fd7ba1445731}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tomato.Media\Tomato.Media.Desktop\Tomato.Media.Desktop.vcxproj">
-      <Project>{6d37168d-bda2-460e-986f-5639eee1f8dc}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

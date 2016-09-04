@@ -29,6 +29,13 @@ namespace FFmpeg
 		return static_cast<REFERENCE_TIME>(hns);
 	}
 
+	inline REFERENCE_TIME dt2hns(int64_t dt, const AVRational& time_base)
+	{
+		auto sec_base = (float)time_base.num / time_base.den;
+		auto hns = dt * sec_base * 1e7;
+		return static_cast<REFERENCE_TIME>(hns);
+	}
+
 	inline int64_t hns2dt(REFERENCE_TIME hns, AVStream* stream)
 	{
 		auto sec_base = stream ? (float)stream->time_base.num / stream->time_base.den : 1.f / AV_TIME_BASE;
@@ -107,6 +114,8 @@ namespace FFmpeg
 		enum AVSampleFormat SampleFormat;
 		int BitsPerCodedSample;
 		int Flags, Flags2;
+		AVRational TimeBase;
+		int64_t ChannelLayout;
 
 		static WAVEFORMATLIBAV CreateFromStream(AVStream* stream);
 	private:
@@ -144,6 +153,24 @@ namespace FFmpeg
 		~AVPacketRAII();
 		AVPacketRAII(AVPacketRAII&& other) noexcept;
 		AVPacketRAII& operator=(AVPacketRAII&& other) noexcept;
+	};
+
+	class MFMediaBufferOnAVPacket : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IMFMediaBuffer>
+	{
+	public:
+		MFMediaBufferOnAVPacket(AVPacketRAII && packet);
+
+		// Í¨¹ý RuntimeClass ¼Ì³Ð
+		STDMETHODIMP Lock(BYTE ** ppbBuffer, DWORD * pcbMaxLength, DWORD * pcbCurrentLength) override;
+		STDMETHODIMP Unlock(void) override;
+		STDMETHODIMP GetCurrentLength(DWORD * pcbCurrentLength) override;
+		STDMETHODIMP SetCurrentLength(DWORD cbCurrentLength) override;
+		STDMETHODIMP GetMaxLength(DWORD * pcbMaxLength) override;
+
+		const AVPacketRAII& GetPacket() const noexcept { return _packet; }
+	private:
+		AVPacketRAII _packet;
+		DWORD _currentLength;
 	};
 
 	void CreateMFMediaBufferOnAVPacket(AVPacketRAII&& packet, IMFMediaBuffer** mediaBuffer);
