@@ -7,6 +7,8 @@ using Tomato.Media;
 using Tomato.Media.Toolkit;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Playback;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -34,6 +36,23 @@ namespace BackgroundMediaPlayback
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new FileOpenPicker();
+            dlg.FileTypeFilter.Add(".ape");
+            dlg.FileTypeFilter.Add(".flac");
+            dlg.FileTypeFilter.Add(".ogg");
+            dlg.FileTypeFilter.Add(".m4a");
+            dlg.FileTypeFilter.Add(".aac");
+            dlg.FileTypeFilter.Add(".alac");
+            dlg.FileTypeFilter.Add(".dff");
+            dlg.FileTypeFilter.Add(".dsf");
+            dlg.FileTypeFilter.Add(".tak");
+            var file = await dlg.PickSingleFileAsync();
+            if (file != null)
+                me.SetSource(await file.OpenReadAsync(), file.ContentType);
         }
     }
 }

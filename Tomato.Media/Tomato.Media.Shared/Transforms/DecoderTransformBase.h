@@ -185,6 +185,8 @@ protected:
 	virtual void BeginStreaming();
 	// 停止流水
 	virtual void EndStreaming();
+	void OnFlush();
+	virtual void OnFlushOverride();
 private:
 	// 验证是否有效的输入流 Id
 	bool IsValidInputStream(DWORD inputStreamId) const noexcept;

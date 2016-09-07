@@ -8,6 +8,11 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <MediaElement AudioCategory="Media" Source="Assets/04.花篝り.APE" AreTransportControlsEnabled="True"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Click="Button_Click">Browse</Button>
+        <MediaElement x:Name="me" Grid.Row="1" AudioCategory="Media" Source="Assets/04.花篝り.APE" AreTransportControlsEnabled="True"/>
     </Grid>
 </Page>

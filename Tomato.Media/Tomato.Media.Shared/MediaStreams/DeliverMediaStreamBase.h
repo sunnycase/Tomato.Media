@@ -76,6 +76,7 @@ private:
 	std::atomic<bool> endOfDeliver = false;
 	std::atomic<MFTIME> cachedDuration = 0;
 	std::atomic<bool> isActive = false;
+	std::atomic<bool> _discontinuity = false;
 };
 
 END_NS_MEDIA_CODEC

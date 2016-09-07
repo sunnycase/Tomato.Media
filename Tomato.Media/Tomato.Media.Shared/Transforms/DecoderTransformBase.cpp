@@ -502,6 +502,9 @@ HRESULT DecoderTransformBase::ProcessMessage(
 	{
 		switch (eMessage)
 		{
+		case MFT_MESSAGE_COMMAND_FLUSH:
+			OnFlush();
+			break;
 		case MFT_MESSAGE_NOTIFY_BEGIN_STREAMING:
 			BeginStreaming();
 			break;
@@ -601,6 +604,18 @@ HRESULT DecoderTransformBase::ProcessOutput(
 		return MF_E_TRANSFORM_NEED_MORE_INPUT;
 	}
 	return S_OK;
+}
+
+void DecoderTransformBase::OnFlush()
+{
+	std::lock_guard<decltype(stateMutex)> locker(stateMutex);
+	OnFlushOverride();
+	state = TransformState::WaitingInput;
+}
+
+void DecoderTransformBase::OnFlushOverride()
+{
+
 }
 
 void DecoderTransformBase::BeginStreaming()

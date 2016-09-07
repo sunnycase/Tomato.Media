@@ -42,57 +42,6 @@ namespace
 #endif
 		}
 	};
-
-	class MFMediaBufferOnAVPacket : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IMFMediaBuffer>
-	{
-	public:
-		MFMediaBufferOnAVPacket(AVPacketRAII && packet)
-			:_packet(std::move(packet)), _currentLength(_packet.size)
-		{
-
-		}
-
-		// 通过 RuntimeClass 继承
-		STDMETHODIMP Lock(BYTE ** ppbBuffer, DWORD * pcbMaxLength, DWORD * pcbCurrentLength) override
-		{
-			*ppbBuffer = _packet.data;
-			if (pcbMaxLength)
-				*pcbMaxLength = _packet.size;
-			if (pcbCurrentLength)
-				*pcbCurrentLength = _currentLength;
-			return S_OK;
-		}
-
-		STDMETHODIMP Unlock(void) override
-		{
-			return S_OK;
-		}
-
-		STDMETHODIMP GetCurrentLength(DWORD * pcbCurrentLength) override
-		{
-			*pcbCurrentLength = _currentLength;
-			return S_OK;
-		}
-
-		STDMETHODIMP SetCurrentLength(DWORD cbCurrentLength) override
-		{
-			if (cbCurrentLength <= _packet.size)
-			{
-				_currentLength = cbCurrentLength;
-				return S_OK;
-			}
-			return E_INVALIDARG;
-		}
-		
-		STDMETHODIMP GetMaxLength(DWORD * pcbMaxLength) override
-		{
-			*pcbMaxLength = _packet.size;
-			return S_OK;
-		}
-	private:
-		AVPacketRAII _packet;
-		DWORD _currentLength;
-	};
 }
 
 void FFmpeg::Initialize()
@@ -314,6 +263,8 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromStream(AVStream* stream)
 	format.BitsPerCodedSample = codecContext->bits_per_coded_sample;
 	format.Flags = codecContext->flags;
 	format.Flags2 = codecContext->flags2;
+	format.TimeBase = stream->time_base;
+	format.ChannelLayout = codecContext->channel_layout ? codecContext->channel_layout : av_get_default_channel_layout(codecContext->channels);
 
 	return format;
 }
@@ -365,4 +316,49 @@ AVPacketRAII & FFmpeg::AVPacketRAII::operator=(AVPacketRAII && other) noexcept
 	*static_cast<AVPacket*>(this) = other;
 	ZeroMemory(&other, sizeof(other));
 	return *this;
+}
+
+FFmpeg::MFMediaBufferOnAVPacket::MFMediaBufferOnAVPacket(AVPacketRAII && packet)
+	:_packet(std::move(packet)), _currentLength(_packet.size)
+{
+
+}
+
+// 通过 RuntimeClass 继承
+
+STDMETHODIMP FFmpeg::MFMediaBufferOnAVPacket::Lock(BYTE ** ppbBuffer, DWORD * pcbMaxLength, DWORD * pcbCurrentLength)
+{
+	*ppbBuffer = _packet.data;
+	if (pcbMaxLength)
+		*pcbMaxLength = _packet.size;
+	if (pcbCurrentLength)
+		*pcbCurrentLength = _currentLength;
+	return S_OK;
+}
+
+STDMETHODIMP FFmpeg::MFMediaBufferOnAVPacket::Unlock(void)
+{
+	return S_OK;
+}
+
+STDMETHODIMP FFmpeg::MFMediaBufferOnAVPacket::GetCurrentLength(DWORD * pcbCurrentLength)
+{
+	*pcbCurrentLength = _currentLength;
+	return S_OK;
+}
+
+STDMETHODIMP FFmpeg::MFMediaBufferOnAVPacket::SetCurrentLength(DWORD cbCurrentLength)
+{
+	if (cbCurrentLength <= _packet.size)
+	{
+		_currentLength = cbCurrentLength;
+		return S_OK;
+	}
+	return E_INVALIDARG;
+}
+
+STDMETHODIMP FFmpeg::MFMediaBufferOnAVPacket::GetMaxLength(DWORD * pcbMaxLength)
+{
+	*pcbMaxLength = _packet.size;
+	return S_OK;
 }

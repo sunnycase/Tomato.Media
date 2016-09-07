@@ -13,3 +13,4 @@
 #include <Mferror.h>
 #include <mfapi.h>
 #include <pplawait.h>
+#include <cassert>
