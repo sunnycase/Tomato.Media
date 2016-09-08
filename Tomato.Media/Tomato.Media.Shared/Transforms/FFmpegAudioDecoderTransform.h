@@ -65,12 +65,12 @@ private:
 	FFmpeg::unique_swrcontext _swrContext;
 	unique_cotaskmem<FFmpeg::WAVEFORMATLIBAV> _waveFormat;
 	AVSampleFormat _outputSampleFormat;
+	AVSampleFormat _sampleFormat;
 	UINT32 _outputChannels;
 	UINT32 _outputSampleRate;
 	UINT32 _outputBlockAlign;
 
 	WRL::ComPtr<IMFMediaBuffer> _inputBuffer;
-	AVPacket _inputPacket;
 
 	size_t bytesPerDecodecSample = 0;
 	size_t decodedSamples = 0;

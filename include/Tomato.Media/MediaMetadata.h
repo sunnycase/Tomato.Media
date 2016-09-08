@@ -13,7 +13,7 @@
 DEFINE_NS_MEDIA
 
 #define DECLARE_MEDIAMETA_TYPE(name, valuetype) struct name { \
-static const std::wstring Name; \
+TOMATO_MEDIA_API static const std::wstring Name; \
 using value_type = valuetype;};
 
 struct Picture

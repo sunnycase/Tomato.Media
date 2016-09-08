@@ -16,8 +16,10 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)MediaEnvironment.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MediaMetadataProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)MediaEnvironment.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MediaMetadataProvider.cpp" />
   </ItemGroup>
 </Project>

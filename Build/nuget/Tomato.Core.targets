@@ -6,11 +6,18 @@
     <TomatoCore-Platform Condition="'$(Platform)' != 'Win32'">$(Platform)</TomatoCore-Platform>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'UAP'">
-      <Reference Include="$(MSBuildThisFileDirectory)..\..\lib\uap10.0\Tomato.Core.winmd">
-        <Implementation>Tomato.Core.dll</Implementation>
-      </Reference>
-      <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\win10-$(TomatoCore-Platform)\native\Tomato.Core.dll" />
+  <ItemGroup>
+      <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\win10-$(TomatoCore-Platform)\native\*.dll" />
   </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\build\native\$(TomatoCore-Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Tomato.Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
 
 </Project>

@@ -52,7 +52,11 @@ namespace BackgroundMediaPlayback
             dlg.FileTypeFilter.Add(".tak");
             var file = await dlg.PickSingleFileAsync();
             if (file != null)
+            {
                 me.SetSource(await file.OpenReadAsync(), file.ContentType);
+                var metadataProvider = await MediaMetadataProvider.CreateFromStream(await file.OpenReadAsync(), file.Path, false);
+                metadataProvider.Album.ToString();
+            }
         }
     }
 }

@@ -2,27 +2,31 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Core</id>
-    <version>0.0.4-alpha3</version>
+    <version>1.0.0-beta1</version>
     <authors>SunnyCase</authors>
     <description>Tomato Core Library.</description>
     <language>Neutral</language>
     <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2015 SunnyCase</copyright>
+    <copyright>Copyright (c) 2015 - 2016 SunnyCase</copyright>
     <tags>WinRT UWP</tags>
   </metadata>
 
   <files>
-    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Core.winmd" target="lib\uap10.0\Tomato.Core.winmd" />
+    <file src="Tomato.Core.targets" target="build\native\Tomato.Core.targets" />
+    <file src="..\..\include\Tomato.Core\" target="include\Tomato.Core\" />
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Core.lib" target="build\native\x86\" />
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Core.lib" target="build\native\x64\" />
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Core.lib" target="build\native\arm\" />
 
-    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Core.dll" target="runtimes\win10-x86\native\Tomato.Core.dll" />
-    <file src="..\..\bin\WinRT\Release\Win32\Tomato.Core.pri" target="runtimes\win10-x86\native\Tomato.Core.pri" />
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Core.dll" target="runtimes\win10-x86\native\Tomato.Core.dll" />
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Core.pri" target="runtimes\win10-x86\native\Tomato.Core.pri" />
 
-    <file src="..\..\bin\WinRT\Release\x64\Tomato.Core.dll" target="runtimes\win10-x64\native\Tomato.Core.dll" />
-    <file src="..\..\bin\WinRT\Release\x64\Tomato.Core.pri" target="runtimes\win10-x64\native\Tomato.Core.pri" />
+    <file src="..\..\bin\Uwp\x64\Release\Tomato.Core.dll" target="runtimes\win10-x64\native\Tomato.Core.dll" />
+    <file src="..\..\bin\Uwp\x64\Release\Tomato.Core.pri" target="runtimes\win10-x64\native\Tomato.Core.pri" />
 
-    <file src="..\..\bin\WinRT\Release\arm\Tomato.Core.dll" target="runtimes\win10-arm\native\Tomato.Core.dll" />
-    <file src="..\..\bin\WinRT\Release\arm\Tomato.Core.pri" target="runtimes\win10-arm\native\Tomato.Core.pri" />
+    <file src="..\..\bin\Uwp\arm\Release\Tomato.Core.dll" target="runtimes\win10-arm\native\Tomato.Core.dll" />
+    <file src="..\..\bin\Uwp\arm\Release\Tomato.Core.pri" target="runtimes\win10-arm\native\Tomato.Core.pri" />
 </files>
 </package>

@@ -99,6 +99,12 @@ namespace FFmpeg
 		Wrappers::AVIOContextWrapper _ioContext;
 	};
 
+	struct avcodecparameters_deleter
+	{
+		void operator()(AVCodecParameters* handle) const noexcept;
+	};
+	using unique_avcodecparameters = std::unique_ptr<AVCodecParameters, avcodecparameters_deleter>;
+
 	struct WAVEFORMATLIBAV : public WAVEFORMATEXTENSIBLE
 	{
 		WAVEFORMATLIBAV()
@@ -109,11 +115,7 @@ namespace FFmpeg
 			this->SubFormat = MFAudioFormat_LibAV;
 		}
 
-		enum AVCodecID CodecId;
 		WORD DesiredDecodedFormat;
-		enum AVSampleFormat SampleFormat;
-		int BitsPerCodedSample;
-		int Flags, Flags2;
 		AVRational TimeBase;
 		int64_t ChannelLayout;
 
@@ -123,7 +125,7 @@ namespace FFmpeg
 
 	struct LibAVAudioCodecOptions : public WRL::RuntimeClass<WRL::RuntimeClassFlags<WRL::ClassicCom>, IUnknown>
 	{
-		std::vector<uint8_t> ExtraData;
+		FFmpeg::unique_avcodecparameters codecpar;
 
 		static WRL::ComPtr<LibAVAudioCodecOptions> CreateFromStream(AVStream* stream);
 	};

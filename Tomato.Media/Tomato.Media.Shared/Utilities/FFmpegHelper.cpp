@@ -216,12 +216,12 @@ void AVFormatContextWrapper::Open(std::shared_ptr<void>&& opaque, AVIOContext* c
 
 WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromStream(AVStream* stream)
 {
-	auto codecContext = stream->codec;
+	auto codecpar = stream->codecpar;
 
 	WAVEFORMATLIBAV format;
-	format.Format.nChannels = codecContext->channels;
-	format.Format.nSamplesPerSec = codecContext->sample_rate;
-	switch (codecContext->sample_fmt)
+	format.Format.nChannels = codecpar->channels;
+	format.Format.nSamplesPerSec = codecpar->sample_rate;
+	switch (codecpar->format)
 	{
 	case AV_SAMPLE_FMT_U8:
 	case AV_SAMPLE_FMT_U8P:
@@ -253,35 +253,35 @@ WAVEFORMATLIBAV WAVEFORMATLIBAV::CreateFromStream(AVStream* stream)
 		break;
 	}
 
-	format.Format.nBlockAlign = (format.Format.wBitsPerSample / 8) * format.Format.nChannels;
+	format.Format.nBlockAlign = codecpar->block_align ? codecpar->block_align : (format.Format.wBitsPerSample / 8) * format.Format.nChannels;
 	format.Format.nAvgBytesPerSec = format.Format.nBlockAlign * format.Format.nSamplesPerSec;
 	format.dwChannelMask = 0;
 	format.Samples.wReserved = 0;
 
-	format.CodecId = codecContext->codec_id;
-	format.SampleFormat = codecContext->sample_fmt;
-	format.BitsPerCodedSample = codecContext->bits_per_coded_sample;
-	format.Flags = codecContext->flags;
-	format.Flags2 = codecContext->flags2;
 	format.TimeBase = stream->time_base;
-	format.ChannelLayout = codecContext->channel_layout ? codecContext->channel_layout : av_get_default_channel_layout(codecContext->channels);
+	format.ChannelLayout = codecpar->channel_layout ? codecpar->channel_layout : av_get_default_channel_layout(codecpar->channels);
 
 	return format;
 }
 
 ComPtr<LibAVAudioCodecOptions> LibAVAudioCodecOptions::CreateFromStream(AVStream* stream)
 {
-	auto codecContext = stream->codec;
+	auto codecpar = stream->codecpar;
 	auto options = Make<LibAVAudioCodecOptions>();
 
-	if (codecContext->extradata_size)
-		options->ExtraData.assign(codecContext->extradata, codecContext->extradata + codecContext->extradata_size);
+	options->codecpar.reset(avcodec_parameters_alloc());
+	ThrowIfNot(avcodec_parameters_copy(options->codecpar.get(), codecpar) >= 0, L"Cannot copy codec parameters.");
 	return std::move(options);
 }
 
 void avcodeccontext_deleter::operator()(AVCodecContext * handle) const noexcept
 {
 	avcodec_free_context(&handle);
+}
+
+void avcodecparameters_deleter::operator()(AVCodecParameters* handle) const noexcept
+{
+	avcodec_parameters_free(&handle);
 }
 
 void avframe_deleter::operator()(AVFrame* handle) const noexcept
@@ -301,7 +301,7 @@ FFmpeg::AVPacketRAII::AVPacketRAII()
 
 FFmpeg::AVPacketRAII::~AVPacketRAII()
 {
-	av_free_packet(this);
+	av_packet_unref(this);
 }
 
 FFmpeg::AVPacketRAII::AVPacketRAII(AVPacketRAII && other) noexcept
@@ -312,7 +312,7 @@ FFmpeg::AVPacketRAII::AVPacketRAII(AVPacketRAII && other) noexcept
 
 AVPacketRAII & FFmpeg::AVPacketRAII::operator=(AVPacketRAII && other) noexcept
 {
-	av_free_packet(this);
+	av_packet_unref(this);
 	*static_cast<AVPacket*>(this) = other;
 	ZeroMemory(&other, sizeof(other));
 	return *this;

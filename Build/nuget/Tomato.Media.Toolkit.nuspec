@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Tomato.Media.Toolkit</id>
+    <version>1.0.0-beta1</version>
+    <authors>SunnyCase</authors>
+    <description>Tomato Media Toolkit Library.</description>
+    <language>Neutral</language>
+    <projectUrl>https://github.com/sunnycase/Tomato.Media/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2016 SunnyCase</copyright>
+    <tags>WinRT UWP Media Music Video</tags>
+    <dependencies>
+    	<group>
+    		<dependency id="Tomato.Media" version="1.0.0-beta1"/>
+  		</group>
+  	</dependencies>
+  </metadata>
+
+  <files>
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Media.Toolkit.winmd" target="lib\uap10.0\Tomato.Media.Toolkit.winmd" />
+
+    <file src="..\..\bin\Uwp\Win32\Release\Tomato.Media.Toolkit.dll" target="runtimes\win10-x86\native\Tomato.Media.Toolkit.dll" />
+
+    <file src="..\..\bin\Uwp\x64\Release\Tomato.Media.Toolkit.dll" target="runtimes\win10-x64\native\Tomato.Media.Toolkit.dll" />
+
+    <file src="..\..\bin\Uwp\arm\Release\Tomato.Media.Toolkit.dll" target="runtimes\win10-arm\native\Tomato.Media.Toolkit.dll" />
+</files>
+</package>

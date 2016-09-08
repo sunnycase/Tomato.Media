@@ -6,11 +6,18 @@
     <TomatoMedia-Platform Condition="'$(Platform)' != 'Win32'">$(Platform)</TomatoMedia-Platform>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'UAP'">
-      <Reference Include="$(MSBuildThisFileDirectory)..\..\lib\uap10.0\Tomato.Media.winmd">
-        <Implementation>Tomato.Media.dll</Implementation>
-      </Reference>
-      <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\win10-$(TomatoMedia-Platform)\native\Tomato.Media.dll" />
+  <ItemGroup>
+      <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\win10-$(TomatoMedia-Platform)\native\*.dll" />
   </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\build\native\$(TomatoMedia-Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Tomato.TomatoMedia.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
 
 </Project>

@@ -194,3 +194,5 @@ project.lock.json
 /Tomato.Media.VC.VC.opendb
 /Tomato.Media.VC.db
 /.vs/config
+/Tomato.Media.Codec/Tomato.Media.Codec.Desktop/Interop/Interop.TomatoMediaLib.1.0.dll
+/Tomato.Media.Gaming/Tomato.Media.Gaming.Desktop/Interop/Interop.TomatoMediaLib.1.0.dll

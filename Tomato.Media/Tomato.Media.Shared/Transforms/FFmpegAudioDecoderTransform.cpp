@@ -135,7 +135,7 @@ bool FFmpegAudioDecoderTransform::OnReceiveInput(IMFSample * sample)
 	auto buffer = static_cast<MFMediaBufferOnAVPacket*>(_inputBuffer.Get());
 	if (FAILED(sample->GetSampleTime(&_sampleTime)))
 		_sampleTime = -1;
-	_inputPacket = buffer->GetPacket();
+	ThrowIfNot(avcodec_send_packet(_codecContext.get(), &buffer->GetPacket()) == 0, L"cannot send packet.");
 	return DecodeOneFrame();
 }
 
@@ -181,22 +181,20 @@ void FFmpegAudioDecoderTransform::OnProduceOutput(MFT_OUTPUT_DATA_BUFFER & outpu
 bool FFmpegAudioDecoderTransform::DecodeOneFrame()
 {
 	decodedSamples = 0;
-	auto& packet = _inputPacket;
 	auto ret = [&] {
-		if (packet.size == 0)
+		auto ret = avcodec_receive_frame(_codecContext.get(), _frame.get());
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 			return false;
-
-		int got_frame = 0;
-		while (!got_frame)
+		else if (ret < 0)
 		{
-			auto ret = avcodec_decode_audio4(_codecContext.get(), _frame.get(), &got_frame, &packet);
-			if (ret < 0 || (ret == 0 && !got_frame))
-				return false;
-			packet.size -= ret;
-			packet.data += ret;
+			avcodec_flush_buffers(_codecContext.get());
+			return false;
 		}
-		decodedSamples = _frame->nb_samples;
-		return true;
+		else
+		{
+			decodedSamples = _frame->nb_samples;
+			return true;
+		}
 	}();
 	if (!ret && _inputBuffer)
 	{
@@ -235,30 +233,21 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 	WAVEFORMATEX* tmpFormat = nullptr; UINT32 size;
 	ThrowIfFailed(MFCreateWaveFormatExFromMFMediaType(inputType, &tmpFormat, &size));
 	_waveFormat.reset(reinterpret_cast<WAVEFORMATLIBAV*>(tmpFormat));
-	auto codec = avcodec_find_decoder(_waveFormat->CodecId);
-	ThrowIfNot(codec, L"Cannot find a codec.");
-	_codecContext.reset(avcodec_alloc_context3(codec));
-	ThrowIfNot(_codecContext, L"Cannot allocate codec context.");
-	_codecContext->sample_fmt = _waveFormat->SampleFormat;
-	_codecContext->sample_rate = (int)tmpFormat->nSamplesPerSec;
-	_codecContext->channels = (int)tmpFormat->nChannels;
-	_codecContext->block_align = (int)tmpFormat->nBlockAlign;
-	_codecContext->bits_per_coded_sample = _waveFormat->BitsPerCodedSample;
-	_codecContext->flags = _waveFormat->Flags;
-	_codecContext->flags2 = _waveFormat->Flags2;
-	_codecContext->channel_layout = _waveFormat->ChannelLayout;
-	av_codec_set_pkt_timebase(_codecContext.get(), _waveFormat->TimeBase);
 
 	ComPtr<IUnknown> optionsUnk;
 	ThrowIfFailed(inputType->GetUnknown(MF_MT_LIBAV_AUDIO_CODEC_OPTIONS, IID_PPV_ARGS(&optionsUnk)));
 	auto options = static_cast<LibAVAudioCodecOptions*>(optionsUnk.Get());
-	if (!options->ExtraData.empty())
-	{
-		auto size = options->ExtraData.size();
-		_codecContext->extradata = reinterpret_cast<uint8_t*>(av_malloc(size));
-		ThrowIfNot(memcpy_s(_codecContext->extradata, size, options->ExtraData.data(), size) == 0, L"Cannot copy extra data");
-		_codecContext->extradata_size = (int)size;
-	}
+	_sampleFormat = (AVSampleFormat)options->codecpar->format;
+
+	auto codec = avcodec_find_decoder(options->codecpar->codec_id);
+	ThrowIfNot(codec, L"Cannot find a codec.");
+
+	_codecContext.reset(avcodec_alloc_context3(codec));
+	ThrowIfNot(_codecContext, L"Cannot allocate codec context.");
+	ThrowIfNot(avcodec_parameters_to_context(_codecContext.get(), options->codecpar.get()) >= 0, L"Cannot convert codec parameters to codec context.");
+
+	av_codec_set_pkt_timebase(_codecContext.get(), _waveFormat->TimeBase);
+
 	ThrowIfNot(avcodec_open2(_codecContext.get(), codec, nullptr) >= 0, L"Cannot open codec context.");
 	_opended = true;
 	
@@ -269,7 +258,7 @@ void FFmpegAudioDecoderTransform::InitializeDecoder(IMFMediaType* inputType)
 DWORD FFmpegAudioDecoderTransform::FillFrame(IMFMediaBuffer* buffer, BYTE * data, DWORD maxLength)
 {
 	auto swrContext = swr_alloc_set_opts(_swrContext.get(), av_get_default_channel_layout(_outputChannels),
-		_outputSampleFormat, _outputSampleRate, _frame->channel_layout, _waveFormat->SampleFormat,
+		_outputSampleFormat, _outputSampleRate, _frame->channel_layout, _sampleFormat,
 		_waveFormat->Format.nSamplesPerSec, 0, nullptr);
 	if (swrContext != _swrContext.get())
 	{

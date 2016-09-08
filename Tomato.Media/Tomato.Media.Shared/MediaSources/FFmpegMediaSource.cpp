@@ -85,7 +85,7 @@ namespace
 	{
 		static bool IsMyHeader(AVStream* stream)
 		{
-			return stream->codec->codec_type == AVMEDIA_TYPE_AUDIO;
+			return stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO;
 		}
 
 		static ComPtr<IMFStreamDescriptor> BuildStreamDescriptor(AVStream* stream)

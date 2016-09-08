@@ -41,13 +41,13 @@ task<void> NS_MEDIA::TryGetMediaMetadata(MediaMetadataContainer& container, IMFB
 			if (await ID3V1Meta::ReadMetadata(byteStream, container))
 				break;
 
-			MFMediaSourceFactory source;
-			await source.OpenAsync(byteStream, uriHint);
+			auto source = std::make_shared<MFMediaSourceFactory>();
+			await source->OpenAsync(byteStream, uriHint);
 
-			container.Add<DefaultMediaMetadatas::Title>(source.Title);
-			container.Add<DefaultMediaMetadatas::Album>(source.Album);
-			container.Add<DefaultMediaMetadatas::Artist>(source.Artist);
-			container.Add<DefaultMediaMetadatas::AlbumArtist>(source.AlbumArtist);
+			container.Add<DefaultMediaMetadatas::Title>(source->Title);
+			container.Add<DefaultMediaMetadatas::Album>(source->Album);
+			container.Add<DefaultMediaMetadatas::Artist>(source->Artist);
+			container.Add<DefaultMediaMetadatas::AlbumArtist>(source->AlbumArtist);
 		} while (false);
 	}
 	catch(...){}
