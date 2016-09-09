@@ -63,7 +63,7 @@ HRESULT ByteStreamHandlerBase::BeginCreateObject(
 	{
 		// 创建 MediaSource
 		if (dwFlags & MF_RESOLUTION_MEDIASOURCE)
-			OnCreateMediaSource(pByteStream, pCallback, punkState);
+			OnCreateMediaSource(pByteStream, pwszURL, pCallback, punkState);
 		//不支持其他用途
 		else
 			ThrowIfFailed(E_INVALIDARG);

@@ -334,8 +334,7 @@ concurrency::task<void> FFmpegMediaSource::OnStreamsRequestData(IMFMediaStream* 
 
 void FFmpegMediaSource::OnSeekSource(MFTIME position)
 {
-	QWORD offset;
-	ThrowIfNot(av_seek_frame(_fmtContext->Get(), -1, hns2dt(position, nullptr), AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY) >= 0, L"Cannot seek.");
+	ThrowIfNot(av_seek_frame(_fmtContext->Get(), -1, hns2dt(position, nullptr), AVSEEK_FLAG_ANY) >= 0, L"Cannot seek.");
 }
 
 void FFmpegMediaSource::OnStartStream(DWORD streamId, bool selected, const PROPVARIANT& position)

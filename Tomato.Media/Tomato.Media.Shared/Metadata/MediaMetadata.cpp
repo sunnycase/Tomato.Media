@@ -42,6 +42,8 @@ task<void> NS_MEDIA::TryGetMediaMetadata(MediaMetadataContainer& container, IMFB
 				break;
 
 			auto source = std::make_shared<MFMediaSourceFactory>();
+			QWORD offset;
+			ThrowIfFailed(byteStream->Seek(msoBegin, 0, 0, &offset));
 			await source->OpenAsync(byteStream, uriHint);
 
 			container.Add<DefaultMediaMetadatas::Title>(source->Title);

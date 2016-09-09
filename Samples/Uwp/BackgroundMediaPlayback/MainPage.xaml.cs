@@ -7,6 +7,7 @@ using Tomato.Media;
 using Tomato.Media.Toolkit;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
@@ -53,7 +54,7 @@ namespace BackgroundMediaPlayback
             var file = await dlg.PickSingleFileAsync();
             if (file != null)
             {
-                me.SetSource(await file.OpenReadAsync(), file.ContentType);
+                me.SetPlaybackSource(MediaSource.CreateFromStorageFile(file));
                 var metadataProvider = await MediaMetadataProvider.CreateFromStream(await file.OpenReadAsync(), file.Path, false);
                 metadataProvider.Album.ToString();
             }

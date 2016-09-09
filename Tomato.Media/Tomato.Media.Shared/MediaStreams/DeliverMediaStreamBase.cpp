@@ -88,11 +88,6 @@ bool DeliverMediaStreamBase::DoesNeedMoreData()
 {
 	if (!IsActive())
 		return false;
-	{
-		LOCK_STATE();
-		if (streamState == Stopped || streamState == EndOfStream)
-			return false;
-	}
 	if (cachedDuration != 0)
 		return !endOfDeliver && cachedDuration < DesiredCacheDuration;
 	else
@@ -163,6 +158,7 @@ void DeliverMediaStreamBase::Stop()
 void DeliverMediaStreamBase::EndOfDeliver()
 {
 	endOfDeliver.store(true, std::memory_order_release);
+	DispatchSampleRequests();
 }
 
 void DeliverMediaStreamBase::EnqueueSample(IMFSample* sample)

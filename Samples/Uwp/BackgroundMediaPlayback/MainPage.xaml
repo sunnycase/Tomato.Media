@@ -13,6 +13,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button Click="Button_Click">Browse</Button>
-        <MediaElement x:Name="me" Grid.Row="1" AudioCategory="Media" Source="Assets/04.花篝り.APE" AreTransportControlsEnabled="True"/>
+        <MediaElement x:Name="me" Grid.Row="1" AudioCategory="Media" Source="Assets/04.花篝り.APE" AreTransportControlsEnabled="True" IsLooping="True"/>
     </Grid>
 </Page>

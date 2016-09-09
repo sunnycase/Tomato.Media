@@ -85,13 +85,8 @@ int MFAVIOContext::ReadPacket(void * opaque, uint8_t * buf, int buf_size) noexce
 	{
 		try
 		{
-			QWORD len = 0, pos = 0;
-			ThrowIfFailed(ctx->_byteStream->GetLength(&len));
-			ThrowIfFailed(ctx->_byteStream->GetCurrentPosition(&pos));
-			auto toRead = static_cast<ULONG>(std::min(len - pos, static_cast<QWORD>(buf_size)));
-
 			ULONG read = 0;
-			ThrowIfFailed(ctx->_byteStream->Read((BYTE*)buf, toRead, &read));
+			ThrowIfFailed(ctx->_byteStream->Read((BYTE*)buf, buf_size, &read));
 			return static_cast<int>(read);
 		}
 		catch (...)
@@ -138,7 +133,7 @@ int64_t MFAVIOContext::Seek(void * opaque, int64_t offset, int whence) noexcept
 			{
 				QWORD len = 0;
 				ThrowIfFailed(stream->GetLength(&len));
-				ThrowIfFailed(stream->Seek(msoBegin, len + offset, MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &currentPos));
+				ThrowIfFailed(stream->Seek(msoBegin, static_cast<uint64_t>(len) + offset, MFBYTESTREAM_SEEK_FLAG_CANCEL_PENDING_IO, &currentPos));
 			}
 			else
 			{

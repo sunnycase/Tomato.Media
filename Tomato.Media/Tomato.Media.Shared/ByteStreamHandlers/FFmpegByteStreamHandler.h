@@ -20,12 +20,12 @@ class DECLSPEC_UUID("DAD2BA36-EB36-473B-B64C-5B7395FCE8D0")
 	InspectableClass(RuntimeClass_Tomato_Media_Codec_FFmpegByteStreamHandler, BaseTrust)
 #endif
 public:
-	static const ByteStreamHandlerRegisterInfo RegisterInfos[9];
+	static const ByteStreamHandlerRegisterInfo RegisterInfos[8];
 
 	FFmpegByteStreamHandler();
 	virtual ~FFmpegByteStreamHandler();
 protected:
-	virtual void OnCreateMediaSource(IMFByteStream* byteStream, IMFAsyncCallback *callback,
+	virtual void OnCreateMediaSource(IMFByteStream* byteStream, LPCWSTR pwszURL, IMFAsyncCallback *callback,
 		IUnknown* unkState);
 private:
 };

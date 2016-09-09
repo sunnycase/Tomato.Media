@@ -135,7 +135,7 @@ bool FFmpegAudioDecoderTransform::OnReceiveInput(IMFSample * sample)
 	auto buffer = static_cast<MFMediaBufferOnAVPacket*>(_inputBuffer.Get());
 	if (FAILED(sample->GetSampleTime(&_sampleTime)))
 		_sampleTime = -1;
-	ThrowIfNot(avcodec_send_packet(_codecContext.get(), &buffer->GetPacket()) == 0, L"cannot send packet.");
+	auto err = avcodec_send_packet(_codecContext.get(), &buffer->GetPacket());
 	return DecodeOneFrame();
 }
 

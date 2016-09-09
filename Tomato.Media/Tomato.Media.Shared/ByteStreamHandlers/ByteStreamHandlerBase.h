@@ -55,7 +55,7 @@ public:
 	STDMETHODIMP GetMaxNumberOfBytesRequiredForResolution(QWORD *pqwBytes) override;
 protected:
 	//创建 MediaSource
-	virtual void OnCreateMediaSource(IMFByteStream* byteStream, IMFAsyncCallback *callback,
+	virtual void OnCreateMediaSource(IMFByteStream* byteStream, LPCWSTR pwszURL, IMFAsyncCallback *callback,
 		IUnknown* unkState) = 0;
 };
 

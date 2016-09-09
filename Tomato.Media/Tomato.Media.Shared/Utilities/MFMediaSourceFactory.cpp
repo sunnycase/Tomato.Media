@@ -28,9 +28,16 @@ task<void> MFMediaSourceFactory::OpenAsync(IMFByteStream* byteStream, const std:
 	auto callback = Make<MFAsyncTaskCallback<MFMediaSourceFactory>>(shared_from_this(), &MFMediaSourceFactory::OpenAsyncCallback);
 	ComPtr<IUnknown> cancelCookie;
 	DWORD flag = MF_RESOLUTION_MEDIASOURCE;
+	bool noUriHint = false;
 	if (uriHint.empty())
 		flag |= MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE;
-	ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, uriHint.c_str(),
+	// Workaround: native flac support lacks of metadata
+	if (uriHint.length() >= 5 && (_wcsnicmp(&uriHint.at(uriHint.length() - 5), L".flac", 5) == 0))
+	{
+		flag |= MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE;
+		noUriHint = true;
+	}
+	ThrowIfFailed(sourceResolver->BeginCreateObjectFromByteStream(byteStream, noUriHint ? nullptr : uriHint.c_str(),
 		flag, nullptr, &cancelCookie, callback.Get(), sourceResolver.Get()));
 
 	return create_task(callback->GetEvent());

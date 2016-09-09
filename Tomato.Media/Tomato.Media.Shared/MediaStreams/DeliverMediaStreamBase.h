@@ -23,7 +23,7 @@ class DeliverMediaStreamBase : public WRL::RuntimeClass<WRL::RuntimeClassFlags<W
 	enum : MFTIME
 	{
 		DesiredCacheDuration = 1 * size_t(1e7),
-		DesiredCacheSamples = 1 * 1
+		DesiredCacheSamples = 1 * 3
 	};
 public:
 	enum StreamState

@@ -19,10 +19,9 @@ ActivatableClass(FFmpegByteStreamHandler);
 CoCreatableClass(FFmpegByteStreamHandler);
 #endif
 
-const ByteStreamHandlerRegisterInfo FFmpegByteStreamHandler::RegisterInfos[9] =
+const ByteStreamHandlerRegisterInfo FFmpegByteStreamHandler::RegisterInfos[8] =
 {
 	{ L".ape", L"audio/x-ape" },
-	{ L".flac", L"audio/flac" },
 	{ L".ogg", L"audio/ogg" },
 	{ L".m4a", L"audio/mp4a-latm" },
 	{ L".aac", L"audio/aac" },
@@ -42,7 +41,7 @@ FFmpegByteStreamHandler::~FFmpegByteStreamHandler()
 
 }
 
-void FFmpegByteStreamHandler::OnCreateMediaSource(IMFByteStream* byteStream, IMFAsyncCallback *callback,
+void FFmpegByteStreamHandler::OnCreateMediaSource(IMFByteStream* byteStream, LPCWSTR pwszURL, IMFAsyncCallback *callback,
 	IUnknown* unkState)
 {
 	ComPtr<IMFAsyncResult> result;
