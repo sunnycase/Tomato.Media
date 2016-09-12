@@ -69,7 +69,9 @@ void MFMediaSourceFactory::EnsureInitializeMetadata()
 		ComPtr<IMFMetadataProvider> provider;
 
 		ThrowIfFailed(_mediaSource->CreatePresentationDescriptor(&_pd));
-		ThrowIfFailed(MFGetService(_mediaSource.Get(), MF_METADATA_PROVIDER_SERVICE, IID_PPV_ARGS(&provider)));
+		ComPtr<IMFGetService> getService;
+		ThrowIfFailed(_mediaSource.As(&getService));
+		ThrowIfFailed(getService->GetService(MF_METADATA_PROVIDER_SERVICE, IID_PPV_ARGS(&provider)));
 		ThrowIfFailed(provider->GetMFMetadata(_pd.Get(), 0, 0, _metadata.ReleaseAndGetAddressOf()));
 	}
 }

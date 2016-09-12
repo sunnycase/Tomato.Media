@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Tomato.Media.Toolkit</id>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0</version>
     <authors>SunnyCase</authors>
     <description>Tomato Media Toolkit Library.</description>
     <language>Neutral</language>
@@ -13,7 +13,7 @@
     <tags>WinRT UWP Media Music Video</tags>
     <dependencies>
     	<group>
-    		<dependency id="Tomato.Media" version="1.0.0-beta1"/>
+    		<dependency id="Tomato.Media" version="1.0.0"/>
   		</group>
   	</dependencies>
   </metadata>
